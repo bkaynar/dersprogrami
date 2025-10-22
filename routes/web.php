@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\DersController;
+use App\Http\Controllers\OgretmenController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Models\Ders;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -16,7 +18,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('dersler', DersController::class);
+    // Dersler resource routes
+    Route::resource('dersler', DersController::class)->parameters(['dersler' => 'ders']);
+
+    // Ogretmenler resource routes
+    Route::resource('ogretmenler', OgretmenController::class)->parameters(['ogretmenler' => 'ogretmen']);
 });
 
 
