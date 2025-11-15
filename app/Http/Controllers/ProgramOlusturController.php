@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateTimetable;
 use App\Services\TimetableGeneticAlgorithm;
 use App\Models\OlusturulanProgram;
 use App\Models\ZamanDilim;
 use App\Models\OgrenciGrubu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ProgramOlusturController extends Controller
@@ -35,23 +37,45 @@ class ProgramOlusturController extends Controller
      */
     public function generate(Request $request)
     {
-        try {
-            $ga = new TimetableGeneticAlgorithm();
+        $useBackgroundJob = $request->input('background', true);
 
-            // Programı oluştur
-            $result = $ga->generate();
-
-            // Veritabanına kaydet
-            $ga->saveSchedule($result['schedule']);
+        if ($useBackgroundJob) {
+            // Background job olarak çalıştır
+            GenerateTimetable::dispatch();
 
             return redirect()
                 ->route('program-olustur.index')
-                ->with('success', "Program başarıyla oluşturuldu! (Fitness: {$result['fitness']}, Nesil: {$result['generations']})");
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('program-olustur.index')
-                ->with('error', 'Program oluşturulurken hata: ' . $e->getMessage());
+                ->with('success', 'Program oluşturma işlemi arka planda başlatıldı. İlerlemeyi takip edebilirsiniz.');
+        } else {
+            // Senkron olarak çalıştır (eski yöntem)
+            try {
+                $ga = new TimetableGeneticAlgorithm();
+                $result = $ga->generate();
+                $ga->saveSchedule($result['schedule']);
+
+                return redirect()
+                    ->route('program-olustur.index')
+                    ->with('success', "Program başarıyla oluşturuldu! (Fitness: {$result['fitness']}, Nesil: {$result['generations']})");
+            } catch (\Exception $e) {
+                return redirect()
+                    ->route('program-olustur.index')
+                    ->with('error', 'Program oluşturulurken hata: ' . $e->getMessage());
+            }
         }
+    }
+
+    /**
+     * İlerleme durumunu getir
+     */
+    public function status()
+    {
+        $status = Cache::get('timetable_generation_status', [
+            'status' => 'idle',
+            'progress' => 0,
+            'message' => 'Henüz başlatılmadı',
+        ]);
+
+        return response()->json($status);
     }
 
     /**

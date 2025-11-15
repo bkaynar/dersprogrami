@@ -92,6 +92,14 @@ class TimetableGeneticAlgorithm
      */
     public function generate(): array
     {
+        return $this->generateWithProgress(null);
+    }
+
+    /**
+     * İlerleme callback'i ile ders programı oluştur
+     */
+    public function generateWithProgress(?callable $progressCallback = null): array
+    {
         // İlk popülasyonu oluştur
         $population = $this->createInitialPopulation();
 
@@ -109,6 +117,11 @@ class TimetableGeneticAlgorithm
                 $bestIndividual = $population[array_search($maxFitness, $fitnessScores)];
             }
 
+            // İlerlemeyi bildir
+            if ($progressCallback && $generation % 5 == 0) {
+                $progressCallback($generation, $this->generations, $bestFitness);
+            }
+
             // Mükemmele ulaştıysak dur
             if ($bestFitness >= 0) {
                 break;
@@ -116,6 +129,11 @@ class TimetableGeneticAlgorithm
 
             // Yeni nesil oluştur
             $population = $this->evolvePopulation($population, $fitnessScores);
+        }
+
+        // Son ilerlemeyi bildir
+        if ($progressCallback) {
+            $progressCallback($generation + 1, $this->generations, $bestFitness);
         }
 
         return [
@@ -207,6 +225,12 @@ class TimetableGeneticAlgorithm
 
         // 6. Aynı günde derslerin toplu olması tercih edilir (boşlukları azalt)
         $score += $this->calculateCompactnessScore($individual) * 10;
+
+        // 7. Öğretmenlerin derslerinin de toplu olması tercih edilir
+        $score += $this->calculateOgretmenCompactnessScore($individual) * 8;
+
+        // 8. Aynı dersin saatlerinin haftaya dengeli dağılması
+        $score += $this->calculateDersDistributionScore($individual) * 5;
 
         return $score;
     }
@@ -316,13 +340,184 @@ class TimetableGeneticAlgorithm
 
     /**
      * Derslerin topluluk skoru (boşlukları minimize et)
+     * Her grup için günlük ders dağılımını analiz eder ve:
+     * - Derslerin arka arkaya olmasını ödüllendirir
+     * - Aralarında boşluk olmasını cezalandırır
      */
     protected function calculateCompactnessScore(array $individual): float
     {
-        // Her grup için günlük ders dağılımını hesapla
         $score = 0;
 
-        // Basitleştirilmiş: şimdilik 0 dön, sonra geliştirebiliriz
+        // Her grup için ayrı analiz yap
+        foreach ($this->ogrenciGruplari as $grup) {
+            $grupDersleri = array_filter($individual, fn($slot) => $slot['grup_id'] == $grup->id);
+
+            // Günlere göre grupla
+            $gunlereGore = [];
+            foreach ($grupDersleri as $ders) {
+                $zamanDilim = $this->zamanDilimleri->find($ders['zaman_dilim_id']);
+                $gun = $zamanDilim->gun_sirasi;
+
+                if (!isset($gunlereGore[$gun])) {
+                    $gunlereGore[$gun] = [];
+                }
+                $gunlereGore[$gun][] = $zamanDilim->id;
+            }
+
+            // Her gün için topluluk analizi
+            foreach ($gunlereGore as $gun => $zamanDilimIds) {
+                if (count($zamanDilimIds) <= 1) {
+                    continue; // Tek ders varsa kontrol gerek yok
+                }
+
+                // Zaman dilimlerini sırala
+                $zamanDilimleri = $this->zamanDilimleri
+                    ->whereIn('id', $zamanDilimIds)
+                    ->sortBy('baslangic_saat')
+                    ->values();
+
+                // Ardışık dersleri kontrol et
+                for ($i = 0; $i < count($zamanDilimleri) - 1; $i++) {
+                    $current = $zamanDilimleri[$i];
+                    $next = $zamanDilimleri[$i + 1];
+
+                    // Eğer dersler arka arkaysa (bir sonraki zaman dilimi hemen başlıyorsa)
+                    if ($current->bitis_saat === $next->baslangic_saat) {
+                        $score += 5; // Arka arkaya dersler için ödül
+                    } else {
+                        // Arada boşluk var, ceza ver
+                        $score -= 3;
+                    }
+                }
+
+                // Günde çok fazla ders varsa küçük bir ceza (aşırı yoğunluktan kaçınmak için)
+                if (count($zamanDilimIds) > 6) {
+                    $score -= 2;
+                }
+            }
+
+            // Haftaya dengeli dağıtım kontrolü
+            $gunSayisi = count($gunlereGore);
+            if ($gunSayisi > 0) {
+                $ortalamaGunlukDers = count($grupDersleri) / 5; // 5 iş günü varsayımı
+
+                // Her gün için ideal dağılıma yakınlık
+                foreach ($gunlereGore as $gun => $zamanDilimIds) {
+                    $fark = abs(count($zamanDilimIds) - $ortalamaGunlukDers);
+                    $score -= $fark * 0.5; // Dengesizlik cezası
+                }
+            }
+        }
+
+        return $score;
+    }
+
+    /**
+     * Öğretmenlerin derslerinin topluluk skoru
+     * Öğretmenlerin derslerinin de blok halinde olmasını teşvik eder
+     */
+    protected function calculateOgretmenCompactnessScore(array $individual): float
+    {
+        $score = 0;
+
+        // Her öğretmen için ayrı analiz yap
+        foreach ($this->ogretmenler as $ogretmen) {
+            $ogretmenDersleri = array_filter($individual, fn($slot) => $slot['ogretmen_id'] == $ogretmen->id);
+
+            if (count($ogretmenDersleri) <= 1) {
+                continue;
+            }
+
+            // Günlere göre grupla
+            $gunlereGore = [];
+            foreach ($ogretmenDersleri as $ders) {
+                $zamanDilim = $this->zamanDilimleri->find($ders['zaman_dilim_id']);
+                $gun = $zamanDilim->gun_sirasi;
+
+                if (!isset($gunlereGore[$gun])) {
+                    $gunlereGore[$gun] = [];
+                }
+                $gunlereGore[$gun][] = $zamanDilim->id;
+            }
+
+            // Her gün için topluluk analizi
+            foreach ($gunlereGore as $gun => $zamanDilimIds) {
+                if (count($zamanDilimIds) <= 1) {
+                    continue;
+                }
+
+                // Zaman dilimlerini sırala
+                $zamanDilimleri = $this->zamanDilimleri
+                    ->whereIn('id', $zamanDilimIds)
+                    ->sortBy('baslangic_saat')
+                    ->values();
+
+                // Ardışık dersleri kontrol et
+                for ($i = 0; $i < count($zamanDilimleri) - 1; $i++) {
+                    $current = $zamanDilimleri[$i];
+                    $next = $zamanDilimleri[$i + 1];
+
+                    if ($current->bitis_saat === $next->baslangic_saat) {
+                        $score += 3; // Arka arkaya dersler için ödül
+                    } else {
+                        $score -= 2; // Boşluk için ceza
+                    }
+                }
+            }
+
+            // Öğretmenin haftaya dengeli dağılımı
+            $gunSayisi = count($gunlereGore);
+            if ($gunSayisi > 0 && $gunSayisi < 5) {
+                // Derslerin az güne sıkışması tercih edilir (öğretmen için)
+                $score += (5 - $gunSayisi) * 2;
+            }
+        }
+
+        return $score;
+    }
+
+    /**
+     * Ders saatlerinin haftaya dengeli dağılım skoru
+     * Aynı dersin saatlerinin haftanın farklı günlerine yayılmasını teşvik eder
+     */
+    protected function calculateDersDistributionScore(array $individual): float
+    {
+        $score = 0;
+
+        // Her grup-ders kombinasyonu için analiz
+        foreach ($this->grupDersler as $grupDers) {
+            $slotlar = array_filter($individual, function ($slot) use ($grupDers) {
+                return $slot['grup_id'] == $grupDers->ogrenci_grup_id
+                    && $slot['ders_id'] == $grupDers->ders_id;
+            });
+
+            if (count($slotlar) <= 1) {
+                continue;
+            }
+
+            // Bu dersin günlere dağılımını kontrol et
+            $gunler = [];
+            foreach ($slotlar as $slot) {
+                $zamanDilim = $this->zamanDilimleri->find($slot['zaman_dilim_id']);
+                $gunler[$zamanDilim->gun_sirasi] = true;
+            }
+
+            $farkliGunSayisi = count($gunler);
+            $toplamSlot = count($slotlar);
+
+            // Derslerin farklı günlere yayılması tercih edilir
+            if ($farkliGunSayisi == $toplamSlot) {
+                // Her ders farklı günde - mükemmel
+                $score += 10;
+            } elseif ($farkliGunSayisi >= $toplamSlot / 2) {
+                // İyi dağılım
+                $score += 5;
+            } else {
+                // Derslerin aynı günlerde toplanması - ceza
+                $score -= 3;
+            }
+        }
+
         return $score;
     }
 

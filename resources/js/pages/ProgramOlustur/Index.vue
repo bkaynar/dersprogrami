@@ -2,7 +2,9 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
 
 defineProps<{
     program_var: boolean;
@@ -22,9 +24,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 const generateForm = useForm({});
 const deleteForm = useForm({});
 
+// İlerleme durumu
+const generationStatus = ref<any>(null);
+const isGenerating = ref(false);
+let statusInterval: any = null;
+
 const generateProgram = () => {
     if (confirm('Yeni bir ders programı oluşturulacak. Bu işlem birkaç dakika sürebilir. Devam etmek istiyor musunuz?')) {
-        generateForm.post('/program-olustur/generate');
+        generateForm.post('/program-olustur/generate', {
+            onSuccess: () => {
+                isGenerating.value = true;
+                startStatusPolling();
+            }
+        });
     }
 };
 
@@ -33,6 +45,54 @@ const deleteProgram = () => {
         deleteForm.delete('/program-olustur');
     }
 };
+
+// İlerleme durumunu kontrol et
+const checkStatus = async () => {
+    try {
+        const response = await axios.get('/program-olustur/status');
+        generationStatus.value = response.data;
+
+        if (generationStatus.value.status === 'completed') {
+            isGenerating.value = false;
+            stopStatusPolling();
+            // Sayfayı yenile
+            router.reload();
+        } else if (generationStatus.value.status === 'failed') {
+            isGenerating.value = false;
+            stopStatusPolling();
+        }
+    } catch (error) {
+        console.error('Status check error:', error);
+    }
+};
+
+// Durum polling başlat
+const startStatusPolling = () => {
+    checkStatus(); // İlk kontrolü hemen yap
+    statusInterval = setInterval(checkStatus, 2000); // 2 saniyede bir kontrol et
+};
+
+// Durum polling durdur
+const stopStatusPolling = () => {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+        statusInterval = null;
+    }
+};
+
+// Component mount olduğunda devam eden işlem var mı kontrol et
+onMounted(() => {
+    checkStatus();
+    if (generationStatus.value?.status === 'running') {
+        isGenerating.value = true;
+        startStatusPolling();
+    }
+});
+
+// Component unmount olduğunda interval'i temizle
+onUnmounted(() => {
+    stopStatusPolling();
+});
 </script>
 
 <template>
@@ -72,6 +132,34 @@ const deleteProgram = () => {
 
             <!-- Actions -->
             <div class="space-y-4">
+                <!-- İlerleme Göstergesi -->
+                <div v-if="isGenerating && generationStatus" class="rounded-lg border border-primary/50 bg-primary/5 p-6">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-primary">Program Oluşturuluyor...</h3>
+                            <p class="mt-1 text-sm text-muted-foreground">
+                                {{ generationStatus.message }}
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-primary">{{ generationStatus.progress }}%</div>
+                            <div v-if="generationStatus.generation" class="text-xs text-muted-foreground">
+                                Nesil: {{ generationStatus.generation }}/{{ generationStatus.max_generations }}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+                        <div
+                            class="h-full bg-primary transition-all duration-500"
+                            :style="{ width: generationStatus.progress + '%' }"
+                        ></div>
+                    </div>
+                    <div v-if="generationStatus.best_fitness" class="mt-2 text-xs text-muted-foreground">
+                        En İyi Fitness: {{ Math.round(generationStatus.best_fitness) }}
+                    </div>
+                </div>
+
                 <!-- Generate Program Card -->
                 <div class="rounded-lg border bg-card p-6">
                     <div class="flex items-start justify-between">
@@ -83,16 +171,16 @@ const deleteProgram = () => {
                         </div>
                         <button
                             @click="generateProgram"
-                            :disabled="generateForm.processing"
+                            :disabled="generateForm.processing || isGenerating"
                             class="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <svg v-if="generateForm.processing" class="h-5 w-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg v-if="generateForm.processing || isGenerating" class="h-5 w-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                             <svg v-else class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            {{ generateForm.processing ? 'Oluşturuluyor...' : 'Program Oluştur' }}
+                            {{ (generateForm.processing || isGenerating) ? 'Oluşturuluyor...' : 'Program Oluştur' }}
                         </button>
                     </div>
                 </div>

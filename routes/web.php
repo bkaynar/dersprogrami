@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Program Olustur routes
     Route::get('program-olustur', [ProgramOlusturController::class, 'index'])->name('program-olustur.index');
     Route::post('program-olustur/generate', [ProgramOlusturController::class, 'generate'])->name('program-olustur.generate');
+    Route::get('program-olustur/status', [ProgramOlusturController::class, 'status'])->name('program-olustur.status');
     Route::get('program-olustur/show', [ProgramOlusturController::class, 'show'])->name('program-olustur.show');
     Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
 });
