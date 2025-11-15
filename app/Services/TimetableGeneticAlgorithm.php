@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\DB;
 class TimetableGeneticAlgorithm
 {
     // GA Parametreleri
-    protected int $populationSize = 50;
-    protected int $generations = 100;
+    protected int $populationSize = 20;  // 50 -> 20 (daha hızlı)
+    protected int $generations = 30;     // 100 -> 30 (daha hızlı)
     protected float $mutationRate = 0.2;
     protected float $crossoverRate = 0.8;
-    protected int $eliteSize = 5;
+    protected int $eliteSize = 3;        // 5 -> 3
 
     // Veri setleri
     protected $zamanDilimleri;
@@ -103,6 +103,9 @@ class TimetableGeneticAlgorithm
      */
     public function generateWithProgress(?callable $progressCallback = null): array
     {
+        // PHP timeout'u artır (5 dakika)
+        set_time_limit(300);
+
         // İlk popülasyonu oluştur
         $population = $this->createInitialPopulation();
 
