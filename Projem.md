@@ -111,5 +111,6 @@ Veritabanı, optimizasyon motorunun ihtiyaç duyacağı tüm verileri ve kuralla
 -   [x] **11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.**
 -   [x] **12. Fitness Fonksiyonu İyileştirmeleri** (Compactness score, öğretmen optimizasyonu, ders dağılımı).
 -   [x] **13. Performans İyileştirmeleri** (Background job, real-time progress tracking, cache kullanımı).
--   [ ] 14. (Gelecek Özellikler) Manuel düzenleme, "What-If" senaryoları, export/import.
+-   [x] **14. Export/Import Özellikleri** (Excel ve PDF export, profesyonel formatlar).
+-   [ ] 15. (Gelecek Özellikler) Manuel düzenleme, "What-If" senaryoları, constraint wizard.
 
