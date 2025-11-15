@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\DersController;
 use App\Http\Controllers\OgretmenController;
+use App\Http\Controllers\MekanController;
+use App\Http\Controllers\OgrenciGrubuController;
+use App\Http\Controllers\ZamanDilimController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -23,6 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Ogretmenler resource routes
     Route::resource('ogretmenler', OgretmenController::class)->parameters(['ogretmenler' => 'ogretmen']);
+
+    // Mekanlar resource routes
+    Route::resource('mekanlar', MekanController::class)->parameters(['mekanlar' => 'mekan']);
+
+    // Ogrenci Gruplari resource routes
+    Route::resource('ogrenci-gruplari', OgrenciGrubuController::class)->parameters(['ogrenci-gruplari' => 'ogrenciGrubu']);
+
+    // Zaman Dilimleri resource routes
+    Route::resource('zaman-dilimleri', ZamanDilimController::class)->parameters(['zaman-dilimleri' => 'zamanDilimi']);
 });
 
 
