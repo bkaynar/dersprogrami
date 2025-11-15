@@ -19,7 +19,7 @@ import ogrenciGruplariRoute from '@/routes/ogrenci-gruplari';
 import zamanDilimleriRoute from '@/routes/zaman-dilimleri';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, LayoutGrid, Users, Building2, UsersRound, Clock } from 'lucide-vue-next';
+import { BookOpen, LayoutGrid, Users, Building2, UsersRound, Clock, MapPin, BookCheck, UserCheck, ClockAlert, ShieldAlert } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -52,6 +52,31 @@ const mainNavItems: NavItem[] = [
         title: 'Zaman Dilimleri',
         href: zamanDilimleriRoute.index().url,
         icon: Clock,
+    },
+    {
+        title: 'Ders Mekan Gereksinimleri',
+        href: '/ders-mekan-gereksinimleri',
+        icon: MapPin,
+    },
+    {
+        title: 'Grup Dersleri',
+        href: '/grup-dersleri',
+        icon: BookCheck,
+    },
+    {
+        title: 'Öğretmen Dersleri',
+        href: '/ogretmen-dersleri',
+        icon: UserCheck,
+    },
+    {
+        title: 'Öğretmen Müsaitliği',
+        href: '/ogretmen-musaitlik',
+        icon: ClockAlert,
+    },
+    {
+        title: 'Grup Kısıtlamaları',
+        href: '/grup-kisitlamalari',
+        icon: ShieldAlert,
     },
 ];
 </script>
