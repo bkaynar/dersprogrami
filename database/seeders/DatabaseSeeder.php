@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,18 +12,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        // Seed models
+        // Önce bağımsız tabloları oluştur
         $this->call([
+            UserSeeder::class,
             MekanSeeder::class,
             OgrenciGrubuSeeder::class,
             ZamanDilimSeeder::class,
+            DersSeeder::class,
+            OgretmenSeeder::class,
+        ]);
+
+        // Sonra ilişkisel tabloları oluştur (foreign key bağımlılıkları var)
+        $this->call([
+            DersMekanGeresinimSeeder::class,
+            GrupDersSeeder::class,
+            OgretmenDersSeeder::class,
+            OgretmenMusaitlikSeeder::class,
+            GrupKisitlamaSeeder::class,
         ]);
     }
 }

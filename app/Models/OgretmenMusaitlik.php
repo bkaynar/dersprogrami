@@ -29,4 +29,9 @@ class OgretmenMusaitlik extends Model
     {
         return $this->belongsTo(ZamanDilim::class, 'zaman_dilimi_id');
     }
+
+    public function zamanDilimi(): BelongsTo
+    {
+        return $this->belongsTo(ZamanDilim::class, 'zaman_dilimi_id');
+    }
 }

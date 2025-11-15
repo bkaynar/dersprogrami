@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import ogretmenler from '@/routes/ogretmenler';
 
 interface Ogretmen {
     id: number;
@@ -42,7 +41,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </p>
                 </div>
                 <Link
-                    :href="ogretmenler.create().url"
+                    href="/ogretmenler/create"
                     class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +82,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
                                     <Link
-                                        :href="ogretmenler.show(ogretmen.id).url"
+                                        :href="`/ogretmenler/${ogretmen.id}`"
                                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +92,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         Görüntüle
                                     </Link>
                                     <Link
-                                        :href="ogretmenler.edit(ogretmen.id).url"
+                                        :href="`/ogretmenler/${ogretmen.id}/edit`"
                                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +119,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     Başlamak için ilk öğretmeninizi oluşturun
                 </p>
                 <Link
-                    :href="ogretmenler.create().url"
+                    href="/ogretmenler/create"
                     class="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
