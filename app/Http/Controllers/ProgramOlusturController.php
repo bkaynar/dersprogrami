@@ -118,7 +118,7 @@ class ProgramOlusturController extends Controller
             foreach ($zamanDilimleri as $zamanDilim) {
                 $ders = $program
                     ->where('ogrenci_grup_id', $grup->id)
-                    ->where('zaman_dilim_id', $zamanDilim->id)
+                    ->where('zaman_dilimi_id', $zamanDilim->id)
                     ->first();
 
                 $programTablosu[$grup->id]['dersler'][$zamanDilim->id] = $ders;
@@ -183,7 +183,7 @@ class ProgramOlusturController extends Controller
             foreach ($zamanDilimleri as $zamanDilim) {
                 $ders = $program
                     ->where('ogrenci_grup_id', $grup->id)
-                    ->where('zaman_dilim_id', $zamanDilim->id)
+                    ->where('zaman_dilimi_id', $zamanDilim->id)
                     ->first();
 
                 $programTablosu[$grup->id]['dersler'][$zamanDilim->id] = $ders;

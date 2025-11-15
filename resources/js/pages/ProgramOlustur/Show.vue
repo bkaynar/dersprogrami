@@ -40,7 +40,7 @@ interface ProgramSlot {
     ogrenci_grup_id: number;
     ders_id: number;
     ogretmen_id: number;
-    zaman_dilim_id: number;
+    zaman_dilimi_id: number;
     mekan_id: number;
     ders: Ders;
     ogretmen: Ogretmen;

@@ -71,7 +71,7 @@ class TimetablePerGroupSheet implements FromCollection, WithHeadings, WithStyles
             $gun = $this->gunler[$gunSirasi];
 
             foreach ($gunZamanDilimleri as $zamanDilim) {
-                $ders = $program->where('zaman_dilim_id', $zamanDilim->id)->first();
+                $ders = $program->where('zaman_dilimi_id', $zamanDilim->id)->first();
 
                 $rows[] = [
                     'gun' => $gun,
