@@ -108,8 +108,8 @@ Veritabanı, optimizasyon motorunun ihtiyaç duyacağı tüm verileri ve kuralla
 -   [x] 8. Genetik Algoritma Kütüphanesi Seçimi ve Entegrasyonu (ryanhs/simple-genetic-algorithm).
 -   [x] **9. Uygunluk Fonksiyonu'nun (Fitness Function) Kodlanması.** (Sert ve yumuşak kısıtlar implement edildi)
 -   [x] 10. Algoritmayı Tetikleyecek Bir Servis Sınıfı ve Controller Yazılması (TimetableGeneticAlgorithm + ProgramOlusturController).
--   [x] **11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.** (Şu anki adım - Tamamlandı!)
--   [ ] 12. Fitness Fonksiyonu İyileştirmeleri (Compactness score, ders blokları optimizasyonu).
--   [ ] 13. Performans İyileştirmeleri (Background job, cache, ilerleme göstergesi).
--   [ ] 14. (Gelecek Özellikler) Dinamik yeniden zamanlama, "What-If" senaryoları, manuel düzenleme.
+-   [x] **11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.**
+-   [x] **12. Fitness Fonksiyonu İyileştirmeleri** (Compactness score, öğretmen optimizasyonu, ders dağılımı).
+-   [x] **13. Performans İyileştirmeleri** (Background job, real-time progress tracking, cache kullanımı).
+-   [ ] 14. (Gelecek Özellikler) Manuel düzenleme, "What-If" senaryoları, export/import.
 
