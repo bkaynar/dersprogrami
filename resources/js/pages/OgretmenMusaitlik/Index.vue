@@ -8,26 +8,12 @@ interface Ogretmen {
     id: number;
     isim: string;
     unvan: string;
-}
-
-interface ZamanDilimi {
-    id: number;
-    haftanin_gunu: number;
-    baslangic_saati: string;
-    bitis_saati: string;
-}
-
-interface Musaitlik {
-    id: number;
-    ogretmen_id: number;
-    zaman_dilimi_id: number;
-    musaitlik_tipi: string;
-    ogretmen: Ogretmen;
-    zaman_dilimi: ZamanDilimi;
+    email: string;
+    musaitlikler_count: number;
 }
 
 defineProps<{
-    musaitlikler: Musaitlik[];
+    ogretmenler: Ogretmen[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -40,33 +26,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/ogretmen-musaitlik',
     },
 ];
-
-const gunIsmi = (gun: number) => {
-    const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
-    return gunler[gun - 1] || gun.toString();
-};
-
-const formatSaat = (saat: string) => {
-    return saat.substring(0, 5);
-};
-
-const musaitlikTipiLabel = (tip: string) => {
-    const labels: Record<string, string> = {
-        'musait': 'Müsait',
-        'musait_degil': 'Müsait Değil',
-        'tercih_edilen': 'Tercih Edilen',
-    };
-    return labels[tip] || tip;
-};
-
-const musaitlikTipiClass = (tip: string) => {
-    const classes: Record<string, string> = {
-        'musait': 'bg-green-100 text-green-800',
-        'musait_degil': 'bg-red-100 text-red-800',
-        'tercih_edilen': 'bg-blue-100 text-blue-800',
-    };
-    return classes[tip] || 'bg-gray-100 text-gray-800';
-};
 </script>
 
 <template>
@@ -93,46 +52,39 @@ const musaitlikTipiClass = (tip: string) => {
                 </Link>
             </div>
 
-            <!-- Table -->
-            <div v-if="musaitlikler.length > 0" class="overflow-hidden rounded-lg border bg-card">
+            <!-- Öğretmen Listesi -->
+            <div v-if="ogretmenler.length > 0" class="overflow-hidden rounded-lg border bg-card">
                 <table class="w-full">
                     <thead>
                         <tr class="border-b bg-muted/50">
                             <th class="px-6 py-3 text-left text-sm font-medium">Öğretmen</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Zaman Dilimi</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Müsaitlik Tipi</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">E-posta</th>
+                            <th class="px-6 py-3 text-center text-sm font-medium">Tanımlı Müsaitlik</th>
                             <th class="px-6 py-3 text-right text-sm font-medium">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y">
                         <tr
-                            v-for="musaitlik in musaitlikler"
-                            :key="musaitlik.id"
+                            v-for="ogretmen in ogretmenler"
+                            :key="ogretmen.id"
                             class="hover:bg-muted/50"
                         >
                             <td class="px-6 py-4 font-medium">
-                                <div>{{ musaitlik.ogretmen.isim }}</div>
-                                <div class="text-xs text-muted-foreground">{{ musaitlik.ogretmen.unvan }}</div>
+                                <div>{{ ogretmen.isim }}</div>
+                                <div class="text-xs text-muted-foreground">{{ ogretmen.unvan }}</div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="font-medium">{{ gunIsmi(musaitlik.zaman_dilimi.haftanin_gunu) }}</div>
-                                <div class="text-xs text-muted-foreground">
-                                    {{ formatSaat(musaitlik.zaman_dilimi.baslangic_saati) }} -
-                                    {{ formatSaat(musaitlik.zaman_dilimi.bitis_saati) }}
-                                </div>
+                            <td class="px-6 py-4 text-muted-foreground">
+                                {{ ogretmen.email }}
                             </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium"
-                                    :class="musaitlikTipiClass(musaitlik.musaitlik_tipi)"
-                                >
-                                    {{ musaitlikTipiLabel(musaitlik.musaitlik_tipi) }}
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                                    {{ ogretmen.musaitlikler_count }} zaman dilimi
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
                                     <Link
-                                        :href="`/ogretmen-musaitlik/${musaitlik.id}`"
+                                        :href="`/ogretmen-musaitlik/${ogretmen.id}`"
                                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +94,7 @@ const musaitlikTipiClass = (tip: string) => {
                                         Görüntüle
                                     </Link>
                                     <Link
-                                        :href="`/ogretmen-musaitlik/${musaitlik.id}/edit`"
+                                        :href="`/ogretmen-musaitlik/${ogretmen.id}/edit`"
                                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,21 +113,21 @@ const musaitlikTipiClass = (tip: string) => {
             <div v-else class="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
                 <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
                     <svg class="h-6 w-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </div>
-                <h3 class="mt-4 font-semibold">Henüz müsaitlik kaydı yok</h3>
+                <h3 class="mt-4 font-semibold">Henüz öğretmen yok</h3>
                 <p class="mt-2 text-center text-sm text-muted-foreground">
-                    Başlamak için ilk müsaitlik kaydını oluşturun
+                    Önce öğretmen eklemeniz gerekiyor
                 </p>
                 <Link
-                    href="/ogretmen-musaitlik/create"
+                    href="/ogretmenler/create"
                     class="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    İlk Müsaitliği Oluştur
+                    Öğretmen Ekle
                 </Link>
             </div>
         </div>

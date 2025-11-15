@@ -110,3 +110,4 @@ Veritabanı, optimizasyon motorunun ihtiyaç duyacağı tüm verileri ve kuralla
 -   [ ] 10. Algoritmayı Tetikleyecek Bir Servis Sınıfı ve Controller Yazılması.
 -   [ ] 11. Sonuç Programının Arayüzde (Blade) Gösterilmesi.
 -   [ ] 12. (Gelecek Özellikler) Dinamik yeniden zamanlama, "What-If" senaryoları.
+

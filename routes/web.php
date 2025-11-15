@@ -44,20 +44,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ders Mekan Gereksinimleri resource routes
     Route::resource('ders-mekan-gereksinimleri', DersMekanGeresinimController::class)->parameters(['ders-mekan-gereksinimleri' => 'dersMekanGereksinimi']);
 
-    // Grup Dersleri resource routes (simplified for pivot)
+    // Grup Dersleri routes (grup bazlı)
     Route::get('grup-dersleri', [GrupDersController::class, 'index'])->name('grup-dersleri.index');
     Route::get('grup-dersleri/create', [GrupDersController::class, 'create'])->name('grup-dersleri.create');
     Route::post('grup-dersleri', [GrupDersController::class, 'store'])->name('grup-dersleri.store');
+    Route::get('grup-dersleri/{grup}', [GrupDersController::class, 'show'])->name('grup-dersleri.show');
+    Route::get('grup-dersleri/{grup}/edit', [GrupDersController::class, 'edit'])->name('grup-dersleri.edit');
+    Route::put('grup-dersleri/{grup}', [GrupDersController::class, 'update'])->name('grup-dersleri.update');
     Route::delete('grup-dersleri/{ogrenciGrupId}/{dersId}', [GrupDersController::class, 'destroy'])->name('grup-dersleri.destroy');
 
-    // Ogretmen Dersleri resource routes (simplified for pivot)
+    // Ogretmen Dersleri routes (öğretmen bazlı)
     Route::get('ogretmen-dersleri', [OgretmenDersController::class, 'index'])->name('ogretmen-dersleri.index');
     Route::get('ogretmen-dersleri/create', [OgretmenDersController::class, 'create'])->name('ogretmen-dersleri.create');
     Route::post('ogretmen-dersleri', [OgretmenDersController::class, 'store'])->name('ogretmen-dersleri.store');
+    Route::get('ogretmen-dersleri/{ogretmen}', [OgretmenDersController::class, 'show'])->name('ogretmen-dersleri.show');
+    Route::get('ogretmen-dersleri/{ogretmen}/edit', [OgretmenDersController::class, 'edit'])->name('ogretmen-dersleri.edit');
+    Route::put('ogretmen-dersleri/{ogretmen}', [OgretmenDersController::class, 'update'])->name('ogretmen-dersleri.update');
     Route::delete('ogretmen-dersleri/{ogretmenId}/{dersId}', [OgretmenDersController::class, 'destroy'])->name('ogretmen-dersleri.destroy');
 
-    // Ogretmen Musaitlik resource routes
-    Route::resource('ogretmen-musaitlik', OgretmenMusaitlikController::class)->parameters(['ogretmen-musaitlik' => 'ogretmenMusaitlik']);
+    // Ogretmen Musaitlik routes (öğretmen bazlı)
+    Route::get('ogretmen-musaitlik', [OgretmenMusaitlikController::class, 'index'])->name('ogretmen-musaitlik.index');
+    Route::get('ogretmen-musaitlik/create', [OgretmenMusaitlikController::class, 'create'])->name('ogretmen-musaitlik.create');
+    Route::post('ogretmen-musaitlik', [OgretmenMusaitlikController::class, 'store'])->name('ogretmen-musaitlik.store');
+    Route::get('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'show'])->name('ogretmen-musaitlik.show');
+    Route::get('ogretmen-musaitlik/{ogretmen}/edit', [OgretmenMusaitlikController::class, 'edit'])->name('ogretmen-musaitlik.edit');
+    Route::put('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'update'])->name('ogretmen-musaitlik.update');
+    Route::delete('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'destroy'])->name('ogretmen-musaitlik.destroy');
 
     // Grup Kisitlamalari resource routes
     Route::resource('grup-kisitlamalari', GrupKisitlamaController::class)->parameters(['grup-kisitlamalari' => 'grupKisitlama']);

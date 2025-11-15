@@ -1,42 +1,36 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 interface Ogretmen {
-  id: number;
-  isim: string;
-  unvan: string;
+    id: number;
+    isim: string;
+    unvan: string;
+    email: string;
 }
 
 interface ZamanDilimi {
-  id: number;
-  haftanin_gunu: number;
-  baslangic_saati: string;
-  bitis_saati: string;
+    id: number;
+    haftanin_gunu: number;
+    baslangic_saati: string;
+    bitis_saati: string;
 }
 
 interface Musaitlik {
-  id: number;
-  ogretmen_id: number;
-  zaman_dilimi_id: number;
-  musaitlik_tipi: string;
-  ogretmen: Ogretmen;
-  zaman_dilimi: ZamanDilimi;
+    id: number;
+    ogretmen_id: number;
+    zaman_dilimi_id: number;
+    musaitlik_tipi: string;
 }
 
 const props = defineProps<{
-  musaitlik: Musaitlik;
-  ogretmenler: Ogretmen[];
-  zaman_dilimleri: ZamanDilimi[];
+    ogretmen: Ogretmen;
+    zaman_dilimleri: ZamanDilimi[];
+    musaitlikler: Record<number, Musaitlik>;
 }>();
-
-const form = useForm({
-  ogretmen_id: props.musaitlik.ogretmen_id,
-  zaman_dilimi_id: props.musaitlik.zaman_dilimi_id,
-  musaitlik_tipi: props.musaitlik.musaitlik_tipi,
-});
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,10 +42,27 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/ogretmen-musaitlik',
     },
     {
+        title: props.ogretmen.isim,
+        href: `/ogretmen-musaitlik/${props.ogretmen.id}`,
+    },
+    {
         title: 'Düzenle',
-        href: `/ogretmen-musaitlik/${props.musaitlik.id}/edit`,
+        href: `/ogretmen-musaitlik/${props.ogretmen.id}/edit`,
     },
 ];
+
+// Müsaitlik durumlarını tut
+const musaitlikDurumlari = ref<Record<number, string | null>>({});
+
+// İlk yüklemede mevcut müsaitleri doldur
+props.zaman_dilimleri.forEach(zd => {
+    const musaitlik = props.musaitlikler[zd.id];
+    musaitlikDurumlari.value[zd.id] = musaitlik?.musaitlik_tipi || null;
+});
+
+const form = useForm({
+    musaitlikler: {} as Record<number, string>,
+});
 
 const gunIsmi = (gun: number) => {
     const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
@@ -62,131 +73,159 @@ const formatSaat = (saat: string) => {
     return saat.substring(0, 5);
 };
 
-const submit = () => {
-  form.put(`/ogretmen-musaitlik/${props.musaitlik.id}`);
+// Zaman dilimlerini güne göre grupla
+const zamanDilimleriByGun = computed(() => {
+    const grouped: Record<number, ZamanDilimi[]> = {};
+    props.zaman_dilimleri.forEach(zd => {
+        if (!grouped[zd.haftanin_gunu]) {
+            grouped[zd.haftanin_gunu] = [];
+        }
+        grouped[zd.haftanin_gunu].push(zd);
+    });
+    return grouped;
+});
+
+const musaitlikTipleri = [
+    { value: 'musait', label: 'Müsait', color: 'bg-green-500 hover:bg-green-600' },
+    { value: 'musait_degil', label: 'Müsait Değil', color: 'bg-red-500 hover:bg-red-600' },
+    { value: 'tercih_edilen', label: 'Tercih Edilen', color: 'bg-blue-500 hover:bg-blue-600' },
+];
+
+const setMusaitlik = (zamanDilimiId: number, tip: string | null) => {
+    if (musaitlikDurumlari.value[zamanDilimiId] === tip) {
+        // Aynı tipe tıklandıysa, seçimi kaldır
+        musaitlikDurumlari.value[zamanDilimiId] = null;
+    } else {
+        musaitlikDurumlari.value[zamanDilimiId] = tip;
+    }
 };
+
+const getActiveClass = (zamanDilimiId: number, tip: string) => {
+    return musaitlikDurumlari.value[zamanDilimiId] === tip;
+};
+
+const submit = () => {
+    // Sadece seçili olanları gönder
+    const musaitlikler: Record<number, string> = {};
+    Object.entries(musaitlikDurumlari.value).forEach(([id, tip]) => {
+        if (tip) {
+            musaitlikler[Number(id)] = tip;
+        }
+    });
+
+    form.musaitlikler = musaitlikler;
+    form.put(`/ogretmen-musaitlik/${props.ogretmen.id}`, {
+        preserveScroll: true,
+    });
+};
+
+// İstatistikler
+const stats = computed(() => {
+    let musait = 0;
+    let musaitDegil = 0;
+    let tercihEdilen = 0;
+
+    Object.values(musaitlikDurumlari.value).forEach(tip => {
+        if (tip === 'musait') musait++;
+        else if (tip === 'musait_degil') musaitDegil++;
+        else if (tip === 'tercih_edilen') tercihEdilen++;
+    });
+
+    return { musait, musaitDegil, tercihEdilen };
+});
 </script>
 
 <template>
-  <Head title="Müsaitlik Düzenle" />
+    <Head :title="`${ogretmen.isim} - Müsaitlik Düzenle`" />
 
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="p-6">
-      <!-- Header -->
-      <div class="mb-6 flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-semibold">Müsaitlik Düzenle</h1>
-          <p class="mt-1 text-sm text-muted-foreground">
-            Öğretmen müsaitlik bilgilerini güncelleyin
-          </p>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold">{{ ogretmen.isim }} - Müsaitlik Düzenle</h1>
+                <p class="mt-1 text-sm text-muted-foreground">
+                    {{ ogretmen.unvan }} • Her zaman dilimi için müsaitlik durumunu seçin
+                </p>
+            </div>
+
+            <form @submit.prevent="submit" class="space-y-6">
+                <!-- İstatistikler -->
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div class="rounded-lg border bg-green-50 p-4">
+                        <div class="text-2xl font-bold text-green-800">{{ stats.musait }}</div>
+                        <div class="text-sm text-green-600">Müsait</div>
+                    </div>
+                    <div class="rounded-lg border bg-red-50 p-4">
+                        <div class="text-2xl font-bold text-red-800">{{ stats.musaitDegil }}</div>
+                        <div class="text-sm text-red-600">Müsait Değil</div>
+                    </div>
+                    <div class="rounded-lg border bg-blue-50 p-4">
+                        <div class="text-2xl font-bold text-blue-800">{{ stats.tercihEdilen }}</div>
+                        <div class="text-sm text-blue-600">Tercih Edilen</div>
+                    </div>
+                </div>
+
+                <!-- Haftalık Takvim -->
+                <div class="space-y-4">
+                    <div v-for="gun in [1, 2, 3, 4, 5, 6, 7]" :key="gun" class="rounded-lg border bg-card">
+                        <div class="border-b bg-muted/50 px-4 py-3">
+                            <h3 class="font-semibold">{{ gunIsmi(gun) }}</h3>
+                        </div>
+                        <div class="p-4">
+                            <div v-if="zamanDilimleriByGun[gun] && zamanDilimleriByGun[gun].length > 0" class="space-y-3">
+                                <div
+                                    v-for="zamanDilimi in zamanDilimleriByGun[gun]"
+                                    :key="zamanDilimi.id"
+                                    class="rounded-lg border bg-muted/20 p-3"
+                                >
+                                    <div class="mb-2 font-medium text-sm">
+                                        {{ formatSaat(zamanDilimi.baslangic_saati) }} - {{ formatSaat(zamanDilimi.bitis_saati) }}
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button
+                                            v-for="tip in musaitlikTipleri"
+                                            :key="tip.value"
+                                            type="button"
+                                            @click="setMusaitlik(zamanDilimi.id, tip.value)"
+                                            :class="[
+                                                'flex-1 rounded-md px-3 py-2 text-xs font-medium text-white transition-all',
+                                                getActiveClass(zamanDilimi.id, tip.value)
+                                                    ? tip.color + ' ring-2 ring-offset-2 ring-primary'
+                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                            ]"
+                                        >
+                                            {{ tip.label }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="text-center text-sm text-muted-foreground py-4">
+                                Bu gün için zaman dilimi tanımlanmamış
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-end gap-3 border-t pt-6">
+                    <a
+                        :href="`/ogretmen-musaitlik/${ogretmen.id}`"
+                        class="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                    >
+                        İptal
+                    </a>
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <svg v-if="form.processing" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span v-else>Kaydet</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        <Link
-          href="/ogretmen-musaitlik"
-          class="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
-        >
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Geri Dön
-        </Link>
-      </div>
-
-      <!-- Form Card -->
-      <div class="max-w-2xl rounded-lg border bg-card p-6">
-        <form @submit.prevent="submit" class="space-y-6">
-          <!-- Öğretmen -->
-          <div class="space-y-2">
-            <label for="ogretmen_id" class="text-sm font-medium">
-              Öğretmen
-              <span class="text-destructive">*</span>
-            </label>
-            <select
-              id="ogretmen_id"
-              v-model.number="form.ogretmen_id"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              :class="{ 'border-destructive': form.errors.ogretmen_id }"
-            >
-              <option :value="null">Bir öğretmen seçiniz</option>
-              <option v-for="ogretmen in ogretmenler" :key="ogretmen.id" :value="ogretmen.id">
-                {{ ogretmen.unvan }} {{ ogretmen.isim }}
-              </option>
-            </select>
-            <p v-if="form.errors.ogretmen_id" class="text-sm text-destructive">
-              {{ form.errors.ogretmen_id }}
-            </p>
-          </div>
-
-          <!-- Zaman Dilimi -->
-          <div class="space-y-2">
-            <label for="zaman_dilimi_id" class="text-sm font-medium">
-              Zaman Dilimi
-              <span class="text-destructive">*</span>
-            </label>
-            <select
-              id="zaman_dilimi_id"
-              v-model.number="form.zaman_dilimi_id"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              :class="{ 'border-destructive': form.errors.zaman_dilimi_id }"
-            >
-              <option :value="null">Bir zaman dilimi seçiniz</option>
-              <option v-for="zaman in zaman_dilimleri" :key="zaman.id" :value="zaman.id">
-                {{ gunIsmi(zaman.haftanin_gunu) }} {{ formatSaat(zaman.baslangic_saati) }}-{{ formatSaat(zaman.bitis_saati) }}
-              </option>
-            </select>
-            <p v-if="form.errors.zaman_dilimi_id" class="text-sm text-destructive">
-              {{ form.errors.zaman_dilimi_id }}
-            </p>
-          </div>
-
-          <!-- Müsaitlik Tipi -->
-          <div class="space-y-2">
-            <label for="musaitlik_tipi" class="text-sm font-medium">
-              Müsaitlik Tipi
-              <span class="text-destructive">*</span>
-            </label>
-            <select
-              id="musaitlik_tipi"
-              v-model="form.musaitlik_tipi"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              :class="{ 'border-destructive': form.errors.musaitlik_tipi }"
-            >
-              <option value="">Bir müsaitlik tipi seçiniz</option>
-              <option value="musait">Müsait</option>
-              <option value="musait_degil">Müsait Değil</option>
-              <option value="tercih_edilen">Tercih Edilen</option>
-            </select>
-            <p v-if="form.errors.musaitlik_tipi" class="text-sm text-destructive">
-              {{ form.errors.musaitlik_tipi }}
-            </p>
-            <p class="text-xs text-muted-foreground">
-              Müsait: Öğretmen bu zaman diliminde ders verebilir. Müsait Değil: Öğretmen bu zaman diliminde ders veremez. Tercih Edilen: Öğretmen bu zaman dilimini tercih eder.
-            </p>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-3 pt-4">
-            <button
-              type="submit"
-              :disabled="form.processing"
-              class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg v-if="form.processing" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-              {{ form.processing ? 'Güncelleniyor...' : 'Müsaitliği Güncelle' }}
-            </button>
-            <Link
-              href="/ogretmen-musaitlik"
-              class="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
-            >
-              İptal
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
-  </AppLayout>
+    </AppLayout>
 </template>
