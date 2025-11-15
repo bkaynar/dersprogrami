@@ -102,12 +102,14 @@ Veritabanı, optimizasyon motorunun ihtiyaç duyacağı tüm verileri ve kuralla
 -   [x] 2. Detaylı Veritabanı Şeması Tasarımı (DBML).
 -   [x] 3. Laravel Migration Dosyalarının Oluşturulması.
 -   [x] 4. Eloquent Modellerinin Oluşturulması.
--   [x] **5. Model İlişkilerinin (Relationships) Tanımlanması.** (Şu anki adım)
--   [x] 6. Yönetim Paneli (CRUD Arayüzü) Kurulumu (Örn: FilamentPHP).
+-   [x] 5. Model İlişkilerinin (Relationships) Tanımlanması.
+-   [x] 6. Yönetim Paneli (CRUD Arayüzü) Kurulumu (Vue + Inertia.js ile tamamlandı).
 -   [x] 7. Temel Veri Girişi (Seeder veya manuel) ve Test Verilerinin Oluşturulması.
--   [ ] 8. Genetik Algoritma Kütüphanesi Seçimi ve Entegrasyonu.
--   [ ] **9. Uygunluk Fonksiyonu'nun (Fitness Function) Kodlanması.** (Projenin en önemli akademik kısmı)
--   [ ] 10. Algoritmayı Tetikleyecek Bir Servis Sınıfı ve Controller Yazılması.
--   [ ] 11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.
--   [ ] 12. (Gelecek Özellikler) Dinamik yeniden zamanlama, "What-If" senaryoları.
+-   [x] 8. Genetik Algoritma Kütüphanesi Seçimi ve Entegrasyonu (ryanhs/simple-genetic-algorithm).
+-   [x] **9. Uygunluk Fonksiyonu'nun (Fitness Function) Kodlanması.** (Sert ve yumuşak kısıtlar implement edildi)
+-   [x] 10. Algoritmayı Tetikleyecek Bir Servis Sınıfı ve Controller Yazılması (TimetableGeneticAlgorithm + ProgramOlusturController).
+-   [x] **11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.** (Şu anki adım - Tamamlandı!)
+-   [ ] 12. Fitness Fonksiyonu İyileştirmeleri (Compactness score, ders blokları optimizasyonu).
+-   [ ] 13. Performans İyileştirmeleri (Background job, cache, ilerleme göstergesi).
+-   [ ] 14. (Gelecek Özellikler) Dinamik yeniden zamanlama, "What-If" senaryoları, manuel düzenleme.
 
