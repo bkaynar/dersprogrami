@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85177d78c48d9bf6752017885025f3d5",
+    "content-hash": "8fd645906e8c2a7f7a0b248d8bdfb076",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3747,6 +3747,46 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.1"
             },
             "time": "2025-09-04T20:59:21+00:00"
+        },
+        {
+            "name": "ryanhs/simple-genetic-algorithm",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ryanhs/simple-genetic-algorithm.git",
+                "reference": "a58898ac538ae52713211f25f982b209986a084d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ryanhs/simple-genetic-algorithm/zipball/a58898ac538ae52713211f25f982b209986a084d",
+                "reference": "a58898ac538ae52713211f25f982b209986a084d",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleGeneticAlgorithm\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT License"
+            ],
+            "authors": [
+                {
+                    "name": "ryan hs",
+                    "email": "mr.ryansilalahi@gmail.com"
+                }
+            ],
+            "description": "simple genetic algorithm in PHP",
+            "support": {
+                "issues": "https://github.com/ryanhs/simple-genetic-algorithm/issues",
+                "source": "https://github.com/ryanhs/simple-genetic-algorithm/tree/master"
+            },
+            "time": "2015-01-08T09:01:37+00:00"
         },
         {
             "name": "symfony/clock",

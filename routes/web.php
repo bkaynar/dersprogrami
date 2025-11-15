@@ -9,6 +9,7 @@ use App\Http\Controllers\OgrenciGrubuController;
 use App\Http\Controllers\OgretmenController;
 use App\Http\Controllers\OgretmenDersController;
 use App\Http\Controllers\OgretmenMusaitlikController;
+use App\Http\Controllers\ProgramOlusturController;
 use App\Http\Controllers\ZamanDilimController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -73,6 +74,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Grup Kisitlamalari resource routes
     Route::resource('grup-kisitlamalari', GrupKisitlamaController::class)->parameters(['grup-kisitlamalari' => 'grupKisitlama']);
+
+    // Program Olustur routes
+    Route::get('program-olustur', [ProgramOlusturController::class, 'index'])->name('program-olustur.index');
+    Route::post('program-olustur/generate', [ProgramOlusturController::class, 'generate'])->name('program-olustur.generate');
+    Route::get('program-olustur/show', [ProgramOlusturController::class, 'show'])->name('program-olustur.show');
+    Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
 });
 
 

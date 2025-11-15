@@ -103,11 +103,11 @@ Veritabanı, optimizasyon motorunun ihtiyaç duyacağı tüm verileri ve kuralla
 -   [x] 3. Laravel Migration Dosyalarının Oluşturulması.
 -   [x] 4. Eloquent Modellerinin Oluşturulması.
 -   [x] **5. Model İlişkilerinin (Relationships) Tanımlanması.** (Şu anki adım)
--   [ ] 6. Yönetim Paneli (CRUD Arayüzü) Kurulumu (Örn: FilamentPHP).
--   [ ] 7. Temel Veri Girişi (Seeder veya manuel) ve Test Verilerinin Oluşturulması.
+-   [x] 6. Yönetim Paneli (CRUD Arayüzü) Kurulumu (Örn: FilamentPHP).
+-   [x] 7. Temel Veri Girişi (Seeder veya manuel) ve Test Verilerinin Oluşturulması.
 -   [ ] 8. Genetik Algoritma Kütüphanesi Seçimi ve Entegrasyonu.
 -   [ ] **9. Uygunluk Fonksiyonu'nun (Fitness Function) Kodlanması.** (Projenin en önemli akademik kısmı)
 -   [ ] 10. Algoritmayı Tetikleyecek Bir Servis Sınıfı ve Controller Yazılması.
--   [ ] 11. Sonuç Programının Arayüzde (Blade) Gösterilmesi.
+-   [ ] 11. Sonuç Programının Arayüzde (Vue) Gösterilmesi.
 -   [ ] 12. (Gelecek Özellikler) Dinamik yeniden zamanlama, "What-If" senaryoları.
 
