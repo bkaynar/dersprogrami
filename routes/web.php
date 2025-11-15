@@ -80,6 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('program-olustur/generate', [ProgramOlusturController::class, 'generate'])->name('program-olustur.generate');
     Route::get('program-olustur/status', [ProgramOlusturController::class, 'status'])->name('program-olustur.status');
     Route::get('program-olustur/show', [ProgramOlusturController::class, 'show'])->name('program-olustur.show');
+    Route::get('program-olustur/export/excel', [ProgramOlusturController::class, 'exportExcel'])->name('program-olustur.export.excel');
+    Route::get('program-olustur/export/pdf', [ProgramOlusturController::class, 'exportPdf'])->name('program-olustur.export.pdf');
     Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
 });
 
