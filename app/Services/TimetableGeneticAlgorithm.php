@@ -660,20 +660,48 @@ class TimetableGeneticAlgorithm
      */
     public function saveSchedule(array $schedule): void
     {
-        DB::transaction(function () use ($schedule) {
-            // Mevcut programları temizle
-            OlusturulanProgram::truncate();
+        // Çakışmaları önlemek için benzersiz kayıtları filtrele
+        $savedRecords = [];
+        $savedCount = 0;
+        $skippedCount = 0;
 
-            // Yeni programı kaydet
+        DB::transaction(function () use ($schedule, &$savedRecords, &$savedCount, &$skippedCount) {
+            // Mevcut programları temizle (truncate yerine delete kullan - transaction safe)
+            OlusturulanProgram::query()->delete();
+
             foreach ($schedule as $slot) {
+                // Benzersizlik anahtarları oluştur
+                $ogretmenKey = 'ogretmen-' . $slot['ogretmen_id'] . '-' . $slot['zaman_dilim_id'];
+                $grupKey = 'grup-' . $slot['grup_id'] . '-' . $slot['zaman_dilim_id'];
+                $mekanKey = 'mekan-' . $slot['mekan_id'] . '-' . $slot['zaman_dilim_id'];
+
+                // Eğer aynı öğretmen, grup veya mekan aynı zamanda başka bir yerde atanmışsa, atla
+                if (isset($savedRecords[$ogretmenKey]) ||
+                    isset($savedRecords[$grupKey]) ||
+                    isset($savedRecords[$mekanKey])) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                // Kaydet
                 OlusturulanProgram::create([
+                    'akademik_donem' => '2024-2025 Güz',
                     'ogrenci_grup_id' => $slot['grup_id'],
                     'ders_id' => $slot['ders_id'],
                     'ogretmen_id' => $slot['ogretmen_id'],
-                    'zaman_dilim_id' => $slot['zaman_dilim_id'],
+                    'zaman_dilimi_id' => $slot['zaman_dilim_id'],
                     'mekan_id' => $slot['mekan_id'],
                 ]);
+
+                // Kaydedilenleri işaretle
+                $savedRecords[$ogretmenKey] = true;
+                $savedRecords[$grupKey] = true;
+                $savedRecords[$mekanKey] = true;
+                $savedCount++;
             }
         });
+
+        // İstatistikleri logla (transaction dışında)
+        \Log::info("Program kaydedildi: {$savedCount} ders, {$skippedCount} çakışma atlandı");
     }
 }
