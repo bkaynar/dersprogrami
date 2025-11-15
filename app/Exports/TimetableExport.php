@@ -39,7 +39,10 @@ class TimetablePerGroupSheet implements FromCollection, WithHeadings, WithStyles
     public function __construct(OgrenciGrubu $grup)
     {
         $this->grup = $grup;
-        $this->zamanDilimleri = ZamanDilim::orderBy('gun_sirasi')->orderBy('baslangic_saat')->get();
+        $this->zamanDilimleri = ZamanDilim::all()->sortBy([
+            ['gun_sirasi', 'asc'],
+            ['baslangic_saat', 'asc']
+        ])->values();
     }
 
     public function title(): string

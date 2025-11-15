@@ -20,6 +20,44 @@ class ZamanDilim extends Model
         'bitis_saati',
     ];
 
+    protected $appends = [
+        'gun',
+        'gun_sirasi',
+        'baslangic_saat',
+        'bitis_saat',
+    ];
+
+    // Accessor'lar - eski kod ile uyumluluk için
+    public function getGunAttribute(): string
+    {
+        return $this->haftanin_gunu;
+    }
+
+    public function getGunSirasiAttribute(): int
+    {
+        $gunler = [
+            'pazartesi' => 0,
+            'sali' => 1,
+            'carsamba' => 2,
+            'persembe' => 3,
+            'cuma' => 4,
+            'cumartesi' => 5,
+            'pazar' => 6,
+        ];
+
+        return $gunler[strtolower($this->haftanin_gunu)] ?? 0;
+    }
+
+    public function getBaslangicSaatAttribute(): string
+    {
+        return $this->baslangic_saati;
+    }
+
+    public function getBitisSaatAttribute(): string
+    {
+        return $this->bitis_saati;
+    }
+
     public function grupKisitlamalari(): HasMany
     {
         return $this->hasMany(GrupKisitlama::class, 'zaman_dilimi_id');

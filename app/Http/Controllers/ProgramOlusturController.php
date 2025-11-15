@@ -101,7 +101,10 @@ class ProgramOlusturController extends Controller
         }
 
         // Zaman dilimlerini ve grupları al
-        $zamanDilimleri = ZamanDilim::orderBy('gun_sirasi')->orderBy('baslangic_saat')->get();
+        $zamanDilimleri = ZamanDilim::all()->sortBy([
+            ['gun_sirasi', 'asc'],
+            ['baslangic_saat', 'asc']
+        ])->values();
         $gruplar = OgrenciGrubu::all();
 
         // Programı tablo formatına dönüştür
@@ -163,7 +166,10 @@ class ProgramOlusturController extends Controller
             'mekan'
         ])->get();
 
-        $zamanDilimleri = ZamanDilim::orderBy('gun_sirasi')->orderBy('baslangic_saat')->get();
+        $zamanDilimleri = ZamanDilim::all()->sortBy([
+            ['gun_sirasi', 'asc'],
+            ['baslangic_saat', 'asc']
+        ])->values();
         $gruplar = OgrenciGrubu::all();
 
         // Programı tablo formatına dönüştür

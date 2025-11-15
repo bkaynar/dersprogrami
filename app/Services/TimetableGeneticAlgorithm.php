@@ -48,7 +48,10 @@ class TimetableGeneticAlgorithm
      */
     protected function loadData(): void
     {
-        $this->zamanDilimleri = ZamanDilim::orderBy('gun_sirasi')->orderBy('baslangic_saat')->get();
+        $this->zamanDilimleri = ZamanDilim::all()->sortBy([
+            ['gun_sirasi', 'asc'],
+            ['baslangic_saat', 'asc']
+        ])->values();
         $this->mekanlar = Mekan::all();
         $this->ogretmenler = Ogretmen::all();
         $this->ogrenciGruplari = OgrenciGrubu::all();
