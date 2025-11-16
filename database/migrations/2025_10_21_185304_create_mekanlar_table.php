@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mekanlar', function (Blueprint $table) {
-           $table->id();
-        $table->string('isim', 100);
-        $table->integer('kapasite');
-        $table->enum('mekan_tipi', ['derslik', 'laboratuvar', 'konferans_salonu']);
-        $table->timestamps();
+            $table->id();
+            $table->string('isim', 100);
+            $table->integer('kapasite');
+            $table->enum('mekan_tipi', ['Derslik', 'Amfi', 'Laboratuvar', 'Salon', 'Atölye']);
+            $table->timestamps();
         });
     }
 

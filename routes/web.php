@@ -27,11 +27,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    // Dersler - Excel import/export routes (önce tanımla)
+    Route::get('dersler/template/download', [DersController::class, 'downloadTemplate'])->name('dersler.template.download');
+    Route::post('dersler/import', [DersController::class, 'import'])->name('dersler.import');
+
     // Dersler resource routes
     Route::resource('dersler', DersController::class)->parameters(['dersler' => 'ders']);
 
+    // Ogretmenler - Excel import/export routes (önce tanımla)
+    Route::get('ogretmenler/template/download', [OgretmenController::class, 'downloadTemplate'])->name('ogretmenler.template.download');
+    Route::post('ogretmenler/import', [OgretmenController::class, 'import'])->name('ogretmenler.import');
+
     // Ogretmenler resource routes
     Route::resource('ogretmenler', OgretmenController::class)->parameters(['ogretmenler' => 'ogretmen']);
+
+    // Mekanlar - Excel import/export routes (önce tanımla)
+    Route::get('mekanlar/template/download', [MekanController::class, 'downloadTemplate'])->name('mekanlar.template.download');
+    Route::post('mekanlar/import', [MekanController::class, 'import'])->name('mekanlar.import');
 
     // Mekanlar resource routes
     Route::resource('mekanlar', MekanController::class)->parameters(['mekanlar' => 'mekan']);

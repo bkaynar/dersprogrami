@@ -2,7 +2,10 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-vue-next';
 
 interface Mekan {
     id: number;
@@ -15,6 +18,22 @@ defineProps<{
     mekanlar: Mekan[];
 }>();
 
+// Flash messages
+const page = usePage<any>();
+const flashSuccess = computed(() => page.props.flash?.success || page.props.success);
+const flashError = computed(() => page.props.flash?.error || page.props.error);
+const flashWarning = computed(() => page.props.flash?.warning || page.props.warning);
+const flashErrors = computed(() => page.props.flash?.errors || page.props.errors);
+
+// Validation errors from Inertia
+const validationErrors = computed(() => {
+    const errors = page.props.errors;
+    if (errors && typeof errors === 'object' && !Array.isArray(errors)) {
+        return Object.values(errors).flat() as string[];
+    }
+    return [];
+});
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Anasayfa',
@@ -25,6 +44,48 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/mekanlar',
     },
 ];
+
+// Import form
+const fileInput = ref<HTMLInputElement | null>(null);
+const importForm = useForm({
+    file: null as File | null,
+});
+
+const downloadTemplate = () => {
+    window.location.href = '/mekanlar/template/download';
+};
+
+const selectFile = () => {
+    fileInput.value?.click();
+};
+
+const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        importForm.file = target.files[0];
+        uploadFile();
+    }
+};
+
+const uploadFile = () => {
+    if (!importForm.file) return;
+
+    importForm.post('/mekanlar/import', {
+        forceFormData: true,
+        onSuccess: () => {
+            importForm.reset();
+            if (fileInput.value) {
+                fileInput.value.value = '';
+            }
+        },
+        onError: () => {
+            importForm.reset();
+            if (fileInput.value) {
+                fileInput.value.value = '';
+            }
+        },
+    });
+};
 </script>
 
 <template>
@@ -32,6 +93,42 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-6">
+            <!-- Flash Messages -->
+            <div v-if="flashSuccess || flashError || flashWarning || validationErrors.length > 0" class="mb-6 space-y-4">
+                <Alert v-if="flashSuccess" variant="default" class="border-green-200 bg-green-50 text-green-800">
+                    <CheckCircle2 class="size-4" />
+                    <AlertTitle>Başarılı!</AlertTitle>
+                    <AlertDescription>{{ flashSuccess }}</AlertDescription>
+                </Alert>
+
+                <Alert v-if="flashError" variant="destructive">
+                    <AlertCircle class="size-4" />
+                    <AlertTitle>Hata!</AlertTitle>
+                    <AlertDescription>{{ flashError }}</AlertDescription>
+                </Alert>
+
+                <Alert v-if="flashWarning" variant="default" class="border-yellow-200 bg-yellow-50 text-yellow-800">
+                    <AlertTriangle class="size-4" />
+                    <AlertTitle>Uyarı!</AlertTitle>
+                    <AlertDescription>
+                        {{ flashWarning }}
+                        <ul v-if="flashErrors && flashErrors.length > 0" class="mt-2 list-inside list-disc text-sm">
+                            <li v-for="(error, index) in flashErrors" :key="index">{{ error }}</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+
+                <Alert v-if="validationErrors.length > 0" variant="destructive">
+                    <AlertCircle class="size-4" />
+                    <AlertTitle>Doğrulama Hataları</AlertTitle>
+                    <AlertDescription>
+                        <ul class="mt-2 list-inside list-disc text-sm">
+                            <li v-for="(error, index) in validationErrors" :key="index">{{ error }}</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            </div>
+
             <!-- Header -->
             <div class="mb-6 flex items-center justify-between">
                 <div>
@@ -40,15 +137,49 @@ const breadcrumbs: BreadcrumbItem[] = [
                         Tüm mekanları görüntüleyin ve yönetin
                     </p>
                 </div>
-                <Link
-                    href="/mekanlar/create"
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Yeni Mekan Ekle
-                </Link>
+                <div class="flex items-center gap-2">
+                    <!-- Excel İşlemleri -->
+                    <button
+                        @click="downloadTemplate"
+                        class="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                        title="Excel şablonunu indir"
+                    >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Şablon İndir
+                    </button>
+                    <button
+                        @click="selectFile"
+                        :disabled="importForm.processing"
+                        class="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
+                        title="Excel dosyası yükle"
+                    >
+                        <svg v-if="importForm.processing" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        {{ importForm.processing ? 'Yükleniyor...' : 'Excel Yükle' }}
+                    </button>
+                    <input
+                        ref="fileInput"
+                        type="file"
+                        accept=".xlsx,.xls"
+                        class="hidden"
+                        @change="handleFileChange"
+                    />
+                    <Link
+                        href="/mekanlar/create"
+                        class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Yeni Mekan Ekle
+                    </Link>
+                </div>
             </div>
 
             <!-- Table -->

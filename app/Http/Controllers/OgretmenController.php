@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ogretmen;
+use App\Exports\OgretmenlerTemplateExport;
+use App\Imports\OgretmenlerImport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OgretmenController extends Controller
 {
@@ -67,5 +70,59 @@ class OgretmenController extends Controller
         $ogretmen->delete();
 
         return redirect()->route('ogretmenler.index')->with('success', 'Öğretmen silindi.');
+    }
+
+    /**
+     * Excel şablonunu indir
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(new OgretmenlerTemplateExport, 'ogretmenler-sablonu.xlsx');
+    }
+
+    /**
+     * Excel'den toplu veri yükle
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+        ]);
+
+        try {
+            $import = new OgretmenlerImport();
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+            $failures = $import->getFailures();
+            $errors = $import->getErrors();
+
+            // Hata varsa detayları göster
+            if (count($failures) > 0 || count($errors) > 0) {
+                $errorMessages = [];
+
+                foreach ($failures as $failure) {
+                    $errorMessages[] = "Satır {$failure['row']}: " . implode(', ', $failure['errors']);
+                }
+
+                foreach ($errors as $error) {
+                    $errorMessages[] = $error;
+                }
+
+                return redirect()
+                    ->route('ogretmenler.index')
+                    ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
+                    ->with('errors', $errorMessages);
+            }
+
+            return redirect()
+                ->route('ogretmenler.index')
+                ->with('success', "Excel başarıyla yüklendi! Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}");
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('ogretmenler.index')
+                ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
+        }
     }
 }
