@@ -58,6 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Zaman Dilimleri resource routes
     Route::resource('zaman-dilimleri', ZamanDilimController::class)->parameters(['zaman-dilimleri' => 'zamanDilimi']);
 
+    // Zaman Dilimleri - Excel import/export routes
+    Route::get('zaman-dilimleri/template/download', [ZamanDilimController::class, 'downloadTemplate'])->name('zaman-dilimleri.template.download');
+    Route::post('zaman-dilimleri/import', [ZamanDilimController::class, 'import'])->name('zaman-dilimleri.import');
+
     // Ders Mekan Gereksinimleri resource routes
     Route::resource('ders-mekan-gereksinimleri', DersMekanGeresinimController::class)->parameters(['ders-mekan-gereksinimleri' => 'dersMekanGereksinimi']);
 
