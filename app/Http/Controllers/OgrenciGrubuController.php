@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\OgrenciGrubu;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Imports\OgrenciGruplariImport;
+use App\Exports\OgrenciGruplariTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OgrenciGrubuController extends Controller
 {
@@ -88,5 +91,52 @@ class OgrenciGrubuController extends Controller
         $ogrenciGrubu->delete();
 
         return redirect()->route('ogrenci-gruplari.index')->with('success', 'Öğrenci grubu silindi.');
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new OgrenciGruplariTemplateExport, 'ogrenci-gruplari-sablonu.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+        ]);
+
+        try {
+            $import = new OgrenciGruplariImport();
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+            $failures = $import->getFailures();
+            $errors = $import->getErrors();
+
+            if (count($failures) > 0 || count($errors) > 0) {
+                $errorMessages = [];
+
+                foreach ($failures as $failure) {
+                    $errorMessages[] = "Satır {$failure['row']}: " . implode(', ', $failure['errors']);
+                }
+
+                foreach ($errors as $error) {
+                    $errorMessages[] = $error;
+                }
+
+                return redirect()
+                    ->route('ogrenci-gruplari.index')
+                    ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
+                    ->with('errors', $errorMessages);
+            }
+
+            return redirect()
+                ->route('ogrenci-gruplari.index')
+                ->with('success', "Excel başarıyla yüklendi! Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}");
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('ogrenci-gruplari.index')
+                ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
+        }
     }
 }

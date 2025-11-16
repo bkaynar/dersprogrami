@@ -45,6 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('mekanlar/template/download', [MekanController::class, 'downloadTemplate'])->name('mekanlar.template.download');
     Route::post('mekanlar/import', [MekanController::class, 'import'])->name('mekanlar.import');
 
+    // Ogrenci Gruplari - Excel import/export routes (önce tanımla)
+    Route::get('ogrenci-gruplari/template/download', [OgrenciGrubuController::class, 'downloadTemplate'])->name('ogrenci-gruplari.template.download');
+    Route::post('ogrenci-gruplari/import', [OgrenciGrubuController::class, 'import'])->name('ogrenci-gruplari.import');
+
     // Mekanlar resource routes
     Route::resource('mekanlar', MekanController::class)->parameters(['mekanlar' => 'mekan']);
 
