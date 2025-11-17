@@ -107,7 +107,7 @@ class ZamanDilimController extends Controller
                 return redirect()
                     ->route('zaman-dilimleri.index')
                     ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
-                    ->with('errors', $errorMessages);
+                    ->with('import_errors', $errorMessages);
             }
 
             return redirect()

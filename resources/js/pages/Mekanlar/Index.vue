@@ -24,6 +24,7 @@ const flashSuccess = computed(() => page.props.flash?.success || page.props.succ
 const flashError = computed(() => page.props.flash?.error || page.props.error);
 const flashWarning = computed(() => page.props.flash?.warning || page.props.warning);
 const flashErrors = computed(() => page.props.flash?.errors || page.props.errors);
+const flashImportErrors = computed(() => page.props.flash?.import_errors || page.props.import_errors);
 
 // Validation errors from Inertia
 const validationErrors = computed(() => {
@@ -70,7 +71,7 @@ const handleFileChange = (event: Event) => {
 const uploadFile = () => {
     if (!importForm.file) return;
 
-    importForm.post('/mekanlar/import', {
+    importForm.post('/mekanlar/import/preview', {
         forceFormData: true,
         onSuccess: () => {
             importForm.reset();
@@ -112,8 +113,8 @@ const uploadFile = () => {
                     <AlertTitle>Uyarı!</AlertTitle>
                     <AlertDescription>
                         {{ flashWarning }}
-                        <ul v-if="flashErrors && flashErrors.length > 0" class="mt-2 list-inside list-disc text-sm">
-                            <li v-for="(error, index) in flashErrors" :key="index">{{ error }}</li>
+                        <ul v-if="(flashErrors && flashErrors.length > 0) || (flashImportErrors && flashImportErrors.length > 0)" class="mt-2 list-inside list-disc text-sm">
+                            <li v-for="(error, index) in [...(flashErrors || []), ...(flashImportErrors || [])]" :key="index">{{ error }}</li>
                         </ul>
                     </AlertDescription>
                 </Alert>

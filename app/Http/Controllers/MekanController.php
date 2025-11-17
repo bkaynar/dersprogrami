@@ -8,6 +8,7 @@ use App\Imports\MekanlarImport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class MekanController extends Controller
 {
@@ -128,7 +129,7 @@ class MekanController extends Controller
                 return redirect()
                     ->route('mekanlar.index')
                     ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
-                    ->with('errors', $errorMessages);
+                        ->with('import_errors', $errorMessages);
             }
 
             return redirect()
@@ -145,5 +146,95 @@ class MekanController extends Controller
                 ->route('mekanlar.index')
                 ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Preview uploaded Excel rows and allow user to select which rows to import.
+     */
+    public function importPreview(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:20480',
+        ]);
+
+        $file = $request->file('file');
+
+        // store the file so user can confirm later without reupload
+        $path = $file->store('imports');
+
+        // Read excel to array (first sheet)
+        $arrays = Excel::toArray(null, Storage::path($path));
+        $rows = $arrays[0] ?? [];
+
+        // If we have heading row, normalize keys to lowercase with underscores
+        $previewRows = [];
+        foreach ($rows as $index => $row) {
+            // if row empty continue
+            if (empty(array_filter($row))) continue;
+            $previewRows[] = array_map(function ($v) {
+                return is_null($v) ? '' : (string) $v;
+            }, $row);
+            if (count($previewRows) >= 200) break; // limit preview
+        }
+
+        return Inertia::render('Mekanlar/ImportPreview', [
+            'rows' => $previewRows,
+            'file' => $path,
+        ]);
+    }
+
+    /**
+     * Import only selected rows provided by preview.
+     */
+    public function importSelected(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|string',
+            'selected' => 'required|array|min:1',
+        ]);
+
+        $path = $request->input('file');
+        $selected = $request->input('selected');
+
+        // load file
+        $arrays = Excel::toArray(null, Storage::path($path));
+        $rows = $arrays[0] ?? [];
+
+        $imported = 0;
+        $updated = 0;
+        $errors = [];
+
+        foreach ($selected as $rowIndex) {
+            if (! isset($rows[$rowIndex])) continue;
+            $row = $rows[$rowIndex];
+
+            try {
+                // Expecting columns: isim, kapasite, mekan_tipi or index positions
+                $isim = $row[0] ?? null;
+                $kapasite = isset($row[1]) && is_numeric($row[1]) ? (int) $row[1] : 0;
+                $mekan_tipi = $row[2] ?? null;
+
+                if (!$isim) {
+                    $errors[] = "Satır #".($rowIndex+1) . ": isim boş";
+                    continue;
+                }
+
+                $mekan = Mekan::updateOrCreate([
+                    'isim' => $isim,
+                ],[
+                    'kapasite' => $kapasite,
+                    'mekan_tipi' => $mekan_tipi,
+                ]);
+
+                if ($mekan->wasRecentlyCreated) $imported++; else $updated++;
+            } catch (\Throwable $e) {
+                $errors[] = "Satır #".($rowIndex+1) . ": " . $e->getMessage();
+            }
+        }
+
+        // redirect back with stats
+        return redirect()->route('mekanlar.index')
+            ->with('success', "Seçilen satırlar içe aktarıldı. Eklenen: {$imported}, Güncellenen: {$updated}")
+            ->with('import_errors', $errors);
     }
 }

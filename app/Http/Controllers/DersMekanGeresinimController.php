@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Ders;
 use App\Models\DersMekanGereksinimi;
+use App\Imports\DersMekanGereksinimleriImport;
+use App\Exports\DersMekanGereksinimleriTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -81,5 +84,55 @@ class DersMekanGeresinimController extends Controller
 
         return redirect()->route('ders-mekan-gereksinimleri.index')
             ->with('success', 'Mekan gereksinimi silindi.');
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new DersMekanGereksinimleriTemplateExport, 'ders-mekan-gereksinimleri-sablonu.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'create_missing' => 'nullable|boolean',
+        ]);
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+        ]);
+
+        try {
+            $import = new DersMekanGereksinimleriImport($request->boolean('create_missing'));
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+            $failures = $import->getFailures();
+            $errors = $import->getErrors();
+
+            if (count($failures) > 0 || count($errors) > 0) {
+                $errorMessages = [];
+
+                foreach ($failures as $failure) {
+                    $errorMessages[] = "Satır {$failure['row']}: " . implode(', ', $failure['errors']);
+                }
+
+                foreach ($errors as $error) {
+                    $errorMessages[] = $error;
+                }
+
+                return redirect()
+                    ->route('ders-mekan-gereksinimleri.index')
+                    ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
+                    ->with('import_errors', $errorMessages);
+            }
+
+            return redirect()
+                ->route('ders-mekan-gereksinimleri.index')
+                ->with('success', "Excel başarıyla yüklendi! Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}");
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('ders-mekan-gereksinimleri.index')
+                ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
+        }
     }
 }

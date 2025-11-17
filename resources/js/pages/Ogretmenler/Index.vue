@@ -37,6 +37,12 @@ const downloadTemplate = () => {
     window.location.href = '/ogretmenler/template/download';
 };
 
+const page = usePage<any>();
+const flashSuccess = computed(() => page.props.flash?.success || page.props.success);
+const flashError = computed(() => page.props.flash?.error || page.props.error);
+const flashWarning = computed(() => page.props.flash?.warning || page.props.warning);
+const flashImportErrors = computed(() => page.props.flash?.import_errors || page.props.import_errors);
+
 const selectFile = () => {
     fileInput.value?.click();
 };
@@ -73,6 +79,27 @@ const uploadFile = () => {
     <Head title="Öğretmenler" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="p-6">
+            <!-- Flash Messages -->
+            <div v-if="flashSuccess || flashError || flashWarning" class="mb-6 space-y-4">
+                <div v-if="flashSuccess" class="border-green-200 bg-green-50 text-green-800 rounded-lg p-4">
+                    <strong>Başarılı!</strong>
+                    <p class="mt-1 text-sm">{{ flashSuccess }}</p>
+                </div>
+
+                <div v-if="flashError" class="border-red-200 bg-red-50 text-red-800 rounded-lg p-4">
+                    <strong>Hata!</strong>
+                    <p class="mt-1 text-sm">{{ flashError }}</p>
+                </div>
+
+                <div v-if="flashWarning" class="border-yellow-200 bg-yellow-50 text-yellow-800 rounded-lg p-4">
+                    <strong>Uyarı!</strong>
+                    <p class="mt-1 text-sm">{{ flashWarning }}</p>
+                    <ul v-if="flashImportErrors && flashImportErrors.length > 0" class="mt-2 list-inside list-disc text-sm">
+                        <li v-for="(error, index) in flashImportErrors" :key="index">{{ error }}</li>
+                    </ul>
+                </div>
+            </div>
         <div class="p-6">
             <!-- Header -->
             <div class="mb-6 flex items-center justify-between">

@@ -112,7 +112,7 @@ class OgretmenController extends Controller
                 return redirect()
                     ->route('ogretmenler.index')
                     ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}, Hata: " . count($errorMessages))
-                    ->with('errors', $errorMessages);
+                    ->with('import_errors', $errorMessages);
             }
 
             return redirect()

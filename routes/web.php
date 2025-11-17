@@ -44,6 +44,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Mekanlar - Excel import/export routes (önce tanımla)
     Route::get('mekanlar/template/download', [MekanController::class, 'downloadTemplate'])->name('mekanlar.template.download');
     Route::post('mekanlar/import', [MekanController::class, 'import'])->name('mekanlar.import');
+    Route::post('mekanlar/import/preview', [MekanController::class, 'importPreview'])->name('mekanlar.import.preview');
+    Route::post('mekanlar/import/selected', [MekanController::class, 'importSelected'])->name('mekanlar.import.selected');
 
     // Ogrenci Gruplari - Excel import/export routes (önce tanımla)
     Route::get('ogrenci-gruplari/template/download', [OgrenciGrubuController::class, 'downloadTemplate'])->name('ogrenci-gruplari.template.download');
@@ -64,6 +66,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Ders Mekan Gereksinimleri resource routes
     Route::resource('ders-mekan-gereksinimleri', DersMekanGeresinimController::class)->parameters(['ders-mekan-gereksinimleri' => 'dersMekanGereksinimi']);
+
+    // Ders Mekan Gereksinimleri - Excel import/export routes
+    Route::get('ders-mekan-gereksinimleri/template/download', [DersMekanGeresinimController::class, 'downloadTemplate'])->name('ders-mekan-gereksinimleri.template.download');
+    Route::post('ders-mekan-gereksinimleri/import', [DersMekanGeresinimController::class, 'import'])->name('ders-mekan-gereksinimleri.import');
 
     // Grup Dersleri routes (grup bazlı)
     Route::get('grup-dersleri', [GrupDersController::class, 'index'])->name('grup-dersleri.index');
