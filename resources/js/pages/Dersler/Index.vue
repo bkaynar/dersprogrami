@@ -2,8 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 interface Ders {
     id: number;
