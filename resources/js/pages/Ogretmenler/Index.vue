@@ -2,8 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 interface Ogretmen {
     id: number;
@@ -100,6 +100,7 @@ const uploadFile = () => {
                     </ul>
                 </div>
             </div>
+        </div>
         <div class="p-6">
             <!-- Header -->
             <div class="mb-6 flex items-center justify-between">
