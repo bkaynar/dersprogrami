@@ -64,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('zaman-dilimleri/template/download', [ZamanDilimController::class, 'downloadTemplate'])->name('zaman-dilimleri.template.download');
     Route::post('zaman-dilimleri/import', [ZamanDilimController::class, 'import'])->name('zaman-dilimleri.import');
 
+    // Zaman Dilimleri - Otomatik oluşturma
+    Route::post('zaman-dilimleri/generate', [ZamanDilimController::class, 'generate'])->name('zaman-dilimleri.generate');
+
     // Ders Mekan Gereksinimleri resource routes
     Route::resource('ders-mekan-gereksinimleri', DersMekanGeresinimController::class)->parameters(['ders-mekan-gereksinimleri' => 'dersMekanGereksinimi']);
 

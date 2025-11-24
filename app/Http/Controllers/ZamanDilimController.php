@@ -120,4 +120,98 @@ class ZamanDilimController extends Controller
                 ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Otomatik zaman dilimi oluşturma
+     */
+    public function generate(Request $request)
+    {
+        $data = $request->validate([
+            'baslangic_saati' => 'required|date_format:H:i',
+            'bitis_saati' => 'required|date_format:H:i|after:baslangic_saati',
+            'ders_suresi' => 'required|integer|min:30|max:120',
+            'teneffus_suresi' => 'required|integer|min:0|max:30',
+            'ogle_arasi_baslangic' => 'required|date_format:H:i',
+            'ogle_arasi_bitis' => 'required|date_format:H:i|after:ogle_arasi_baslangic',
+            'pazartesi' => 'boolean',
+            'sali' => 'boolean',
+            'carsamba' => 'boolean',
+            'persembe' => 'boolean',
+            'cuma' => 'boolean',
+            'cumartesi' => 'boolean',
+            'pazar' => 'boolean',
+        ]);
+
+        // Seçilen günleri topla
+        $gunler = [];
+        $gunIsimleri = ['pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi', 'pazar'];
+        foreach ($gunIsimleri as $gun) {
+            if (!empty($data[$gun])) {
+                $gunler[] = $gun;
+            }
+        }
+
+        if (empty($gunler)) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'En az bir gün seçmelisiniz.']);
+        }
+
+        // Zaman aralıklarını hesapla
+        $baslangic = strtotime($data['baslangic_saati']);
+        $bitis = strtotime($data['bitis_saati']);
+        $ogleBaslangic = strtotime($data['ogle_arasi_baslangic']);
+        $ogleBitis = strtotime($data['ogle_arasi_bitis']);
+        $dersSuresi = $data['ders_suresi'] * 60; // dakikayı saniyeye çevir
+        $teneffusSuresi = $data['teneffus_suresi'] * 60;
+
+        $createdCount = 0;
+        $updatedCount = 0;
+
+        try {
+            foreach ($gunler as $gun) {
+                $current = $baslangic;
+
+                while ($current + $dersSuresi <= $bitis) {
+                    $slotBaslangic = date('H:i', $current);
+                    $slotBitis = date('H:i', $current + $dersSuresi);
+
+                    // Öğle arası kontrolü - bu zaman dilimi öğle arasına denk geliyorsa atla
+                    if ($current >= $ogleBaslangic && $current < $ogleBitis) {
+                        $current = $ogleBitis;
+                        continue;
+                    }
+
+                    // Zaman dilimini oluştur veya güncelle
+                    $zamanDilimi = ZamanDilim::updateOrCreate(
+                        [
+                            'haftanin_gunu' => $gun,
+                            'baslangic_saati' => $slotBaslangic,
+                        ],
+                        [
+                            'bitis_saati' => $slotBitis,
+                        ]
+                    );
+
+                    if ($zamanDilimi->wasRecentlyCreated) {
+                        $createdCount++;
+                    } else {
+                        $updatedCount++;
+                    }
+
+                    $current += $dersSuresi + $teneffusSuresi;
+                }
+            }
+
+            return redirect()
+                ->route('zaman-dilimleri.index')
+                ->with('success', "Zaman dilimleri başarıyla oluşturuldu! Eklenen: {$createdCount}, Güncellenen: {$updatedCount}");
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Zaman dilimleri oluşturulurken hata oluştu: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
 }
