@@ -66,8 +66,8 @@ class OgretmenMusaitlikController extends Controller
         // Öğretmeni bul
         $ogretmen = Ogretmen::findOrFail($ogretmenId);
 
-        // Gün isimlerini numaraya çevir
-        $gunMap = [
+        // Gün sıralaması için map
+        $gunSirasi = [
             'pazartesi' => 1,
             'sali' => 2,
             'carsamba' => 3,
@@ -77,14 +77,15 @@ class OgretmenMusaitlikController extends Controller
             'pazar' => 7,
         ];
 
-        // Tüm zaman dilimlerini getir ve gün numarasını ekle
-        $zamanDilimleri = ZamanDilim::all()->map(function ($zd) use ($gunMap) {
-            $zd->haftanin_gunu = $gunMap[$zd->haftanin_gunu] ?? 1;
-            return $zd;
-        })->sortBy([
-            ['haftanin_gunu', 'asc'],
-            ['baslangic_saati', 'asc'],
-        ])->values();
+        // Tüm zaman dilimlerini getir (string olarak bırak, sadece sırala)
+        $zamanDilimleri = ZamanDilim::all()
+            ->sortBy(function ($zd) use ($gunSirasi) {
+                return [
+                    $gunSirasi[$zd->haftanin_gunu] ?? 999,
+                    $zd->baslangic_saati
+                ];
+            })
+            ->values();
 
         // Bu öğretmenin müsaitlik kayıtlarını getir
         $musaitlikler = OgretmenMusaitlik::where('ogretmen_id', $ogretmenId)
@@ -103,8 +104,8 @@ class OgretmenMusaitlikController extends Controller
         // Öğretmeni bul
         $ogretmen = Ogretmen::findOrFail($ogretmenId);
 
-        // Gün isimlerini numaraya çevir
-        $gunMap = [
+        // Gün sıralaması için map
+        $gunSirasi = [
             'pazartesi' => 1,
             'sali' => 2,
             'carsamba' => 3,
@@ -114,14 +115,15 @@ class OgretmenMusaitlikController extends Controller
             'pazar' => 7,
         ];
 
-        // Tüm zaman dilimlerini getir ve gün numarasını ekle
-        $zamanDilimleri = ZamanDilim::all()->map(function ($zd) use ($gunMap) {
-            $zd->haftanin_gunu = $gunMap[$zd->haftanin_gunu] ?? 1;
-            return $zd;
-        })->sortBy([
-            ['haftanin_gunu', 'asc'],
-            ['baslangic_saati', 'asc'],
-        ])->values();
+        // Tüm zaman dilimlerini getir (string olarak bırak, sadece sırala)
+        $zamanDilimleri = ZamanDilim::all()
+            ->sortBy(function ($zd) use ($gunSirasi) {
+                return [
+                    $gunSirasi[$zd->haftanin_gunu] ?? 999,
+                    $zd->baslangic_saati
+                ];
+            })
+            ->values();
 
         // Bu öğretmenin müsaitlik kayıtlarını getir
         $musaitlikler = OgretmenMusaitlik::where('ogretmen_id', $ogretmenId)
@@ -139,25 +141,24 @@ class OgretmenMusaitlikController extends Controller
     {
         $data = $request->validate([
             'musaitlikler' => 'required|array',
-            'musaitlikler.*.zaman_dilimi_id' => 'required|exists:zaman_dilimleri,id',
-            'musaitlikler.*.musaitlik_tipi' => 'nullable|in:musait,musait_degil,tercih_edilen',
         ]);
 
         // Öğretmenin mevcut tüm müsaitlik kayıtlarını sil
         OgretmenMusaitlik::where('ogretmen_id', $ogretmenId)->delete();
 
         // Yeni kayıtları oluştur (sadece seçili olanları)
-        foreach ($data['musaitlikler'] as $musaitlik) {
-            if (!empty($musaitlik['musaitlik_tipi'])) {
+        // Frontend'den gelen format: { zaman_dilimi_id: musaitlik_tipi }
+        foreach ($data['musaitlikler'] as $zamanDilimiId => $musaitlikTipi) {
+            if (!empty($musaitlikTipi)) {
                 OgretmenMusaitlik::create([
                     'ogretmen_id' => $ogretmenId,
-                    'zaman_dilimi_id' => $musaitlik['zaman_dilimi_id'],
-                    'musaitlik_tipi' => $musaitlik['musaitlik_tipi'],
+                    'zaman_dilimi_id' => $zamanDilimiId,
+                    'musaitlik_tipi' => $musaitlikTipi,
                 ]);
             }
         }
 
-        return redirect()->route('ogretmen-musaitlik.index')
+        return redirect()->route('ogretmen-musaitlik.show', $ogretmenId)
             ->with('success', 'Öğretmen müsaitliği güncellendi.');
     }
 
