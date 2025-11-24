@@ -26,14 +26,15 @@ class DerslerImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnE
      */
     public function model(array $row)
     {
+        // Excel'den gelen ders kodunu string'e çevir (sayı olarak geliyorsa)
+        $dersKodu = (string) $row['ders_kodu'];
+
         // Ders koduna göre kontrol et, varsa güncelle yoksa oluştur
         $ders = Ders::updateOrCreate(
-            ['ders_kodu' => $row['ders_kodu']],
+            ['ders_kodu' => $dersKodu],
             [
                 'isim' => $row['ders_adi'],
-                'aciklama' => $row['aciklama'] ?? null,
                 'haftalik_saat' => (int) $row['haftalik_saat'],
-                'ders_tipi' => $row['ders_tipi'],
             ]
         );
 
@@ -52,11 +53,9 @@ class DerslerImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnE
     public function rules(): array
     {
         return [
-            'ders_kodu' => 'required|string|max:20',
+            'ders_kodu' => 'required', // Sayı veya string olabilir
             'ders_adi' => 'required|string|max:255',
-            'aciklama' => 'nullable|string',
-            'haftalik_saat' => 'required|integer|min:1|max:20',
-            'ders_tipi' => 'required|in:Teorik,Uygulama,Laboratuvar',
+            'haftalik_saat' => 'required|integer|min:0',
         ];
     }
 
@@ -67,15 +66,12 @@ class DerslerImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnE
     {
         return [
             'ders_kodu.required' => 'Ders kodu zorunludur',
-            'ders_kodu.max' => 'Ders kodu en fazla 20 karakter olabilir',
+            'ders_kodu.max' => 'Ders kodu en fazla 50 karakter olabilir',
             'ders_adi.required' => 'Ders adı zorunludur',
             'ders_adi.max' => 'Ders adı en fazla 255 karakter olabilir',
             'haftalik_saat.required' => 'Haftalık saat zorunludur',
             'haftalik_saat.integer' => 'Haftalık saat sayı olmalıdır',
-            'haftalik_saat.min' => 'Haftalık saat en az 1 olmalıdır',
-            'haftalik_saat.max' => 'Haftalık saat en fazla 20 olabilir',
-            'ders_tipi.required' => 'Ders tipi zorunludur',
-            'ders_tipi.in' => 'Ders tipi Teorik, Uygulama veya Laboratuvar olmalıdır',
+            'haftalik_saat.min' => 'Haftalık saat 0 veya daha büyük olmalıdır',
         ];
     }
 

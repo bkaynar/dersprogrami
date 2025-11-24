@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 interface Ders {
     id: number;
@@ -12,8 +12,26 @@ interface Ders {
     haftalik_saat: number;
 }
 
-defineProps<{
-    dersler: Ders[];
+interface PaginatedDersler {
+    data: Ders[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number;
+    to: number;
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
+
+const props = defineProps<{
+    dersler: PaginatedDersler;
+    filters: {
+        search?: string;
+    };
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -26,6 +44,16 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dersler',
     },
 ];
+
+// Search
+const search = ref(props.filters.search || '');
+
+watch(search, (value) => {
+    router.get('/dersler', { search: value }, {
+        preserveState: true,
+        replace: true,
+    });
+});
 
 // Import form
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -81,7 +109,6 @@ const uploadFile = () => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-6">
-            <!-- Header -->
             <!-- Flash Messages -->
             <div v-if="flashSuccess || flashError || flashWarning" class="mb-6 space-y-4">
                 <div v-if="flashSuccess" class="border-green-200 bg-green-50 text-green-800 rounded-lg p-4">
@@ -102,6 +129,8 @@ const uploadFile = () => {
                     </ul>
                 </div>
             </div>
+
+            <!-- Header -->
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-semibold">Dersler</h1>
@@ -154,8 +183,23 @@ const uploadFile = () => {
                 </div>
             </div>
 
+            <!-- Search Bar -->
+            <div class="mb-6">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Ders kodu veya adı ile ara..."
+                        class="h-10 w-full rounded-lg border border-input bg-background pl-10 pr-4 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                </div>
+            </div>
+
             <!-- Table -->
-            <div v-if="dersler.length > 0" class="overflow-hidden rounded-lg border bg-card">
+            <div v-if="dersler.data.length > 0" class="overflow-hidden rounded-lg border bg-card">
                 <table class="w-full">
                     <thead>
                         <tr class="border-b bg-muted/50">
@@ -167,7 +211,7 @@ const uploadFile = () => {
                     </thead>
                     <tbody class="divide-y">
                         <tr
-                            v-for="ders in dersler"
+                            v-for="ders in dersler.data"
                             :key="ders.id"
                             class="hover:bg-muted/50"
                         >
@@ -208,6 +252,30 @@ const uploadFile = () => {
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between border-t bg-muted/50 px-6 py-3">
+                    <div class="text-sm text-muted-foreground">
+                        {{ dersler.from }} - {{ dersler.to }} arası gösteriliyor (Toplam: {{ dersler.total }})
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <Link
+                            v-for="(link, index) in dersler.links"
+                            :key="index"
+                            :href="link.url || '#'"
+                            :class="[
+                                'px-3 py-1.5 text-sm rounded-md',
+                                link.active
+                                    ? 'bg-primary text-primary-foreground font-medium'
+                                    : link.url
+                                    ? 'hover:bg-accent'
+                                    : 'opacity-50 cursor-not-allowed',
+                            ]"
+                            :preserve-state="true"
+                            v-html="link.label"
+                        />
+                    </div>
+                </div>
             </div>
 
             <!-- Empty State -->
@@ -217,11 +285,14 @@ const uploadFile = () => {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h3 class="mt-4 font-semibold">Henüz ders yok</h3>
+                <h3 class="mt-4 font-semibold">
+                    {{ search ? 'Sonuç bulunamadı' : 'Henüz ders yok' }}
+                </h3>
                 <p class="mt-2 text-center text-sm text-muted-foreground">
-                    Başlamak için ilk dersinizi oluşturun
+                    {{ search ? 'Farklı bir arama terimi deneyin' : 'Başlamak için ilk dersinizi oluşturun' }}
                 </p>
                 <Link
+                    v-if="!search"
                     href="/dersler/create"
                     class="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >

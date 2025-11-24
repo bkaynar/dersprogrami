@@ -11,12 +11,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DersController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dersler = Ders::orderBy('isim')->get(['id', 'ders_kodu', 'isim', 'haftalik_saat']);
+        $search = $request->input('search');
+
+        $dersler = Ders::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('ders_kodu', 'like', "%{$search}%")
+                      ->orWhere('isim', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('isim')
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Dersler/Index', [
             'dersler' => $dersler,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 
@@ -90,6 +104,11 @@ class DersController extends Controller
         ]);
 
         try {
+            \Log::info('Dersler import başladı', [
+                'file_name' => $request->file('file')->getClientOriginalName(),
+                'file_size' => $request->file('file')->getSize(),
+            ]);
+
             $import = new DerslerImport();
             Excel::import($import, $request->file('file'));
 
@@ -97,16 +116,29 @@ class DersController extends Controller
             $failures = $import->getFailures();
             $errors = $import->getErrors();
 
+            \Log::info('Dersler import tamamlandı', [
+                'stats' => $stats,
+                'failures_count' => count($failures),
+                'errors_count' => count($errors),
+            ]);
+
             // Hata varsa detayları göster
             if (count($failures) > 0 || count($errors) > 0) {
                 $errorMessages = [];
 
                 foreach ($failures as $failure) {
-                    $errorMessages[] = "Satır {$failure['row']}: " . implode(', ', $failure['errors']);
+                    $errorMsg = "Satır {$failure['row']}: " . implode(', ', $failure['errors']);
+                    $errorMessages[] = $errorMsg;
+                    \Log::warning('Import validation hatası', [
+                        'row' => $failure['row'],
+                        'errors' => $failure['errors'],
+                        'values' => $failure['values'],
+                    ]);
                 }
 
                 foreach ($errors as $error) {
                     $errorMessages[] = $error;
+                    \Log::error('Import genel hatası', ['error' => $error]);
                 }
 
                 return redirect()
@@ -120,9 +152,16 @@ class DersController extends Controller
                 ->with('success', "Excel başarıyla yüklendi! Eklenen: {$stats['success']}, Güncellenen: {$stats['updated']}");
 
         } catch (\Exception $e) {
+            \Log::error('Dersler import exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()
                 ->route('dersler.index')
-                ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Excel yüklenirken hata oluştu: ' . $e->getMessage() . ' (Satır: ' . $e->getLine() . ')');
         }
     }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import derslerRoute from '@/routes/dersler';
+import * as derslerRoute from '@/routes/dersler';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 
