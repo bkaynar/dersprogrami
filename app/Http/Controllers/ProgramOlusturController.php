@@ -29,9 +29,14 @@ class ProgramOlusturController extends Controller
             'mekan'
         ])->get();
 
+        // Eksik verileri kontrol et
+        $missingData = $this->getMissingData();
+
         return Inertia::render('ProgramOlustur/Index', [
             'mevcut_program' => $mevcutProgram,
             'program_var' => $mevcutProgram->count() > 0,
+            'missing_data' => $missingData,
+            'can_generate' => empty($missingData),
         ]);
     }
 
@@ -76,30 +81,43 @@ class ProgramOlusturController extends Controller
     }
 
     /**
-     * Program oluşturmak için gerekli verilerin kontrolü
+     * Eksik verileri getir (frontend için)
      */
-    private function validateRequiredData()
+    private function getMissingData()
     {
-        // Kontrol edilecek kayıt sayıları
         $checks = [
-            ['model' => \App\Models\OgrenciGrubu::class, 'name' => 'Öğrenci Grubu', 'route' => 'ogrenci-gruplari.index'],
-            ['model' => \App\Models\Ders::class, 'name' => 'Ders', 'route' => 'dersler.index'],
-            ['model' => \App\Models\Ogretmen::class, 'name' => 'Öğretmen', 'route' => 'ogretmenler.index'],
-            ['model' => \App\Models\Mekan::class, 'name' => 'Mekan', 'route' => 'mekanlar.index'],
-            ['model' => \App\Models\ZamanDilim::class, 'name' => 'Zaman Dilimi', 'route' => 'zaman-dilimleri.index'],
-            ['model' => \App\Models\GrupDers::class, 'name' => 'Grup Dersleri (Hangi grubun hangi dersi aldığı)', 'route' => 'grup-dersleri.index'],
-            ['model' => \App\Models\OgretmenDers::class, 'name' => 'Öğretmen Dersleri (Hangi öğretmenin hangi dersi verdiği)', 'route' => 'ogretmen-dersleri.index'],
+            ['model' => \App\Models\OgrenciGrubu::class, 'name' => 'Öğrenci Grubu', 'route' => 'ogrenci-gruplari'],
+            ['model' => \App\Models\Ders::class, 'name' => 'Ders', 'route' => 'dersler'],
+            ['model' => \App\Models\Ogretmen::class, 'name' => 'Öğretmen', 'route' => 'ogretmenler'],
+            ['model' => \App\Models\Mekan::class, 'name' => 'Mekan', 'route' => 'mekanlar'],
+            ['model' => \App\Models\ZamanDilim::class, 'name' => 'Zaman Dilimi', 'route' => 'zaman-dilimleri'],
+            ['model' => \App\Models\GrupDers::class, 'name' => 'Grup Dersleri (Hangi grubun hangi dersi aldığı)', 'route' => 'grup-dersleri'],
+            ['model' => \App\Models\OgretmenDers::class, 'name' => 'Öğretmen Dersleri (Hangi öğretmenin hangi dersi verdiği)', 'route' => 'ogretmen-dersleri'],
         ];
 
         $missingData = [];
         foreach ($checks as $check) {
             if ($check['model']::count() === 0) {
-                $missingData[] = $check['name'];
+                $missingData[] = [
+                    'name' => $check['name'],
+                    'route' => $check['route'],
+                ];
             }
         }
 
+        return $missingData;
+    }
+
+    /**
+     * Program oluşturmak için gerekli verilerin kontrolü
+     */
+    private function validateRequiredData()
+    {
+        $missingData = $this->getMissingData();
+
         if (!empty($missingData)) {
-            return 'Program oluşturmak için eksik veriler var: ' . implode(', ', $missingData) . '. Lütfen önce bu verileri ekleyin.';
+            $names = array_column($missingData, 'name');
+            return 'Program oluşturmak için eksik veriler var: ' . implode(', ', $names) . '. Lütfen önce bu verileri ekleyin.';
         }
 
         return true;

@@ -6,8 +6,10 @@ import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import axios from 'axios';
 
-defineProps<{
+const props = defineProps<{
     program_var: boolean;
+    missing_data: Array<{ name: string; route: string }>;
+    can_generate: boolean;
 }>();
 
 const page = usePage();
@@ -130,8 +132,37 @@ onUnmounted(() => {
                 </div>
             </div>
 
+            <!-- Missing Data Warning -->
+            <div v-if="!can_generate && missing_data.length > 0" class="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-950">
+                <div class="flex items-start gap-3">
+                    <svg class="h-6 w-6 flex-shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-amber-900 dark:text-amber-100">Program Oluşturulamıyor</h3>
+                        <p class="mt-2 text-sm text-amber-800 dark:text-amber-200">
+                            Program oluşturmak için aşağıdaki verilerin sisteme girilmesi gerekiyor:
+                        </p>
+                        <ul class="mt-3 space-y-2">
+                            <li v-for="item in missing_data" :key="item.name" class="flex items-center justify-between rounded border border-amber-300 bg-white px-3 py-2 dark:border-amber-700 dark:bg-amber-900/50">
+                                <span class="text-sm font-medium text-amber-900 dark:text-amber-100">{{ item.name }}</span>
+                                <a
+                                    :href="`/${item.route}`"
+                                    class="inline-flex items-center gap-1 rounded bg-amber-600 px-3 py-1 text-xs font-medium text-white hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600"
+                                >
+                                    Ekle
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <!-- Info Card -->
-            <div class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-950">
+            <div v-else class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-950">
                 <div class="flex items-start gap-3">
                     <svg class="h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -193,7 +224,8 @@ onUnmounted(() => {
                         </div>
                         <button
                             @click="generateProgram"
-                            :disabled="generateForm.processing || isGenerating"
+                            :disabled="!can_generate || generateForm.processing || isGenerating"
+                            :title="!can_generate ? 'Önce gerekli verileri ekleyin' : ''"
                             class="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <svg v-if="generateForm.processing || isGenerating" class="h-5 w-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
