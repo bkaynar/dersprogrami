@@ -101,8 +101,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'update'])->name('ogretmen-musaitlik.update');
     Route::delete('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'destroy'])->name('ogretmen-musaitlik.destroy');
 
-    // Grup Kisitlamalari resource routes
-    Route::resource('grup-kisitlamalari', GrupKisitlamaController::class)->parameters(['grup-kisitlamalari' => 'grupKisitlama']);
+    // Grup Kisitlamalari routes (grup bazlı)
+    Route::get('grup-kisitlamalari', [GrupKisitlamaController::class, 'index'])->name('grup-kisitlamalari.index');
+    Route::get('grup-kisitlamalari/create', [GrupKisitlamaController::class, 'create'])->name('grup-kisitlamalari.create');
+    Route::post('grup-kisitlamalari', [GrupKisitlamaController::class, 'store'])->name('grup-kisitlamalari.store');
+    Route::get('grup-kisitlamalari/{grup}', [GrupKisitlamaController::class, 'show'])->name('grup-kisitlamalari.show');
+    Route::get('grup-kisitlamalari/{grup}/edit', [GrupKisitlamaController::class, 'edit'])->name('grup-kisitlamalari.edit');
+    Route::put('grup-kisitlamalari/{grup}', [GrupKisitlamaController::class, 'update'])->name('grup-kisitlamalari.update');
+    Route::delete('grup-kisitlamalari/{grup}', [GrupKisitlamaController::class, 'destroy'])->name('grup-kisitlamalari.destroy');
 
     // Program Olustur routes
     Route::get('program-olustur', [ProgramOlusturController::class, 'index'])->name('program-olustur.index');

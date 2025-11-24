@@ -14,7 +14,7 @@ interface Ogretmen {
 
 interface ZamanDilimi {
     id: number;
-    haftanin_gunu: number;
+    haftanin_gunu: string;
     baslangic_saati: string;
     bitis_saati: string;
 }
@@ -47,9 +47,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const gunIsmi = (gun: number) => {
-    const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
-    return gunler[gun - 1] || gun.toString();
+const gunSirasi = ['pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi', 'pazar'];
+const gunIsimleri: Record<string, string> = {
+    'pazartesi': 'Pazartesi',
+    'sali': 'Salı',
+    'carsamba': 'Çarşamba',
+    'persembe': 'Perşembe',
+    'cuma': 'Cuma',
+    'cumartesi': 'Cumartesi',
+    'pazar': 'Pazar',
 };
 
 const formatSaat = (saat: string) => {
@@ -78,12 +84,11 @@ const musaitlikTipiClass = (tip: string | undefined) => {
 
 // Zaman dilimlerini güne göre grupla
 const zamanDilimleriByGun = computed(() => {
-    const grouped: Record<number, ZamanDilimi[]> = {};
-    props.zaman_dilimleri.forEach(zd => {
-        if (!grouped[zd.haftanin_gunu]) {
-            grouped[zd.haftanin_gunu] = [];
-        }
-        grouped[zd.haftanin_gunu].push(zd);
+    const grouped: Record<string, ZamanDilimi[]> = {};
+    gunSirasi.forEach(gun => {
+        grouped[gun] = props.zaman_dilimleri
+            .filter(zd => zd.haftanin_gunu === gun)
+            .sort((a, b) => a.baslangic_saati.localeCompare(b.baslangic_saati));
     });
     return grouped;
 });
@@ -130,9 +135,9 @@ const getMusaitlik = (zamanDilimiId: number) => {
 
             <!-- Haftalık Takvim -->
             <div class="space-y-4">
-                <div v-for="gun in [1, 2, 3, 4, 5, 6, 7]" :key="gun" class="rounded-lg border bg-card">
+                <div v-for="gun in gunSirasi" :key="gun" class="rounded-lg border bg-card">
                     <div class="border-b bg-muted/50 px-4 py-3">
-                        <h3 class="font-semibold">{{ gunIsmi(gun) }}</h3>
+                        <h3 class="font-semibold">{{ gunIsimleri[gun] }}</h3>
                     </div>
                     <div class="p-4">
                         <div v-if="zamanDilimleriByGun[gun] && zamanDilimleriByGun[gun].length > 0" class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

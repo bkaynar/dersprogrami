@@ -8,26 +8,11 @@ interface OgrenciGrubu {
     id: number;
     isim: string;
     yil: number;
-}
-
-interface ZamanDilimi {
-    id: number;
-    haftanin_gunu: number;
-    baslangic_saati: string;
-    bitis_saati: string;
-}
-
-interface GrupKisitlama {
-    id: number;
-    ogrenci_grup_id: number;
-    zaman_dilimi_id: number;
-    musait_mi: boolean;
-    ogrenci_grubu: OgrenciGrubu;
-    zaman_dilimi: ZamanDilimi;
+    kisitlamalar_count: number;
 }
 
 defineProps<{
-    kisitlamalar: GrupKisitlama[];
+    gruplar: OgrenciGrubu[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -40,15 +25,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/grup-kisitlamalari',
     },
 ];
-
-const gunIsmi = (gun: number) => {
-    const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
-    return gunler[gun - 1] || gun.toString();
-};
-
-const formatSaat = (saat: string) => {
-    return saat.substring(0, 5);
-};
 </script>
 
 <template>
@@ -61,60 +37,42 @@ const formatSaat = (saat: string) => {
                 <div>
                     <h1 class="text-2xl font-semibold">Grup Kısıtlamaları</h1>
                     <p class="mt-1 text-sm text-muted-foreground">
-                        Öğrenci gruplarının zaman kısıtlamalarını görüntüleyin ve yönetin
+                        Öğrenci gruplarının zaman kısıtlamalarını yönetin
                     </p>
                 </div>
-                <Link
-                    href="/grup-kisitlamalari/create"
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Yeni Kısıtlama Ekle
-                </Link>
             </div>
 
             <!-- Table -->
-            <div v-if="kisitlamalar.length > 0" class="overflow-hidden rounded-lg border bg-card">
+            <div class="overflow-hidden rounded-lg border bg-card">
                 <table class="w-full">
                     <thead>
                         <tr class="border-b bg-muted/50">
                             <th class="px-6 py-3 text-left text-sm font-medium">Öğrenci Grubu</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Zaman Dilimi</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Durum</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Yıl</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Kısıtlama Sayısı</th>
                             <th class="px-6 py-3 text-right text-sm font-medium">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y">
                         <tr
-                            v-for="kisitlama in kisitlamalar"
-                            :key="kisitlama.id"
+                            v-for="grup in gruplar"
+                            :key="grup.id"
                             class="hover:bg-muted/50"
                         >
-                            <td class="px-6 py-4 font-medium">
-                                <div>{{ kisitlama.ogrenci_grubu.isim }}</div>
-                                <div class="text-xs text-muted-foreground">{{ kisitlama.ogrenci_grubu.yil }}. Yıl</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="font-medium">{{ gunIsmi(kisitlama.zaman_dilimi.haftanin_gunu) }}</div>
-                                <div class="text-xs text-muted-foreground">
-                                    {{ formatSaat(kisitlama.zaman_dilimi.baslangic_saati) }} -
-                                    {{ formatSaat(kisitlama.zaman_dilimi.bitis_saati) }}
-                                </div>
-                            </td>
+                            <td class="px-6 py-4 font-medium">{{ grup.isim }}</td>
+                            <td class="px-6 py-4">{{ grup.yil }}</td>
                             <td class="px-6 py-4">
                                 <span
-                                    class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium"
-                                    :class="kisitlama.musait_mi ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                    class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                    :class="grup.kisitlamalar_count > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'"
                                 >
-                                    {{ kisitlama.musait_mi ? 'Müsait' : 'Müsait Değil' }}
+                                    {{ grup.kisitlamalar_count }} kayıt
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
                                     <Link
-                                        :href="`/grup-kisitlamalari/${kisitlama.id}`"
+                                        :href="`/grup-kisitlamalari/${grup.id}`"
                                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,8 +82,8 @@ const formatSaat = (saat: string) => {
                                         Görüntüle
                                     </Link>
                                     <Link
-                                        :href="`/grup-kisitlamalari/${kisitlama.id}/edit`"
-                                        class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent"
+                                        :href="`/grup-kisitlamalari/${grup.id}/edit`"
+                                        class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                                     >
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -137,28 +95,6 @@ const formatSaat = (saat: string) => {
                         </tr>
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Empty State -->
-            <div v-else class="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
-                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                    <svg class="h-6 w-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                    </svg>
-                </div>
-                <h3 class="mt-4 font-semibold">Henüz kısıtlama yok</h3>
-                <p class="mt-2 text-center text-sm text-muted-foreground">
-                    Başlamak için ilk grup kısıtlamasını oluşturun
-                </p>
-                <Link
-                    href="/grup-kisitlamalari/create"
-                    class="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    İlk Kısıtlamayı Oluştur
-                </Link>
             </div>
         </div>
     </AppLayout>

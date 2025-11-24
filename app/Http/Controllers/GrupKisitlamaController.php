@@ -12,92 +12,136 @@ class GrupKisitlamaController extends Controller
 {
     public function index()
     {
-        $kisitlamalar = GrupKisitlama::with(['ogrenciGrubu', 'zamanDilimi'])
-            ->get();
+        // Öğrenci gruplarını listele
+        $gruplar = OgrenciGrubu::orderBy('isim')
+            ->get(['id', 'isim', 'yil'])
+            ->map(function ($grup) {
+                $grup->kisitlamalar_count = GrupKisitlama::where('ogrenci_grup_id', $grup->id)->count();
+                return $grup;
+            });
 
         return Inertia::render('GrupKisitlamalari/Index', [
-            'kisitlamalar' => $kisitlamalar,
+            'gruplar' => $gruplar,
         ]);
     }
 
     public function create()
     {
-        $gruplar = OgrenciGrubu::orderBy('isim')->get(['id', 'isim', 'yil']);
-        $zamanDilimleri = ZamanDilim::orderBy('haftanin_gunu')
-            ->orderBy('baslangic_saati')
-            ->get();
-
-        return Inertia::render('GrupKisitlamalari/Create', [
-            'gruplar' => $gruplar,
-            'zaman_dilimleri' => $zamanDilimleri,
-        ]);
+        // Bu metod artık kullanılmayacak veya toplu seçim sayfasına yönlendirebilir
+        return redirect()->route('grup-kisitlamalari.index');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'ogrenci_grup_id' => 'required|exists:ogrenci_gruplari,id',
-            'zaman_dilimi_id' => 'required|exists:zaman_dilimleri,id',
-            'musait_mi' => 'required|boolean',
-        ]);
-
-        // Check if already exists
-        $exists = GrupKisitlama::where('ogrenci_grup_id', $data['ogrenci_grup_id'])
-            ->where('zaman_dilimi_id', $data['zaman_dilimi_id'])
-            ->exists();
-
-        if ($exists) {
-            return back()->withErrors(['zaman_dilimi_id' => 'Bu grup için bu zaman dilimi zaten tanımlı.']);
-        }
-
-        GrupKisitlama::create($data);
-
-        return redirect()->route('grup-kisitlamalari.index')
-            ->with('success', 'Grup kısıtlaması oluşturuldu.');
+        // Bu metod artık kullanılmayacak
+        return redirect()->route('grup-kisitlamalari.index');
     }
 
-    public function show(GrupKisitlama $grupKisitlama)
+    public function show($grupId)
     {
-        $grupKisitlama->load(['ogrenciGrubu', 'zamanDilimi']);
+        $grup = OgrenciGrubu::findOrFail($grupId);
+
+        // Gün sıralaması
+        $gunSirasi = [
+            'pazartesi' => 1,
+            'sali' => 2,
+            'carsamba' => 3,
+            'persembe' => 4,
+            'cuma' => 5,
+            'cumartesi' => 6,
+            'pazar' => 7,
+        ];
+
+        $zamanDilimleri = ZamanDilim::all()
+            ->sortBy(function ($zd) use ($gunSirasi) {
+                return [
+                    $gunSirasi[$zd->haftanin_gunu] ?? 999,
+                    $zd->baslangic_saati
+                ];
+            })
+            ->values();
+
+        $kisitlamalar = GrupKisitlama::where('ogrenci_grup_id', $grupId)
+            ->get()
+            ->keyBy('zaman_dilimi_id');
 
         return Inertia::render('GrupKisitlamalari/Show', [
-            'kisitlama' => $grupKisitlama,
+            'grup' => $grup,
+            'zaman_dilimleri' => $zamanDilimleri,
+            'kisitlamalar' => $kisitlamalar,
         ]);
     }
 
-    public function edit(GrupKisitlama $grupKisitlama)
+    public function edit($grupId)
     {
-        $gruplar = OgrenciGrubu::orderBy('isim')->get(['id', 'isim', 'yil']);
-        $zamanDilimleri = ZamanDilim::orderBy('haftanin_gunu')
-            ->orderBy('baslangic_saati')
-            ->get();
+        $grup = OgrenciGrubu::findOrFail($grupId);
+
+        $gunSirasi = [
+            'pazartesi' => 1,
+            'sali' => 2,
+            'carsamba' => 3,
+            'persembe' => 4,
+            'cuma' => 5,
+            'cumartesi' => 6,
+            'pazar' => 7,
+        ];
+
+        $zamanDilimleri = ZamanDilim::all()
+            ->sortBy(function ($zd) use ($gunSirasi) {
+                return [
+                    $gunSirasi[$zd->haftanin_gunu] ?? 999,
+                    $zd->baslangic_saati
+                ];
+            })
+            ->values();
+
+        $kisitlamalar = GrupKisitlama::where('ogrenci_grup_id', $grupId)
+            ->get()
+            ->keyBy('zaman_dilimi_id');
 
         return Inertia::render('GrupKisitlamalari/Edit', [
-            'kisitlama' => $grupKisitlama->load(['ogrenciGrubu', 'zamanDilimi']),
-            'gruplar' => $gruplar,
+            'grup' => $grup,
             'zaman_dilimleri' => $zamanDilimleri,
+            'kisitlamalar' => $kisitlamalar,
         ]);
     }
 
-    public function update(Request $request, GrupKisitlama $grupKisitlama)
+    public function update(Request $request, $grupId)
     {
         $data = $request->validate([
-            'ogrenci_grup_id' => 'required|exists:ogrenci_gruplari,id',
-            'zaman_dilimi_id' => 'required|exists:zaman_dilimleri,id',
-            'musait_mi' => 'required|boolean',
+            'kisitlamalar' => 'required|array',
         ]);
 
-        $grupKisitlama->update($data);
+        // Grubun mevcut tüm kısıtlamalarını sil
+        GrupKisitlama::where('ogrenci_grup_id', $grupId)->delete();
 
-        return redirect()->route('grup-kisitlamalari.index')
-            ->with('success', 'Grup kısıtlaması güncellendi.');
+        // Yeni kayıtları oluştur
+        // Frontend: { zaman_dilimi_id: musait_mi (boolean/string) }
+        foreach ($data['kisitlamalar'] as $zamanDilimiId => $musaitMi) {
+            // musait_mi null ise atla (belirtilmemiş)
+            // Frontend true/false/'true'/'false' gönderebilir
+            if ($musaitMi !== null) {
+                // String 'false' gelirse boolean false yap
+                $isAvailable = filter_var($musaitMi, FILTER_VALIDATE_BOOLEAN);
+                
+                GrupKisitlama::create([
+                    'ogrenci_grup_id' => $grupId,
+                    'zaman_dilimi_id' => $zamanDilimiId,
+                    'musait_mi' => $isAvailable,
+                ]);
+            }
+        }
+
+        return redirect()->route('grup-kisitlamalari.show', $grupId)
+            ->with('success', 'Grup kısıtlamaları güncellendi.');
     }
 
-    public function destroy(GrupKisitlama $grupKisitlama)
+    public function destroy($grupId)
     {
-        $grupKisitlama->delete();
+        // Grubun tüm kısıtlamalarını sil
+        GrupKisitlama::where('ogrenci_grup_id', $grupId)->delete();
 
         return redirect()->route('grup-kisitlamalari.index')
-            ->with('success', 'Grup kısıtlaması silindi.');
+            ->with('success', 'Grup kısıtlamaları temizlendi.');
     }
 }

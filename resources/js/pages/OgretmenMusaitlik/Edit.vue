@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
+import { Check, Star, Trash2, X } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 interface Ogretmen {
@@ -67,13 +68,6 @@ const form = useForm({
 // View mode
 const viewMode = ref<'grid' | 'list'>('grid');
 
-// Seçili müsaitlik tipi (toplu işlem için)
-const selectedTip = ref<string>('musait');
-
-// Drag state
-const isDragging = ref(false);
-const dragTip = ref<string | null>(null);
-
 const gunSirasi = ['pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi', 'pazar'];
 const gunIsimleri: Record<string, string> = {
     'pazartesi': 'Pazartesi',
@@ -101,12 +95,13 @@ const zamanDilimleriByGun = computed(() => {
 });
 
 const musaitlikTipleri = [
-    { value: 'musait', label: 'Müsait', color: 'bg-green-500', borderColor: 'border-green-500', textColor: 'text-green-700' },
-    { value: 'tercih_edilen', label: 'Tercih Edilen', color: 'bg-blue-500', borderColor: 'border-blue-500', textColor: 'text-blue-700' },
-    { value: 'musait_degil', label: 'Müsait Değil', color: 'bg-red-500', borderColor: 'border-red-500', textColor: 'text-red-700' },
+    { value: 'musait', label: 'Müsait', color: 'text-green-600 bg-green-50 border-green-200 hover:bg-green-100', activeColor: 'bg-green-500 text-white border-green-600', bulkColor: 'bg-green-500 hover:bg-green-600 text-white' },
+    { value: 'tercih_edilen', label: 'Tercih Edilen', color: 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100', activeColor: 'bg-blue-500 text-white border-blue-600', bulkColor: 'bg-blue-500 hover:bg-blue-600 text-white' },
+    { value: 'musait_degil', label: 'Müsait Değil', color: 'text-red-600 bg-red-50 border-red-200 hover:bg-red-100', activeColor: 'bg-red-500 text-white border-red-600', bulkColor: 'bg-red-500 hover:bg-red-600 text-white' },
 ];
 
-const setMusaitlik = (zamanDilimiId: number, tip: string | null) => {
+const setMusaitlik = (zamanDilimiId: number, tip: string) => {
+    // Eğer zaten seçiliyse kaldır (toggle), değilse seç
     if (musaitlikDurumlari.value[zamanDilimiId] === tip) {
         musaitlikDurumlari.value[zamanDilimiId] = null;
     } else {
@@ -114,38 +109,23 @@ const setMusaitlik = (zamanDilimiId: number, tip: string | null) => {
     }
 };
 
-const getMusaitlikColor = (zamanDilimiId: number) => {
-    const tip = musaitlikDurumlari.value[zamanDilimiId];
-    if (!tip) return 'bg-muted/50 border-muted';
-
-    const tipObj = musaitlikTipleri.find(t => t.value === tip);
-    return tipObj ? `${tipObj.color} ${tipObj.borderColor} text-white` : 'bg-muted/50 border-muted';
+const getButtonClass = (zamanDilimiId: number, typeValue: string, typeConfig: any) => {
+    const isSelected = musaitlikDurumlari.value[zamanDilimiId] === typeValue;
+    return [
+        'p-1.5 rounded-md border transition-all duration-200',
+        isSelected ? typeConfig.activeColor : 'bg-background border-transparent hover:bg-muted text-muted-foreground'
+    ];
 };
 
-// Drag handlers
-const handleMouseDown = (zamanDilimiId: number) => {
-    isDragging.value = true;
-    const currentTip = musaitlikDurumlari.value[zamanDilimiId];
-
-    // İlk tıklamada seçili tip ile değiştir
-    if (currentTip === selectedTip.value) {
-        dragTip.value = null; // Temizle
-        musaitlikDurumlari.value[zamanDilimiId] = null;
-    } else {
-        dragTip.value = selectedTip.value;
-        musaitlikDurumlari.value[zamanDilimiId] = selectedTip.value;
-    }
-};
-
-const handleMouseEnter = (zamanDilimiId: number) => {
-    if (isDragging.value && dragTip.value !== undefined) {
-        musaitlikDurumlari.value[zamanDilimiId] = dragTip.value;
-    }
-};
-
-const handleMouseUp = () => {
-    isDragging.value = false;
-    dragTip.value = null;
+const getContainerClass = (zamanDilimiId: number) => {
+    const status = musaitlikDurumlari.value[zamanDilimiId];
+    if (!status) return 'bg-card border-border';
+    
+    if (status === 'musait') return 'bg-green-50/50 border-green-200';
+    if (status === 'tercih_edilen') return 'bg-blue-50/50 border-blue-200';
+    if (status === 'musait_degil') return 'bg-red-50/50 border-red-200';
+    
+    return 'bg-card border-border';
 };
 
 // Toplu işlemler
@@ -210,13 +190,13 @@ const stats = computed(() => {
     <Head :title="`${ogretmen.isim} - Müsaitlik Düzenle`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-6" @mouseup="handleMouseUp" @mouseleave="handleMouseUp">
+        <div class="p-6">
             <!-- Header -->
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-semibold">{{ ogretmen.isim }} - Müsaitlik Takvimi</h1>
                     <p class="mt-1 text-sm text-muted-foreground">
-                        {{ ogretmen.unvan }} • Haftalık zaman dilimlerini tıklayarak veya sürükleyerek işaretleyin
+                        {{ ogretmen.unvan }} • Müsaitlik durumunu belirlemek için butonları kullanın
                     </p>
                 </div>
 
@@ -285,7 +265,7 @@ const stats = computed(() => {
                                 :key="tip.value"
                                 type="button"
                                 @click="applyToAll(tip.value)"
-                                :class="['w-full rounded-md px-3 py-1.5 text-xs font-medium text-white transition-all', tip.color]"
+                                :class="['w-full rounded-md px-3 py-1.5 text-xs font-medium text-white transition-all', tip.bulkColor]"
                             >
                                 Tümü {{ tip.label }}
                             </button>
@@ -300,32 +280,6 @@ const stats = computed(() => {
                     </div>
                 </div>
 
-                <!-- Çizim Modu Seçici -->
-                <div class="rounded-lg border bg-card p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm font-semibold">🎨 Çizim Modu (Sürükle & Bırak)</div>
-                        <div class="flex items-center gap-2">
-                            <button
-                                v-for="tip in musaitlikTipleri"
-                                :key="tip.value"
-                                type="button"
-                                @click="selectedTip = tip.value"
-                                :class="[
-                                    'rounded-md px-4 py-2 text-xs font-medium transition-all',
-                                    selectedTip === tip.value
-                                        ? `${tip.color} text-white ring-2 ring-offset-2 ${tip.borderColor}`
-                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                ]"
-                            >
-                                {{ tip.label }}
-                            </button>
-                        </div>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2">
-                        💡 İpucu: Bir renk seçin, sonra zaman dilimlerini tıklayın veya üzerinden sürükleyin
-                    </p>
-                </div>
-
                 <!-- Grid View -->
                 <div v-if="viewMode === 'grid'" class="rounded-lg border bg-card overflow-hidden">
                     <div class="grid grid-cols-7 divide-x border-b bg-muted/50">
@@ -338,13 +292,13 @@ const stats = computed(() => {
                             <div class="text-xs text-muted-foreground mt-1">
                                 {{ zamanDilimleriByGun[gun]?.length || 0 }} dilim
                             </div>
-                            <div class="flex gap-1 justify-center mt-2">
+                            <div class="flex gap-1 justify-center mt-2 opacity-50 hover:opacity-100 transition-opacity">
                                 <button
-                                    v-for="tip in musaitlikTipleri.slice(0, 2)"
+                                    v-for="tip in musaitlikTipleri"
                                     :key="tip.value"
                                     type="button"
                                     @click="applyToGun(gun, tip.value)"
-                                    :class="['w-4 h-4 rounded-sm', tip.color]"
+                                    :class="['w-4 h-4 rounded-sm border transition-colors', tip.color]"
                                     :title="`${gunIsimleri[gun]} - ${tip.label}`"
                                 />
                                 <button
@@ -353,9 +307,7 @@ const stats = computed(() => {
                                     class="w-4 h-4 rounded-sm border bg-background hover:bg-muted"
                                     :title="`${gunIsimleri[gun]} - Temizle`"
                                 >
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <Trash2 class="w-3 h-3" />
                                 </button>
                             </div>
                         </div>
@@ -364,22 +316,45 @@ const stats = computed(() => {
                         <div
                             v-for="gun in gunSirasi"
                             :key="gun"
-                            class="p-2 space-y-1.5"
+                            class="p-2 space-y-2 h-full"
                         >
-                            <button
+                            <div
                                 v-for="zamanDilimi in zamanDilimleriByGun[gun]"
                                 :key="zamanDilimi.id"
-                                type="button"
-                                @mousedown="handleMouseDown(zamanDilimi.id)"
-                                @mouseenter="handleMouseEnter(zamanDilimi.id)"
-                                :class="[
-                                    'w-full rounded-md border-2 px-2 py-2 text-xs font-medium transition-all select-none',
-                                    getMusaitlikColor(zamanDilimi.id)
-                                ]"
+                                :class="['rounded-lg border p-2 transition-colors', getContainerClass(zamanDilimi.id)]"
                             >
-                                <div class="font-semibold">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
-                                <div class="text-[10px] opacity-80">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
-                            </button>
+                                <div class="text-center mb-2">
+                                    <div class="font-semibold text-xs">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
+                                    <div class="text-[10px] opacity-70">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
+                                </div>
+                                
+                                <div class="flex justify-center gap-1">
+                                    <button
+                                        type="button"
+                                        @click="setMusaitlik(zamanDilimi.id, 'musait')"
+                                        :class="getButtonClass(zamanDilimi.id, 'musait', musaitlikTipleri[0])"
+                                        title="Müsait"
+                                    >
+                                        <Check class="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        @click="setMusaitlik(zamanDilimi.id, 'tercih_edilen')"
+                                        :class="getButtonClass(zamanDilimi.id, 'tercih_edilen', musaitlikTipleri[1])"
+                                        title="Tercih Edilen"
+                                    >
+                                        <Star class="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        @click="setMusaitlik(zamanDilimi.id, 'musait_degil')"
+                                        :class="getButtonClass(zamanDilimi.id, 'musait_degil', musaitlikTipleri[2])"
+                                        title="Müsait Değil"
+                                    >
+                                        <X class="w-3 h-3" />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -395,7 +370,7 @@ const stats = computed(() => {
                                     :key="tip.value"
                                     type="button"
                                     @click="applyToGun(gun, tip.value)"
-                                    :class="['rounded px-2 py-1 text-xs font-medium text-white', tip.color]"
+                                    :class="['rounded px-2 py-1 text-xs font-medium transition-all', tip.color]"
                                 >
                                     {{ tip.label }}
                                 </button>
@@ -409,20 +384,44 @@ const stats = computed(() => {
                             </div>
                         </div>
                         <div class="p-4">
-                            <div v-if="zamanDilimleriByGun[gun] && zamanDilimleriByGun[gun].length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                                <button
+                            <div v-if="zamanDilimleriByGun[gun] && zamanDilimleriByGun[gun].length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                <div
                                     v-for="zamanDilimi in zamanDilimleriByGun[gun]"
                                     :key="zamanDilimi.id"
-                                    type="button"
-                                    @click="setMusaitlik(zamanDilimi.id, selectedTip)"
-                                    :class="[
-                                        'rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all',
-                                        getMusaitlikColor(zamanDilimi.id)
-                                    ]"
+                                    :class="['rounded-lg border p-3 transition-colors flex items-center justify-between', getContainerClass(zamanDilimi.id)]"
                                 >
-                                    <div class="font-semibold">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
-                                    <div class="text-xs opacity-80">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
-                                </button>
+                                    <div>
+                                        <div class="font-semibold text-sm">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
+                                        <div class="text-xs opacity-70">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
+                                    </div>
+                                    
+                                    <div class="flex gap-1">
+                                        <button
+                                            type="button"
+                                            @click="setMusaitlik(zamanDilimi.id, 'musait')"
+                                            :class="getButtonClass(zamanDilimi.id, 'musait', musaitlikTipleri[0])"
+                                            title="Müsait"
+                                        >
+                                            <Check class="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            @click="setMusaitlik(zamanDilimi.id, 'tercih_edilen')"
+                                            :class="getButtonClass(zamanDilimi.id, 'tercih_edilen', musaitlikTipleri[1])"
+                                            title="Tercih Edilen"
+                                        >
+                                            <Star class="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            @click="setMusaitlik(zamanDilimi.id, 'musait_degil')"
+                                            :class="getButtonClass(zamanDilimi.id, 'musait_degil', musaitlikTipleri[2])"
+                                            title="Müsait Değil"
+                                        >
+                                            <X class="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div v-else class="text-center text-sm text-muted-foreground py-4">
                                 Bu gün için zaman dilimi tanımlanmamış
