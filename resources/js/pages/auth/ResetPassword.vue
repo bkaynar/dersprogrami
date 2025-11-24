@@ -11,10 +11,10 @@ import { ref } from 'vue';
 
 const props = defineProps<{
     token: string;
-    email: string;
+    kullaniciAdi: string;
 }>();
 
-const inputEmail = ref(props.email);
+const inputKullaniciAdi = ref(props.kullaniciAdi);
 </script>
 
 <template>
@@ -26,23 +26,23 @@ const inputEmail = ref(props.email);
 
         <Form
             v-bind="update.form()"
-            :transform="(data) => ({ ...data, token, email })"
+            :transform="(data) => ({ ...data, token, kullaniciAdi })"
             :reset-on-success="['password', 'password_confirmation']"
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email</Label>
+                    <Label for="kullaniciAdi">Kullanıcı Adı</Label>
                     <Input
-                        id="email"
-                        type="email"
-                        name="email"
-                        autocomplete="email"
-                        v-model="inputEmail"
+                        id="kullaniciAdi"
+                        type="text"
+                        name="kullaniciAdi"
+                        autocomplete="username"
+                        v-model="inputKullaniciAdi"
                         class="mt-1 block w-full"
                         readonly
                     />
-                    <InputError :message="errors.email" class="mt-2" />
+                    <InputError :message="errors.kullaniciAdi" class="mt-2" />
                 </div>
 
                 <div class="grid gap-2">

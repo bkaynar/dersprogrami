@@ -41,17 +41,17 @@ import { LoaderCircle } from 'lucide-vue-next';
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="kullaniciAdi">Kullanıcı Adı</Label>
                     <Input
-                        id="email"
-                        type="email"
+                        id="kullaniciAdi"
+                        type="text"
                         required
                         :tabindex="2"
-                        autocomplete="email"
-                        name="email"
-                        placeholder="email@example.com"
+                        autocomplete="username"
+                        name="kullaniciAdi"
+                        placeholder="Kullanıcı adınız"
                     />
-                    <InputError :message="errors.email" />
+                    <InputError :message="errors.kullaniciAdi" />
                 </div>
 
                 <div class="grid gap-2">

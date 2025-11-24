@@ -12,8 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Önce bağımsız tabloları oluştur
+        // Önce admin kullanıcısını oluştur
         $this->call([
+            AdminUserSeeder::class,
+        ]);
+
+        // Sonra diğer bağımsız tabloları oluştur
+        /*$this->call([
             UserSeeder::class,
             MekanSeeder::class,
             OgrenciGrubuSeeder::class,
@@ -21,8 +26,10 @@ class DatabaseSeeder extends Seeder
             DersSeeder::class,
             OgretmenSeeder::class,
         ]);
+        */
 
         // Sonra ilişkisel tabloları oluştur (foreign key bağımlılıkları var)
+        /*
         $this->call([
             DersMekanGeresinimSeeder::class,
             GrupDersSeeder::class,
@@ -30,5 +37,6 @@ class DatabaseSeeder extends Seeder
             OgretmenMusaitlikSeeder::class,
             GrupKisitlamaSeeder::class,
         ]);
+        */
     }
 }
