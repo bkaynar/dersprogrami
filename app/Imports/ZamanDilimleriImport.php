@@ -9,10 +9,11 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Validators\Failure;
 use Throwable;
 
-class ZamanDilimleriImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure
+class ZamanDilimleriImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure, WithBatchInserts
 {
     use Importable;
 
@@ -23,11 +24,15 @@ class ZamanDilimleriImport implements ToModel, WithHeadingRow, WithValidation, S
 
     public function model(array $row)
     {
+        // Excel'den gelen saat formatını düzelt
+        $baslangicSaati = $this->normalizeTime($row['baslangic_saati']);
+        $bitisSaati = $this->normalizeTime($row['bitis_saati']);
+
         // Benzersiz anahtar: gün + başlama saati
         $zaman = ZamanDilim::updateOrCreate(
-            ['haftanin_gunu' => $row['haftanin_gunu'], 'baslangic_saati' => $row['baslangic_saati']],
+            ['haftanin_gunu' => $row['haftanin_gunu'], 'baslangic_saati' => $baslangicSaati],
             [
-                'bitis_saati' => $row['bitis_saati'],
+                'bitis_saati' => $bitisSaati,
             ]
         );
 
@@ -40,13 +45,49 @@ class ZamanDilimleriImport implements ToModel, WithHeadingRow, WithValidation, S
         return $zaman;
     }
 
+    /**
+     * Excel'den gelen saat formatını HH:MM formatına çevir
+     */
+    private function normalizeTime($time)
+    {
+        // Eğer zaten HH:MM formatındaysa direkt dön
+        if (preg_match('/^\d{2}:\d{2}$/', $time)) {
+            return $time;
+        }
+
+        // Eğer Excel date serial number ise (örn: 0.375 = 09:00)
+        if (is_numeric($time) && $time < 1) {
+            $hours = floor($time * 24);
+            $minutes = round(($time * 24 - $hours) * 60);
+            return sprintf('%02d:%02d', $hours, $minutes);
+        }
+
+        // Eğer Excel datetime formatındaysa (örn: "1900-01-01 09:00:00")
+        if (preg_match('/^\d{4}-\d{2}-\d{2} (\d{2}:\d{2})/', $time, $matches)) {
+            return $matches[1];
+        }
+
+        // Eğer "9:00" gibi tek haneli saat varsa
+        if (preg_match('/^(\d{1,2}):(\d{2})$/', $time, $matches)) {
+            return sprintf('%02d:%02d', $matches[1], $matches[2]);
+        }
+
+        // Diğer durumlar için olduğu gibi dön
+        return $time;
+    }
+
     public function rules(): array
     {
         return [
             'haftanin_gunu' => 'required|in:pazartesi,sali,carsamba,persembe,cuma,cumartesi,pazar',
-            'baslangic_saati' => 'required|date_format:H:i',
-            'bitis_saati' => 'required|date_format:H:i|after:baslangic_saati',
+            'baslangic_saati' => 'required', // Format kontrolünü normalizeTime yapacak
+            'bitis_saati' => 'required',
         ];
+    }
+
+    public function batchSize(): int
+    {
+        return 1000;
     }
 
     public function customValidationMessages()
