@@ -22,6 +22,7 @@ class DersController extends Controller
                       ->orWhere('isim', 'like', "%{$search}%");
                 });
             })
+            ->withCount('ogretmenler') // Öğretmen sayısını yükle
             ->orderBy('isim')
             ->paginate(10)
             ->withQueryString();
@@ -54,6 +55,7 @@ class DersController extends Controller
 
     public function show(Ders $ders)
     {
+        $ders->load('ogretmenler'); // Öğretmenleri yükle
         return Inertia::render('Dersler/Show', [
             'ders' => $ders,
         ]);

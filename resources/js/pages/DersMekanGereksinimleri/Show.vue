@@ -4,22 +4,21 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 
-interface Ders {
+interface DersMekanGereksinimi {
   id: number;
-  ders_kodu: string;
-  isim: string;
-}
-
-interface Gereksinim {
-  id: number;
-  ders_id: number;
-  ders: Ders;
   mekan_tipi: string;
   gereksinim_tipi: string;
 }
 
+interface Ders {
+  id: number;
+  ders_kodu: string;
+  isim: string;
+  mekan_gereksinimi: DersMekanGereksinimi | null;
+}
+
 const props = defineProps<{
-  gereksinim: Gereksinim;
+  ders: Ders;
 }>();
 
 const form = useForm({});
@@ -35,7 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Detay',
-        href: `/ders-mekan-gereksinimleri/${props.gereksinim.id}`,
+        href: `/ders-mekan-gereksinimleri/${props.ders.id}`,
     },
 ];
 
@@ -58,7 +57,7 @@ const gereksinimTipiLabel = (tip: string) => {
 
 const destroy = () => {
   if (confirm('Bu mekan gereksinimini silmek istediğinizden emin misiniz?')) {
-    form.delete(`/ders-mekan-gereksinimleri/${props.gereksinim.id}`);
+    form.delete(`/ders-mekan-gereksinimleri/${props.ders.id}`);
   }
 };
 </script>
@@ -99,15 +98,15 @@ const destroy = () => {
                 </svg>
               </div>
               <div>
-                <h2 class="text-xl font-semibold">{{ props.gereksinim.ders.isim }}</h2>
+                <h2 class="text-xl font-semibold">{{ props.ders.isim }}</h2>
                 <span class="mt-1 inline-flex items-center rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-                  {{ props.gereksinim.ders.ders_kodu }}
+                  {{ props.ders.ders_kodu }}
                 </span>
               </div>
             </div>
           </div>
 
-          <div class="mt-6 space-y-4">
+          <div v-if="props.ders.mekan_gereksinimi" class="mt-6 space-y-4">
             <div class="flex items-center justify-between rounded-lg border bg-muted/50 p-4">
               <div class="flex items-center gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background">
@@ -117,7 +116,7 @@ const destroy = () => {
                 </div>
                 <div>
                   <p class="text-sm font-medium text-muted-foreground">Mekan Tipi</p>
-                  <p class="text-lg font-semibold">{{ mekanTipiLabel(props.gereksinim.mekan_tipi) }}</p>
+                  <p class="text-lg font-semibold">{{ mekanTipiLabel(props.ders.mekan_gereksinimi.mekan_tipi) }}</p>
                 </div>
               </div>
             </div>
@@ -131,10 +130,14 @@ const destroy = () => {
                 </div>
                 <div>
                   <p class="text-sm font-medium text-muted-foreground">Gereksinim Tipi</p>
-                  <p class="text-lg font-semibold">{{ gereksinimTipiLabel(props.gereksinim.gereksinim_tipi) }}</p>
+                  <p class="text-lg font-semibold">{{ gereksinimTipiLabel(props.ders.mekan_gereksinimi.gereksinim_tipi) }}</p>
                 </div>
               </div>
             </div>
+          </div>
+          
+          <div v-else class="mt-6 rounded-lg border border-dashed p-8 text-center">
+            <p class="text-muted-foreground">Bu ders için tanımlanmış bir mekan gereksinimi bulunmamaktadır.</p>
           </div>
         </div>
 
@@ -143,7 +146,7 @@ const destroy = () => {
           <h3 class="mb-4 font-semibold">İşlemler</h3>
           <div class="flex flex-wrap gap-3">
             <Link
-              :href="`/ders-mekan-gereksinimleri/${props.gereksinim.id}/edit`"
+              :href="`/ders-mekan-gereksinimleri/${props.ders.id}/edit`"
               class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,6 +155,7 @@ const destroy = () => {
               Gereksinimi Düzenle
             </Link>
             <button
+              v-if="props.ders.mekan_gereksinimi"
               @click="destroy"
               :disabled="form.processing"
               class="inline-flex items-center gap-2 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"

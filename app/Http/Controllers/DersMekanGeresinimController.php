@@ -14,89 +14,92 @@ class DersMekanGeresinimController extends Controller
 {
     public function index()
     {
-        $gereksinimler = DersMekanGereksinimi::with('ders')
+        // Tüm dersleri, mekan gereksinimleri ile birlikte getir
+        $dersler = Ders::with('mekanGereksinimi')
+            ->orderBy('isim')
             ->get();
 
         return Inertia::render('DersMekanGereksinimleri/Index', [
-            'gereksinimler' => $gereksinimler,
+            'dersler' => $dersler,
         ]);
     }
 
     public function create()
     {
-        // Tüm dersleri al
-        $dersler = Ders::orderBy('isim')->get(['id', 'ders_kodu', 'isim']);
-
-        // Zaten eklenmiş ders ID'lerini al
-        $eklenmisDersIds = DersMekanGereksinimi::pluck('ders_id')->unique()->toArray();
-
-        return Inertia::render('DersMekanGereksinimleri/Create', [
-            'dersler' => $dersler,
-            'eklenmis_ders_ids' => $eklenmisDersIds,
-        ]);
+        // Bu metod artık doğrudan edit sayfasına yönlendirebilir veya kullanılmayabilir
+        return redirect()->route('ders-mekan-gereksinimleri.index');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'ders_id' => 'required|exists:dersler,id',
-            'mekan_tipi' => 'required|in:derslik,laboratuvar,konferans_salonu',
-            'gereksinim_tipi' => 'required|in:zorunlu,olabilir',
-        ]);
-
-        DersMekanGereksinimi::create($data);
-
-        return redirect()->route('ders-mekan-gereksinimleri.index')
-            ->with('success', 'Mekan gereksinimi oluşturuldu.');
+        // Store işlemi update içinde handle edilecek
+        return redirect()->route('ders-mekan-gereksinimleri.index');
     }
 
-    public function show(DersMekanGereksinimi $dersMekanGereksinimi)
+    public function show(Ders $ders)
     {
-        $dersMekanGereksinimi->load('ders');
+        $ders->load('mekanGereksinimi');
 
         return Inertia::render('DersMekanGereksinimleri/Show', [
-            'gereksinim' => $dersMekanGereksinimi,
+            'ders' => $ders,
         ]);
     }
 
-    public function edit(DersMekanGereksinimi $dersMekanGereksinimi)
+    public function edit(Ders $ders)
     {
-        // Tüm dersleri al
-        $dersler = Ders::orderBy('isim')->get(['id', 'ders_kodu', 'isim']);
-
-        // Zaten eklenmiş ders ID'lerini al (düzenlenen ders hariç)
-        $eklenmisDersIds = DersMekanGereksinimi::where('id', '!=', $dersMekanGereksinimi->id)
-            ->pluck('ders_id')
-            ->unique()
-            ->toArray();
+        $ders->load('mekanGereksinimi');
 
         return Inertia::render('DersMekanGereksinimleri/Edit', [
-            'gereksinim' => $dersMekanGereksinimi->load('ders'),
-            'dersler' => $dersler,
-            'eklenmis_ders_ids' => $eklenmisDersIds,
+            'ders' => $ders,
         ]);
     }
 
-    public function update(Request $request, DersMekanGereksinimi $dersMekanGereksinimi)
+    public function update(Request $request, Ders $ders)
     {
         $data = $request->validate([
-            'ders_id' => 'required|exists:dersler,id',
-            'mekan_tipi' => 'required|in:derslik,laboratuvar,konferans_salonu',
-            'gereksinim_tipi' => 'required|in:zorunlu,olabilir',
+            'mekan_tipi' => 'nullable|in:derslik,laboratuvar,konferans_salonu',
+            'gereksinim_tipi' => 'nullable|in:zorunlu,olabilir',
+            'has_requirement' => 'boolean', // Gereksinim var mı yok mu kontrolü
         ]);
 
-        $dersMekanGereksinimi->update($data);
+        // Eğer gereksinim yok olarak işaretlendiyse sil
+        if (isset($data['has_requirement']) && !$data['has_requirement']) {
+            if ($ders->mekanGereksinimi) {
+                $ders->mekanGereksinimi->delete();
+            }
+            return redirect()->route('ders-mekan-gereksinimleri.index')
+                ->with('success', 'Ders mekan gereksinimi kaldırıldı.');
+        }
+
+        // Validasyon (Eğer gereksinim varsa tipler zorunlu)
+        if ($data['has_requirement']) {
+            $request->validate([
+                'mekan_tipi' => 'required|in:derslik,laboratuvar,konferans_salonu',
+                'gereksinim_tipi' => 'required|in:zorunlu,olabilir',
+            ]);
+        }
+
+        // Kaydı güncelle veya oluştur
+        DersMekanGereksinimi::updateOrCreate(
+            ['ders_id' => $ders->id],
+            [
+                'mekan_tipi' => $data['mekan_tipi'],
+                'gereksinim_tipi' => $data['gereksinim_tipi'],
+            ]
+        );
 
         return redirect()->route('ders-mekan-gereksinimleri.index')
-            ->with('success', 'Mekan gereksinimi güncellendi.');
+            ->with('success', 'Ders mekan gereksinimi güncellendi.');
     }
 
-    public function destroy(DersMekanGereksinimi $dersMekanGereksinimi)
+    public function destroy(Ders $ders)
     {
-        $dersMekanGereksinimi->delete();
+        if ($ders->mekanGereksinimi) {
+            $ders->mekanGereksinimi->delete();
+        }
 
         return redirect()->route('ders-mekan-gereksinimleri.index')
-            ->with('success', 'Mekan gereksinimi silindi.');
+            ->with('success', 'Ders mekan gereksinimi silindi.');
     }
 
     public function downloadTemplate()

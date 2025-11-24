@@ -67,8 +67,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Zaman Dilimleri - Otomatik oluşturma
     Route::post('zaman-dilimleri/generate', [ZamanDilimController::class, 'generate'])->name('zaman-dilimleri.generate');
 
-    // Ders Mekan Gereksinimleri resource routes
-    Route::resource('ders-mekan-gereksinimleri', DersMekanGeresinimController::class)->parameters(['ders-mekan-gereksinimleri' => 'dersMekanGereksinimi']);
+    // Ders Mekan Gereksinimleri routes (ders bazlı)
+    Route::get('ders-mekan-gereksinimleri', [DersMekanGeresinimController::class, 'index'])->name('ders-mekan-gereksinimleri.index');
+    Route::get('ders-mekan-gereksinimleri/create', [DersMekanGeresinimController::class, 'create'])->name('ders-mekan-gereksinimleri.create');
+    Route::post('ders-mekan-gereksinimleri', [DersMekanGeresinimController::class, 'store'])->name('ders-mekan-gereksinimleri.store');
+    Route::get('ders-mekan-gereksinimleri/{ders}', [DersMekanGeresinimController::class, 'show'])->name('ders-mekan-gereksinimleri.show');
+    Route::get('ders-mekan-gereksinimleri/{ders}/edit', [DersMekanGeresinimController::class, 'edit'])->name('ders-mekan-gereksinimleri.edit');
+    Route::put('ders-mekan-gereksinimleri/{ders}', [DersMekanGeresinimController::class, 'update'])->name('ders-mekan-gereksinimleri.update');
+    Route::delete('ders-mekan-gereksinimleri/{ders}', [DersMekanGeresinimController::class, 'destroy'])->name('ders-mekan-gereksinimleri.destroy');
 
     // Ders Mekan Gereksinimleri - Excel import/export routes
     Route::get('ders-mekan-gereksinimleri/template/download', [DersMekanGeresinimController::class, 'downloadTemplate'])->name('ders-mekan-gereksinimleri.template.download');

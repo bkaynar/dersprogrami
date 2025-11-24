@@ -4,12 +4,14 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import { AlertTriangle } from 'lucide-vue-next'; // Yeni eklendi
 
 interface Ders {
     id: number;
     ders_kodu: string;
     isim: string;
     haftalik_saat: number;
+    ogretmenler_count: number; // Yeni eklendi
 }
 
 interface PaginatedDersler {
@@ -206,6 +208,7 @@ const uploadFile = () => {
                             <th class="px-6 py-3 text-left text-sm font-medium">Ders Kodu</th>
                             <th class="px-6 py-3 text-left text-sm font-medium">Ders Adı</th>
                             <th class="px-6 py-3 text-left text-sm font-medium">Haftalık Saat</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Atanmış Hocalar</th>
                             <th class="px-6 py-3 text-right text-sm font-medium">İşlemler</th>
                         </tr>
                     </thead>
@@ -225,6 +228,16 @@ const uploadFile = () => {
                             </td>
                             <td class="px-6 py-4 text-muted-foreground">
                                 {{ ders.haftalik_saat }} saat
+                            </td>
+                            <td class="px-6 py-4">
+                                <span v-if="ders.ogretmenler_count > 0"
+                                    class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
+                                    {{ ders.ogretmenler_count }} hoca
+                                </span>
+                                <span v-else
+                                    class="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                                    <AlertTriangle class="h-3 w-3" /> 0 hoca
+                                </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">

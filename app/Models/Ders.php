@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 class Ders extends Model
 {
     use HasFactory;
@@ -19,9 +21,9 @@ class Ders extends Model
         'haftalik_saat',
     ];
 
-    public function gereksinimler(): HasMany
+    public function mekanGereksinimi(): HasOne
     {
-        return $this->hasMany(DersMekanGereksinimi::class, 'ders_id');
+        return $this->hasOne(DersMekanGereksinimi::class, 'ders_id');
     }
 
     public function ogrenciGruplari(): BelongsToMany

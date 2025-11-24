@@ -4,8 +4,24 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import derslerRoute from '@/routes/dersler';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { UserRound } from 'lucide-vue-next'; // Yeni eklendi
 
-const props = defineProps<{ ders: { id: number; ders_kodu: string; isim: string; haftalik_saat: number } }>();
+interface Ogretmen {
+    id: number;
+    isim: string;
+    unvan: string;
+    email: string;
+}
+
+const props = defineProps<{
+    ders: {
+        id: number;
+        ders_kodu: string;
+        isim: string;
+        haftalik_saat: number;
+        ogretmenler: Ogretmen[]; // Yeni eklendi
+    };
+}>();
 
 const form = useForm({});
 
@@ -100,6 +116,33 @@ const destroy = () => {
                 <div>
                   <p class="text-sm font-medium text-muted-foreground">Ders Kodu</p>
                   <p class="text-lg font-semibold">{{ props.ders.ders_kodu }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dersi Veren Hocalar -->
+            <div class="flex items-center justify-between rounded-lg border bg-muted/50 p-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background">
+                  <UserRound class="h-5 w-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-muted-foreground">Dersi Veren Hocalar</p>
+                  <div v-if="props.ders.ogretmenler && props.ders.ogretmenler.length > 0" class="flex flex-wrap gap-2 mt-1">
+                    <span v-for="ogretmen in props.ders.ogretmenler" :key="ogretmen.id"
+                      class="inline-flex items-center rounded-md bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
+                      {{ ogretmen.isim }} ({{ ogretmen.unvan }})
+                    </span>
+                  </div>
+                  <p v-else class="text-lg font-semibold text-muted-foreground">
+                    <div class="rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800 flex items-center gap-2">
+                        <AlertTriangle class="h-5 w-5" />
+                        Bu derse atanmış bir hoca bulunmamaktadır.
+                        <Link :href="`/ogretmen-dersleri/${props.ders.id}/edit`" class="ml-auto inline-flex items-center gap-1.5 rounded-md bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-900 hover:bg-yellow-200">
+                            Hoca Ata <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </Link>
+                    </div>
+                  </p>
                 </div>
               </div>
             </div>
