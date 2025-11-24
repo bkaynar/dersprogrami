@@ -2,13 +2,16 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm, router } from '@inertiajs/vue3';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import axios from 'axios';
 
 defineProps<{
     program_var: boolean;
 }>();
+
+const page = usePage();
+const flash = computed(() => page.props.flash as any);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -106,6 +109,25 @@ onUnmounted(() => {
                 <p class="mt-1 text-sm text-muted-foreground">
                     Genetik algoritma ile otomatik ders programı oluşturun
                 </p>
+            </div>
+
+            <!-- Flash Messages -->
+            <div v-if="flash?.error" class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
+                <div class="flex items-start gap-3">
+                    <svg class="h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-sm text-red-800 dark:text-red-200">{{ flash.error }}</div>
+                </div>
+            </div>
+
+            <div v-if="flash?.success" class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950">
+                <div class="flex items-start gap-3">
+                    <svg class="h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-sm text-green-800 dark:text-green-200">{{ flash.success }}</div>
+                </div>
             </div>
 
             <!-- Info Card -->

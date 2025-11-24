@@ -40,6 +40,14 @@ class ProgramOlusturController extends Controller
      */
     public function generate(Request $request)
     {
+        // Önce gerekli verilerin olup olmadığını kontrol et
+        $validation = $this->validateRequiredData();
+        if ($validation !== true) {
+            return redirect()
+                ->route('program-olustur.index')
+                ->with('error', $validation);
+        }
+
         $useBackgroundJob = $request->input('background', true);
 
         if ($useBackgroundJob) {
@@ -65,6 +73,36 @@ class ProgramOlusturController extends Controller
                     ->with('error', 'Program oluşturulurken hata: ' . $e->getMessage());
             }
         }
+    }
+
+    /**
+     * Program oluşturmak için gerekli verilerin kontrolü
+     */
+    private function validateRequiredData()
+    {
+        // Kontrol edilecek kayıt sayıları
+        $checks = [
+            ['model' => \App\Models\OgrenciGrubu::class, 'name' => 'Öğrenci Grubu', 'route' => 'ogrenci-gruplari.index'],
+            ['model' => \App\Models\Ders::class, 'name' => 'Ders', 'route' => 'dersler.index'],
+            ['model' => \App\Models\Ogretmen::class, 'name' => 'Öğretmen', 'route' => 'ogretmenler.index'],
+            ['model' => \App\Models\Mekan::class, 'name' => 'Mekan', 'route' => 'mekanlar.index'],
+            ['model' => \App\Models\ZamanDilim::class, 'name' => 'Zaman Dilimi', 'route' => 'zaman-dilimleri.index'],
+            ['model' => \App\Models\GrupDers::class, 'name' => 'Grup Dersleri (Hangi grubun hangi dersi aldığı)', 'route' => 'grup-dersleri.index'],
+            ['model' => \App\Models\OgretmenDers::class, 'name' => 'Öğretmen Dersleri (Hangi öğretmenin hangi dersi verdiği)', 'route' => 'ogretmen-dersleri.index'],
+        ];
+
+        $missingData = [];
+        foreach ($checks as $check) {
+            if ($check['model']::count() === 0) {
+                $missingData[] = $check['name'];
+            }
+        }
+
+        if (!empty($missingData)) {
+            return 'Program oluşturmak için eksik veriler var: ' . implode(', ', $missingData) . '. Lütfen önce bu verileri ekleyin.';
+        }
+
+        return true;
     }
 
     /**
