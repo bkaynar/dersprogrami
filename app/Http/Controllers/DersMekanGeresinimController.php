@@ -24,10 +24,15 @@ class DersMekanGeresinimController extends Controller
 
     public function create()
     {
+        // Tüm dersleri al
         $dersler = Ders::orderBy('isim')->get(['id', 'ders_kodu', 'isim']);
+
+        // Zaten eklenmiş ders ID'lerini al
+        $eklenmisDersIds = DersMekanGereksinimi::pluck('ders_id')->unique()->toArray();
 
         return Inertia::render('DersMekanGereksinimleri/Create', [
             'dersler' => $dersler,
+            'eklenmis_ders_ids' => $eklenmisDersIds,
         ]);
     }
 
@@ -56,11 +61,19 @@ class DersMekanGeresinimController extends Controller
 
     public function edit(DersMekanGereksinimi $dersMekanGereksinimi)
     {
+        // Tüm dersleri al
         $dersler = Ders::orderBy('isim')->get(['id', 'ders_kodu', 'isim']);
+
+        // Zaten eklenmiş ders ID'lerini al (düzenlenen ders hariç)
+        $eklenmisDersIds = DersMekanGereksinimi::where('id', '!=', $dersMekanGereksinimi->id)
+            ->pluck('ders_id')
+            ->unique()
+            ->toArray();
 
         return Inertia::render('DersMekanGereksinimleri/Edit', [
             'gereksinim' => $dersMekanGereksinimi->load('ders'),
             'dersler' => $dersler,
+            'eklenmis_ders_ids' => $eklenmisDersIds,
         ]);
     }
 

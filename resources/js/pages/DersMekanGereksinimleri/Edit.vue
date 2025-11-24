@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { ref, computed } from 'vue';
 
 interface Ders {
   id: number;
@@ -21,7 +22,20 @@ interface Gereksinim {
 const props = defineProps<{
   gereksinim: Gereksinim;
   dersler: Ders[];
+  eklenmis_ders_ids: number[];
 }>();
+
+const showOnlyAvailable = ref(true);
+
+// Filtrelenmiş dersler - mevcut dersi her zaman göster
+const filteredDersler = computed(() => {
+  if (!showOnlyAvailable.value) {
+    return props.dersler;
+  }
+  return props.dersler.filter(ders =>
+    ders.id === props.gereksinim.ders_id || !props.eklenmis_ders_ids.includes(ders.id)
+  );
+});
 
 const form = useForm({
   ders_id: props.gereksinim.ders_id,
@@ -78,10 +92,23 @@ const submit = () => {
         <form @submit.prevent="submit" class="space-y-6">
           <!-- Ders -->
           <div class="space-y-2">
-            <label for="ders_id" class="text-sm font-medium">
-              Ders
-              <span class="text-destructive">*</span>
-            </label>
+            <div class="flex items-center justify-between">
+              <label for="ders_id" class="text-sm font-medium">
+                Ders
+                <span class="text-destructive">*</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <input
+                  id="showOnlyAvailable"
+                  v-model="showOnlyAvailable"
+                  type="checkbox"
+                  class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary"
+                />
+                <label for="showOnlyAvailable" class="text-xs text-muted-foreground cursor-pointer select-none">
+                  Sadece eklenmeyen dersleri göster
+                </label>
+              </div>
+            </div>
             <select
               id="ders_id"
               v-model.number="form.ders_id"
@@ -89,12 +116,15 @@ const submit = () => {
               :class="{ 'border-destructive': form.errors.ders_id }"
             >
               <option :value="null">Bir ders seçiniz</option>
-              <option v-for="ders in dersler" :key="ders.id" :value="ders.id">
+              <option v-for="ders in filteredDersler" :key="ders.id" :value="ders.id">
                 {{ ders.ders_kodu }} - {{ ders.isim }}
               </option>
             </select>
             <p v-if="form.errors.ders_id" class="text-sm text-destructive">
               {{ form.errors.ders_id }}
+            </p>
+            <p v-if="showOnlyAvailable" class="text-xs text-muted-foreground">
+              {{ filteredDersler.length }} ders listeleniyor ({{ eklenmis_ders_ids.length }} ders gizlendi)
             </p>
           </div>
 
