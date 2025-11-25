@@ -12,10 +12,11 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
-        wayfinder({
+        // Sadece development modunda wayfinder kullan
+        ...(process.env.NODE_ENV !== 'production' ? [wayfinder({
             formVariants: true,
             phpBinary: '/opt/plesk/php/8.4/bin/php',
-        }),
+        })] : []),
         vue({
             template: {
                 transformAssetUrls: {
