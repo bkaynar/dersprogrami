@@ -14,6 +14,7 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
+            phpBinary: '/opt/plesk/php/8.4/bin/php',
         }),
         vue({
             template: {
