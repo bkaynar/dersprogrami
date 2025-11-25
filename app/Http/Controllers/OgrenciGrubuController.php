@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Imports\OgrenciGruplariImport;
 use App\Exports\OgrenciGruplariTemplateExport;
+use App\Exports\OgrenciGruplariExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OgrenciGrubuController extends Controller
@@ -96,6 +97,14 @@ class OgrenciGrubuController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new OgrenciGruplariTemplateExport, 'ogrenci-gruplari-sablonu.xlsx');
+    }
+
+    /**
+     * Öğrenci gruplarını Excel olarak dışa aktar
+     */
+    public function export()
+    {
+        return Excel::download(new OgrenciGruplariExport, 'ogrenci-gruplari.xlsx');
     }
 
     public function import(Request $request)

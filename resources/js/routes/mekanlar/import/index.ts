@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MekanController::preview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 export const preview = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ preview.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::preview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 preview.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ preview.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::preview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 preview.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ preview.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::preview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 const previewForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const previewForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =
 
 /**
 * @see \App\Http\Controllers\MekanController::preview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 previewForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -57,7 +57,7 @@ preview.form = previewForm
 
 /**
 * @see \App\Http\Controllers\MekanController::selected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 export const selected = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -72,7 +72,7 @@ selected.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::selected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 selected.url = (options?: RouteQueryOptions) => {
@@ -81,7 +81,7 @@ selected.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::selected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 selected.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -91,7 +91,7 @@ selected.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::selected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 const selectedForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -101,7 +101,7 @@ const selectedForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> 
 
 /**
 * @see \App\Http\Controllers\MekanController::selected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 selectedForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

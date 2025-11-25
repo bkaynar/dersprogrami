@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ogretmen;
 use App\Exports\OgretmenlerTemplateExport;
+use App\Exports\OgretmenlerExport;
 use App\Imports\OgretmenlerImport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -78,6 +79,14 @@ class OgretmenController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new OgretmenlerTemplateExport, 'ogretmenler-sablonu.xlsx');
+    }
+
+    /**
+     * Öğretmenleri Excel olarak dışa aktar
+     */
+    public function export()
+    {
+        return Excel::download(new OgretmenlerExport, 'ogretmenler.xlsx');
     }
 
     /**

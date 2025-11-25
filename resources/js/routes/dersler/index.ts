@@ -1,8 +1,89 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import template from './template'
 /**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+export const exportMethod = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+exportMethod.definition = {
+    methods: ["get","head"],
+    url: '/dersler/export',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+exportMethod.url = (options?: RouteQueryOptions) => {
+    return exportMethod.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+exportMethod.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+exportMethod.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: exportMethod.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+const exportMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+exportMethodForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DersController::exportMethod
+* @see app/Http/Controllers/DersController.php:103
+* @route '/dersler/export'
+*/
+exportMethodForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+exportMethod.form = exportMethodForm
+
+/**
 * @see \App\Http\Controllers\DersController::importMethod
-* @see app/Http/Controllers/DersController.php:102
+* @see app/Http/Controllers/DersController.php:111
 * @route '/dersler/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -17,7 +98,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::importMethod
-* @see app/Http/Controllers/DersController.php:102
+* @see app/Http/Controllers/DersController.php:111
 * @route '/dersler/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -26,7 +107,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DersController::importMethod
-* @see app/Http/Controllers/DersController.php:102
+* @see app/Http/Controllers/DersController.php:111
 * @route '/dersler/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -36,7 +117,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::importMethod
-* @see app/Http/Controllers/DersController.php:102
+* @see app/Http/Controllers/DersController.php:111
 * @route '/dersler/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -46,7 +127,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\DersController::importMethod
-* @see app/Http/Controllers/DersController.php:102
+* @see app/Http/Controllers/DersController.php:111
 * @route '/dersler/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -58,7 +139,7 @@ importMethod.form = importMethodForm
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -73,7 +154,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -82,7 +163,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -92,7 +173,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -102,7 +183,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -112,7 +193,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -122,7 +203,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::index
-* @see app/Http/Controllers/DersController.php:14
+* @see app/Http/Controllers/DersController.php:15
 * @route '/dersler'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -139,7 +220,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -154,7 +235,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -163,7 +244,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -173,7 +254,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -183,7 +264,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -193,7 +274,7 @@ const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -203,7 +284,7 @@ createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::create
-* @see app/Http/Controllers/DersController.php:38
+* @see app/Http/Controllers/DersController.php:39
 * @route '/dersler/create'
 */
 createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -220,7 +301,7 @@ create.form = createForm
 
 /**
 * @see \App\Http\Controllers\DersController::store
-* @see app/Http/Controllers/DersController.php:43
+* @see app/Http/Controllers/DersController.php:44
 * @route '/dersler'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -235,7 +316,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::store
-* @see app/Http/Controllers/DersController.php:43
+* @see app/Http/Controllers/DersController.php:44
 * @route '/dersler'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -244,7 +325,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DersController::store
-* @see app/Http/Controllers/DersController.php:43
+* @see app/Http/Controllers/DersController.php:44
 * @route '/dersler'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -254,7 +335,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::store
-* @see app/Http/Controllers/DersController.php:43
+* @see app/Http/Controllers/DersController.php:44
 * @route '/dersler'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -264,7 +345,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\DersController::store
-* @see app/Http/Controllers/DersController.php:43
+* @see app/Http/Controllers/DersController.php:44
 * @route '/dersler'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -276,7 +357,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 export const show = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -291,7 +372,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 show.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -324,7 +405,7 @@ show.url = (args: { ders: number | { id: number } } | [ders: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 show.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -334,7 +415,7 @@ show.get = (args: { ders: number | { id: number } } | [ders: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 show.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -344,7 +425,7 @@ show.head = (args: { ders: number | { id: number } } | [ders: number | { id: num
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 const showForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -354,7 +435,7 @@ const showForm = (args: { ders: number | { id: number } } | [ders: number | { id
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 showForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -364,7 +445,7 @@ showForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DersController::show
-* @see app/Http/Controllers/DersController.php:56
+* @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
 showForm.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -381,7 +462,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 export const edit = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -396,7 +477,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 edit.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -429,7 +510,7 @@ edit.url = (args: { ders: number | { id: number } } | [ders: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 edit.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -439,7 +520,7 @@ edit.get = (args: { ders: number | { id: number } } | [ders: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 edit.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -449,7 +530,7 @@ edit.head = (args: { ders: number | { id: number } } | [ders: number | { id: num
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 const editForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -459,7 +540,7 @@ const editForm = (args: { ders: number | { id: number } } | [ders: number | { id
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 editForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -469,7 +550,7 @@ editForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DersController::edit
-* @see app/Http/Controllers/DersController.php:64
+* @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
 editForm.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -486,7 +567,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 export const update = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -501,7 +582,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 update.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -534,7 +615,7 @@ update.url = (args: { ders: number | { id: number } } | [ders: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 update.put = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -544,7 +625,7 @@ update.put = (args: { ders: number | { id: number } } | [ders: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 update.patch = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -554,7 +635,7 @@ update.patch = (args: { ders: number | { id: number } } | [ders: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 const updateForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -569,7 +650,7 @@ const updateForm = (args: { ders: number | { id: number } } | [ders: number | { 
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 updateForm.put = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -584,7 +665,7 @@ updateForm.put = (args: { ders: number | { id: number } } | [ders: number | { id
 
 /**
 * @see \App\Http\Controllers\DersController::update
-* @see app/Http/Controllers/DersController.php:71
+* @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
 updateForm.patch = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -601,7 +682,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\DersController::destroy
-* @see app/Http/Controllers/DersController.php:84
+* @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
 export const destroy = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -616,7 +697,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::destroy
-* @see app/Http/Controllers/DersController.php:84
+* @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
 destroy.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -649,7 +730,7 @@ destroy.url = (args: { ders: number | { id: number } } | [ders: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DersController::destroy
-* @see app/Http/Controllers/DersController.php:84
+* @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
 destroy.delete = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -659,7 +740,7 @@ destroy.delete = (args: { ders: number | { id: number } } | [ders: number | { id
 
 /**
 * @see \App\Http\Controllers\DersController::destroy
-* @see app/Http/Controllers/DersController.php:84
+* @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
 const destroyForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -674,7 +755,7 @@ const destroyForm = (args: { ders: number | { id: number } } | [ders: number | {
 
 /**
 * @see \App\Http\Controllers\DersController::destroy
-* @see app/Http/Controllers/DersController.php:84
+* @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
 destroyForm.delete = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -691,6 +772,7 @@ destroy.form = destroyForm
 
 const dersler = {
     template: Object.assign(template, template),
+    export: Object.assign(exportMethod, exportMethod),
     import: Object.assign(importMethod, importMethod),
     index: Object.assign(index, index),
     create: Object.assign(create, create),

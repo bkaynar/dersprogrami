@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ders;
 use App\Exports\DerslerTemplateExport;
+use App\Exports\DerslerExport;
 use App\Imports\DerslerImport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -94,6 +95,14 @@ class DersController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new DerslerTemplateExport, 'dersler-sablonu.xlsx');
+    }
+
+    /**
+     * Dersleri Excel olarak dışa aktar
+     */
+    public function export()
+    {
+        return Excel::download(new DerslerExport, 'dersler.xlsx');
     }
 
     /**

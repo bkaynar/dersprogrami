@@ -1,8 +1,89 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import template from './template'
 /**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+export const exportMethod = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+exportMethod.definition = {
+    methods: ["get","head"],
+    url: '/ogrenci-gruplari/export',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+exportMethod.url = (options?: RouteQueryOptions) => {
+    return exportMethod.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+exportMethod.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+exportMethod.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: exportMethod.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+const exportMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+exportMethodForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgrenciGrubuController::exportMethod
+* @see app/Http/Controllers/OgrenciGrubuController.php:105
+* @route '/ogrenci-gruplari/export'
+*/
+exportMethodForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+exportMethod.form = exportMethodForm
+
+/**
 * @see \App\Http\Controllers\OgrenciGrubuController::importMethod
-* @see app/Http/Controllers/OgrenciGrubuController.php:101
+* @see app/Http/Controllers/OgrenciGrubuController.php:110
 * @route '/ogrenci-gruplari/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -17,7 +98,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::importMethod
-* @see app/Http/Controllers/OgrenciGrubuController.php:101
+* @see app/Http/Controllers/OgrenciGrubuController.php:110
 * @route '/ogrenci-gruplari/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -26,7 +107,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::importMethod
-* @see app/Http/Controllers/OgrenciGrubuController.php:101
+* @see app/Http/Controllers/OgrenciGrubuController.php:110
 * @route '/ogrenci-gruplari/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -36,7 +117,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::importMethod
-* @see app/Http/Controllers/OgrenciGrubuController.php:101
+* @see app/Http/Controllers/OgrenciGrubuController.php:110
 * @route '/ogrenci-gruplari/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -46,7 +127,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::importMethod
-* @see app/Http/Controllers/OgrenciGrubuController.php:101
+* @see app/Http/Controllers/OgrenciGrubuController.php:110
 * @route '/ogrenci-gruplari/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -58,7 +139,7 @@ importMethod.form = importMethodForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -73,7 +154,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -82,7 +163,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -92,7 +173,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -102,7 +183,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -112,7 +193,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -122,7 +203,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::index
-* @see app/Http/Controllers/OgrenciGrubuController.php:14
+* @see app/Http/Controllers/OgrenciGrubuController.php:15
 * @route '/ogrenci-gruplari'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -139,7 +220,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -154,7 +235,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -163,7 +244,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -173,7 +254,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -183,7 +264,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -193,7 +274,7 @@ const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -203,7 +284,7 @@ createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::create
-* @see app/Http/Controllers/OgrenciGrubuController.php:26
+* @see app/Http/Controllers/OgrenciGrubuController.php:27
 * @route '/ogrenci-gruplari/create'
 */
 createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -220,7 +301,7 @@ create.form = createForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::store
-* @see app/Http/Controllers/OgrenciGrubuController.php:35
+* @see app/Http/Controllers/OgrenciGrubuController.php:36
 * @route '/ogrenci-gruplari'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -235,7 +316,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::store
-* @see app/Http/Controllers/OgrenciGrubuController.php:35
+* @see app/Http/Controllers/OgrenciGrubuController.php:36
 * @route '/ogrenci-gruplari'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -244,7 +325,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::store
-* @see app/Http/Controllers/OgrenciGrubuController.php:35
+* @see app/Http/Controllers/OgrenciGrubuController.php:36
 * @route '/ogrenci-gruplari'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -254,7 +335,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::store
-* @see app/Http/Controllers/OgrenciGrubuController.php:35
+* @see app/Http/Controllers/OgrenciGrubuController.php:36
 * @route '/ogrenci-gruplari'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -264,7 +345,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::store
-* @see app/Http/Controllers/OgrenciGrubuController.php:35
+* @see app/Http/Controllers/OgrenciGrubuController.php:36
 * @route '/ogrenci-gruplari'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -276,7 +357,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 export const show = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -291,7 +372,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 show.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -324,7 +405,7 @@ show.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: num
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 show.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -334,7 +415,7 @@ show.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: num
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 show.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -344,7 +425,7 @@ show.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: nu
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 const showForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -354,7 +435,7 @@ const showForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrub
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 showForm.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -364,7 +445,7 @@ showForm.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu:
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::show
-* @see app/Http/Controllers/OgrenciGrubuController.php:49
+* @see app/Http/Controllers/OgrenciGrubuController.php:50
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 showForm.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -381,7 +462,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 export const edit = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -396,7 +477,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 edit.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -429,7 +510,7 @@ edit.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: num
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 edit.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -439,7 +520,7 @@ edit.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: num
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 edit.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -449,7 +530,7 @@ edit.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: nu
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 const editForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -459,7 +540,7 @@ const editForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrub
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 editForm.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -469,7 +550,7 @@ editForm.get = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu:
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::edit
-* @see app/Http/Controllers/OgrenciGrubuController.php:58
+* @see app/Http/Controllers/OgrenciGrubuController.php:59
 * @route '/ogrenci-gruplari/{ogrenciGrubu}/edit'
 */
 editForm.head = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -486,7 +567,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 export const update = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -501,7 +582,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 update.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -534,7 +615,7 @@ update.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: n
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 update.put = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -544,7 +625,7 @@ update.put = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: n
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 update.patch = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -554,7 +635,7 @@ update.patch = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu:
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 const updateForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -569,7 +650,7 @@ const updateForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGr
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 updateForm.put = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -584,7 +665,7 @@ updateForm.put = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrub
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::update
-* @see app/Http/Controllers/OgrenciGrubuController.php:70
+* @see app/Http/Controllers/OgrenciGrubuController.php:71
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 updateForm.patch = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -601,7 +682,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::destroy
-* @see app/Http/Controllers/OgrenciGrubuController.php:89
+* @see app/Http/Controllers/OgrenciGrubuController.php:90
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 export const destroy = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -616,7 +697,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::destroy
-* @see app/Http/Controllers/OgrenciGrubuController.php:89
+* @see app/Http/Controllers/OgrenciGrubuController.php:90
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 destroy.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -649,7 +730,7 @@ destroy.url = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: 
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::destroy
-* @see app/Http/Controllers/OgrenciGrubuController.php:89
+* @see app/Http/Controllers/OgrenciGrubuController.php:90
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 destroy.delete = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -659,7 +740,7 @@ destroy.delete = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrub
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::destroy
-* @see app/Http/Controllers/OgrenciGrubuController.php:89
+* @see app/Http/Controllers/OgrenciGrubuController.php:90
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 const destroyForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -674,7 +755,7 @@ const destroyForm = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciG
 
 /**
 * @see \App\Http\Controllers\OgrenciGrubuController::destroy
-* @see app/Http/Controllers/OgrenciGrubuController.php:89
+* @see app/Http/Controllers/OgrenciGrubuController.php:90
 * @route '/ogrenci-gruplari/{ogrenciGrubu}'
 */
 destroyForm.delete = (args: { ogrenciGrubu: number | { id: number } } | [ogrenciGrubu: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -691,6 +772,7 @@ destroy.form = destroyForm
 
 const ogrenciGruplari = {
     template: Object.assign(template, template),
+    export: Object.assign(exportMethod, exportMethod),
     import: Object.assign(importMethod, importMethod),
     index: Object.assign(index, index),
     create: Object.assign(create, create),

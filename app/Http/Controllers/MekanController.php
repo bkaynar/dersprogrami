@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mekan;
 use App\Exports\MekanlarTemplateExport;
+use App\Exports\MekanlarExport;
 use App\Imports\MekanlarImport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -79,6 +80,14 @@ class MekanController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new MekanlarTemplateExport, 'mekanlar-sablonu.xlsx');
+    }
+
+    /**
+     * Mekanları Excel olarak dışa aktar
+     */
+    public function export()
+    {
+        return Excel::download(new MekanlarExport, 'mekanlar.xlsx');
     }
 
     /**

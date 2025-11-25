@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 export const downloadTemplate = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ downloadTemplate.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 downloadTemplate.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ downloadTemplate.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 downloadTemplate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ downloadTemplate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 downloadTemplate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ downloadTemplate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 const downloadTemplateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const downloadTemplateForm = (options?: RouteQueryOptions): RouteFormDefinition<
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 downloadTemplateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ downloadTemplateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'g
 
 /**
 * @see \App\Http\Controllers\MekanController::downloadTemplate
-* @see app/Http/Controllers/MekanController.php:79
+* @see app/Http/Controllers/MekanController.php:80
 * @route '/mekanlar/template/download'
 */
 downloadTemplateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -81,8 +81,89 @@ downloadTemplateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'
 downloadTemplate.form = downloadTemplateForm
 
 /**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+export const exportMethod = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+exportMethod.definition = {
+    methods: ["get","head"],
+    url: '/mekanlar/export',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+exportMethod.url = (options?: RouteQueryOptions) => {
+    return exportMethod.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+exportMethod.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+exportMethod.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: exportMethod.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+const exportMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+exportMethodForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\MekanController::exportMethod
+* @see app/Http/Controllers/MekanController.php:88
+* @route '/mekanlar/export'
+*/
+exportMethodForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exportMethod.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+exportMethod.form = exportMethodForm
+
+/**
 * @see \App\Http\Controllers\MekanController::importMethod
-* @see app/Http/Controllers/MekanController.php:87
+* @see app/Http/Controllers/MekanController.php:96
 * @route '/mekanlar/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +178,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::importMethod
-* @see app/Http/Controllers/MekanController.php:87
+* @see app/Http/Controllers/MekanController.php:96
 * @route '/mekanlar/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -106,7 +187,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::importMethod
-* @see app/Http/Controllers/MekanController.php:87
+* @see app/Http/Controllers/MekanController.php:96
 * @route '/mekanlar/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +197,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::importMethod
-* @see app/Http/Controllers/MekanController.php:87
+* @see app/Http/Controllers/MekanController.php:96
 * @route '/mekanlar/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +207,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\MekanController::importMethod
-* @see app/Http/Controllers/MekanController.php:87
+* @see app/Http/Controllers/MekanController.php:96
 * @route '/mekanlar/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +219,7 @@ importMethod.form = importMethodForm
 
 /**
 * @see \App\Http\Controllers\MekanController::importPreview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 export const importPreview = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -153,7 +234,7 @@ importPreview.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::importPreview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 importPreview.url = (options?: RouteQueryOptions) => {
@@ -162,7 +243,7 @@ importPreview.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::importPreview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 importPreview.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +253,7 @@ importPreview.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 /**
 * @see \App\Http\Controllers\MekanController::importPreview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 const importPreviewForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -182,7 +263,7 @@ const importPreviewForm = (options?: RouteQueryOptions): RouteFormDefinition<'po
 
 /**
 * @see \App\Http\Controllers\MekanController::importPreview
-* @see app/Http/Controllers/MekanController.php:154
+* @see app/Http/Controllers/MekanController.php:163
 * @route '/mekanlar/import/preview'
 */
 importPreviewForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -194,7 +275,7 @@ importPreview.form = importPreviewForm
 
 /**
 * @see \App\Http\Controllers\MekanController::importSelected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 export const importSelected = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -209,7 +290,7 @@ importSelected.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::importSelected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 importSelected.url = (options?: RouteQueryOptions) => {
@@ -218,7 +299,7 @@ importSelected.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::importSelected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 importSelected.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -228,7 +309,7 @@ importSelected.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\MekanController::importSelected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 const importSelectedForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -238,7 +319,7 @@ const importSelectedForm = (options?: RouteQueryOptions): RouteFormDefinition<'p
 
 /**
 * @see \App\Http\Controllers\MekanController::importSelected
-* @see app/Http/Controllers/MekanController.php:189
+* @see app/Http/Controllers/MekanController.php:198
 * @route '/mekanlar/import/selected'
 */
 importSelectedForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -250,7 +331,7 @@ importSelected.form = importSelectedForm
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -265,7 +346,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -274,7 +355,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -284,7 +365,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -294,7 +375,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -304,7 +385,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -314,7 +395,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::index
-* @see app/Http/Controllers/MekanController.php:15
+* @see app/Http/Controllers/MekanController.php:16
 * @route '/mekanlar'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -331,7 +412,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -346,7 +427,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -355,7 +436,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -365,7 +446,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -375,7 +456,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -385,7 +466,7 @@ const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -395,7 +476,7 @@ createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::create
-* @see app/Http/Controllers/MekanController.php:24
+* @see app/Http/Controllers/MekanController.php:25
 * @route '/mekanlar/create'
 */
 createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -412,7 +493,7 @@ create.form = createForm
 
 /**
 * @see \App\Http\Controllers\MekanController::store
-* @see app/Http/Controllers/MekanController.php:29
+* @see app/Http/Controllers/MekanController.php:30
 * @route '/mekanlar'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -427,7 +508,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::store
-* @see app/Http/Controllers/MekanController.php:29
+* @see app/Http/Controllers/MekanController.php:30
 * @route '/mekanlar'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -436,7 +517,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MekanController::store
-* @see app/Http/Controllers/MekanController.php:29
+* @see app/Http/Controllers/MekanController.php:30
 * @route '/mekanlar'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -446,7 +527,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\MekanController::store
-* @see app/Http/Controllers/MekanController.php:29
+* @see app/Http/Controllers/MekanController.php:30
 * @route '/mekanlar'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -456,7 +537,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\MekanController::store
-* @see app/Http/Controllers/MekanController.php:29
+* @see app/Http/Controllers/MekanController.php:30
 * @route '/mekanlar'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -468,7 +549,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 export const show = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -483,7 +564,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 show.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -516,7 +597,7 @@ show.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 show.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -526,7 +607,7 @@ show.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 show.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -536,7 +617,7 @@ show.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: n
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 const showForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -546,7 +627,7 @@ const showForm = (args: { mekan: number | { id: number } } | [mekan: number | { 
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 showForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -556,7 +637,7 @@ showForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id
 
 /**
 * @see \App\Http\Controllers\MekanController::show
-* @see app/Http/Controllers/MekanController.php:42
+* @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
 showForm.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -573,7 +654,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 export const edit = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -588,7 +669,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 edit.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -621,7 +702,7 @@ edit.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 edit.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -631,7 +712,7 @@ edit.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 edit.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -641,7 +722,7 @@ edit.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: n
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 const editForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -651,7 +732,7 @@ const editForm = (args: { mekan: number | { id: number } } | [mekan: number | { 
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 editForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -661,7 +742,7 @@ editForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id
 
 /**
 * @see \App\Http\Controllers\MekanController::edit
-* @see app/Http/Controllers/MekanController.php:49
+* @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
 editForm.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -678,7 +759,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 export const update = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -693,7 +774,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 update.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -726,7 +807,7 @@ update.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: 
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 update.put = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -736,7 +817,7 @@ update.put = (args: { mekan: number | { id: number } } | [mekan: number | { id: 
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 update.patch = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -746,7 +827,7 @@ update.patch = (args: { mekan: number | { id: number } } | [mekan: number | { id
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 const updateForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -761,7 +842,7 @@ const updateForm = (args: { mekan: number | { id: number } } | [mekan: number | 
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 updateForm.put = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -776,7 +857,7 @@ updateForm.put = (args: { mekan: number | { id: number } } | [mekan: number | { 
 
 /**
 * @see \App\Http\Controllers\MekanController::update
-* @see app/Http/Controllers/MekanController.php:56
+* @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
 updateForm.patch = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -793,7 +874,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\MekanController::destroy
-* @see app/Http/Controllers/MekanController.php:69
+* @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
 export const destroy = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -808,7 +889,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\MekanController::destroy
-* @see app/Http/Controllers/MekanController.php:69
+* @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
 destroy.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -841,7 +922,7 @@ destroy.url = (args: { mekan: number | { id: number } } | [mekan: number | { id:
 
 /**
 * @see \App\Http\Controllers\MekanController::destroy
-* @see app/Http/Controllers/MekanController.php:69
+* @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
 destroy.delete = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -851,7 +932,7 @@ destroy.delete = (args: { mekan: number | { id: number } } | [mekan: number | { 
 
 /**
 * @see \App\Http\Controllers\MekanController::destroy
-* @see app/Http/Controllers/MekanController.php:69
+* @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
 const destroyForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -866,7 +947,7 @@ const destroyForm = (args: { mekan: number | { id: number } } | [mekan: number |
 
 /**
 * @see \App\Http\Controllers\MekanController::destroy
-* @see app/Http/Controllers/MekanController.php:69
+* @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
 destroyForm.delete = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -881,6 +962,6 @@ destroyForm.delete = (args: { mekan: number | { id: number } } | [mekan: number 
 
 destroy.form = destroyForm
 
-const MekanController = { downloadTemplate, importMethod, importPreview, importSelected, index, create, store, show, edit, update, destroy, import: importMethod }
+const MekanController = { downloadTemplate, exportMethod, importMethod, importPreview, importSelected, index, create, store, show, edit, update, destroy, export: exportMethod, import: importMethod }
 
 export default MekanController

@@ -29,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dersler - Excel import/export routes (önce tanımla)
     Route::get('dersler/template/download', [DersController::class, 'downloadTemplate'])->name('dersler.template.download');
+    Route::get('dersler/export', [DersController::class, 'export'])->name('dersler.export');
     Route::post('dersler/import', [DersController::class, 'import'])->name('dersler.import');
 
     // Dersler resource routes
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Ogretmenler - Excel import/export routes (önce tanımla)
     Route::get('ogretmenler/template/download', [OgretmenController::class, 'downloadTemplate'])->name('ogretmenler.template.download');
+    Route::get('ogretmenler/export', [OgretmenController::class, 'export'])->name('ogretmenler.export');
     Route::post('ogretmenler/import', [OgretmenController::class, 'import'])->name('ogretmenler.import');
 
     // Ogretmenler resource routes
@@ -43,12 +45,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Mekanlar - Excel import/export routes (önce tanımla)
     Route::get('mekanlar/template/download', [MekanController::class, 'downloadTemplate'])->name('mekanlar.template.download');
+    Route::get('mekanlar/export', [MekanController::class, 'export'])->name('mekanlar.export');
     Route::post('mekanlar/import', [MekanController::class, 'import'])->name('mekanlar.import');
     Route::post('mekanlar/import/preview', [MekanController::class, 'importPreview'])->name('mekanlar.import.preview');
     Route::post('mekanlar/import/selected', [MekanController::class, 'importSelected'])->name('mekanlar.import.selected');
 
     // Ogrenci Gruplari - Excel import/export routes (önce tanımla)
     Route::get('ogrenci-gruplari/template/download', [OgrenciGrubuController::class, 'downloadTemplate'])->name('ogrenci-gruplari.template.download');
+    Route::get('ogrenci-gruplari/export', [OgrenciGrubuController::class, 'export'])->name('ogrenci-gruplari.export');
     Route::post('ogrenci-gruplari/import', [OgrenciGrubuController::class, 'import'])->name('ogrenci-gruplari.import');
 
     // Mekanlar resource routes
