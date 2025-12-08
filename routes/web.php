@@ -10,6 +10,7 @@ use App\Http\Controllers\OgretmenController;
 use App\Http\Controllers\OgretmenDersController;
 use App\Http\Controllers\OgretmenMusaitlikController;
 use App\Http\Controllers\ProgramOlusturController;
+use App\Http\Controllers\TimetableSettingController;
 use App\Http\Controllers\ZamanDilimController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -130,6 +131,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('program-olustur/export/excel', [ProgramOlusturController::class, 'exportExcel'])->name('program-olustur.export.excel');
     Route::get('program-olustur/export/pdf', [ProgramOlusturController::class, 'exportPdf'])->name('program-olustur.export.pdf');
     Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
+
+    // Timetable Settings routes
+    Route::get('timetable-settings', [TimetableSettingController::class, 'index'])->name('timetable-settings.index');
+    Route::put('timetable-settings', [TimetableSettingController::class, 'update'])->name('timetable-settings.update');
 });
 
 

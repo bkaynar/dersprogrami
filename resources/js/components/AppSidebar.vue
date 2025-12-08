@@ -19,7 +19,7 @@ import ogrenciGruplariRoute from '@/routes/ogrenci-gruplari';
 import zamanDilimleriRoute from '@/routes/zaman-dilimleri';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, LayoutGrid, Users, Building2, UsersRound, Clock, MapPin, BookCheck, UserCheck, ClockAlert, ShieldAlert, CalendarDays } from 'lucide-vue-next';
+import { BookOpen, LayoutGrid, Users, Building2, UsersRound, Clock, MapPin, BookCheck, UserCheck, ClockAlert, ShieldAlert, CalendarDays, Settings } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -82,6 +82,11 @@ const mainNavItems: NavItem[] = [
         title: 'Program Oluştur',
         href: '/program-olustur',
         icon: CalendarDays,
+    },
+    {
+        title: 'Program Ayarları',
+        href: '/timetable-settings',
+        icon: Settings,
     },
 ];
 </script>

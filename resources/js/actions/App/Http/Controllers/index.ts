@@ -9,6 +9,7 @@ import OgretmenDersController from './OgretmenDersController'
 import OgretmenMusaitlikController from './OgretmenMusaitlikController'
 import GrupKisitlamaController from './GrupKisitlamaController'
 import ProgramOlusturController from './ProgramOlusturController'
+import TimetableSettingController from './TimetableSettingController'
 import Settings from './Settings'
 
 const Controllers = {
@@ -23,6 +24,7 @@ const Controllers = {
     OgretmenMusaitlikController: Object.assign(OgretmenMusaitlikController, OgretmenMusaitlikController),
     GrupKisitlamaController: Object.assign(GrupKisitlamaController, GrupKisitlamaController),
     ProgramOlusturController: Object.assign(ProgramOlusturController, ProgramOlusturController),
+    TimetableSettingController: Object.assign(TimetableSettingController, TimetableSettingController),
     Settings: Object.assign(Settings, Settings),
 }
 

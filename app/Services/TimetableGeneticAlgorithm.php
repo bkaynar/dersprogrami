@@ -12,6 +12,7 @@ use App\Models\OgretmenMusaitlik;
 use App\Models\ZamanDilim;
 use App\Models\GrupKisitlama;
 use App\Models\OlusturulanProgram;
+use App\Models\TimetableSetting;
 use Illuminate\Support\Facades\DB;
 
 class TimetableGeneticAlgorithm
@@ -33,8 +34,9 @@ class TimetableGeneticAlgorithm
     protected $grupDersler;
     protected $ogretmenMusaitlikler;
     protected $grupKisitlamalar;
+    protected $timetableSetting;
 
-    // Ders atamaları (her grup için)
+    // Ders atamaları (her grup için) - artık blok bazında
     protected array $dersAtamalari = [];
 
     public function __construct()
@@ -62,10 +64,16 @@ class TimetableGeneticAlgorithm
         $this->grupDersler = GrupDers::with(['ogrenciGrubu', 'ders'])->get();
         $this->ogretmenMusaitlikler = OgretmenMusaitlik::all();
         $this->grupKisitlamalar = GrupKisitlama::all();
+
+        // Timetable ayarlarını yükle
+        $this->timetableSetting = TimetableSetting::current();
     }
 
     /**
-     * Her grup için hangi dersleri alacağını hazırla
+     * Her grup için hangi dersleri alacağını hazırla (BLOK BAZINDA)
+     *
+     * Örnek: 5 saatlik ders -> split_rules'a göre [3, 2] bloklar halinde
+     * Her blok ayrı bir atama olarak eklenir ve kendi içinde arka arkaya olmalı
      */
     protected function prepareDersAtamalari(): void
     {
@@ -77,13 +85,19 @@ class TimetableGeneticAlgorithm
 
             foreach ($dersIds as $dersId) {
                 $ders = $this->dersler->find($dersId);
+                $haftalikSaat = $ders->haftalik_saat;
 
-                // Dersin haftalık saati kadar slot oluştur
-                for ($i = 0; $i < $ders->haftalik_saat; $i++) {
+                // Ayarlardan split kuralını al
+                $splitRule = $this->timetableSetting->getSplitRule($haftalikSaat);
+
+                // Her blok için ayrı bir atama oluştur
+                foreach ($splitRule as $blockIndex => $blockSize) {
                     $this->dersAtamalari[] = [
                         'grup_id' => $grup->id,
                         'ders_id' => $dersId,
-                        'slot_index' => $i,
+                        'block_index' => $blockIndex,        // Kaçıncı blok (0, 1, 2...)
+                        'block_size' => $blockSize,          // Bu blok kaç saat (2, 3, 4...)
+                        'must_be_consecutive' => $this->timetableSetting->enforce_consecutive,
                     ];
                 }
             }
@@ -171,8 +185,11 @@ class TimetableGeneticAlgorithm
         $individual = [];
 
         foreach ($this->dersAtamalari as $atama) {
-            // Rastgele zaman dilimi seç
-            $zamanDilim = $this->zamanDilimleri->random();
+            $blockSize = $atama['block_size'];
+
+            // Rastgele başlangıç zaman dilimi seç
+            // Arka arkaya blockSize kadar slot olabilecek bir başlangıç bulmalıyız
+            $baslangicZamanDilimIndex = rand(0, max(0, $this->zamanDilimleri->count() - $blockSize));
 
             // Rastgele mekan seç
             $mekan = $this->mekanlar->random();
@@ -189,13 +206,21 @@ class TimetableGeneticAlgorithm
 
             $ogretmenId = $uygunOgretmenler[array_rand($uygunOgretmenler)];
 
-            $individual[] = [
-                'grup_id' => $atama['grup_id'],
-                'ders_id' => $atama['ders_id'],
-                'ogretmen_id' => $ogretmenId,
-                'zaman_dilim_id' => $zamanDilim->id,
-                'mekan_id' => $mekan->id,
-            ];
+            // Blok için arka arkaya zaman dilimleri oluştur
+            for ($i = 0; $i < $blockSize; $i++) {
+                $zamanDilim = $this->zamanDilimleri[$baslangicZamanDilimIndex + $i];
+
+                $individual[] = [
+                    'grup_id' => $atama['grup_id'],
+                    'ders_id' => $atama['ders_id'],
+                    'block_index' => $atama['block_index'],
+                    'block_size' => $blockSize,
+                    'slot_in_block' => $i,  // Bu slot bloktaki kaçıncı saat (0, 1, 2...)
+                    'ogretmen_id' => $ogretmenId,
+                    'zaman_dilim_id' => $zamanDilim->id,
+                    'mekan_id' => $mekan->id,
+                ];
+            }
         }
 
         return $individual;
@@ -226,6 +251,9 @@ class TimetableGeneticAlgorithm
 
         // 5. Grup kısıtlamaları kontrolü
         $score -= $this->checkGrupKisitlama($individual) * 500;
+
+        // 6. Blokların arka arkaya olması kontrolü (SERT KISIT)
+        $score -= $this->checkBlockConsecutiveness($individual) * 2000;
 
         // YUMUŞAK KISITLAR (tercihe dayalı)
 
@@ -703,5 +731,79 @@ class TimetableGeneticAlgorithm
 
         // İstatistikleri logla (transaction dışında)
         \Log::info("Program kaydedildi: {$savedCount} ders, {$skippedCount} çakışma atlandı");
+    }
+
+    /**
+     * Blokların arka arkaya olup olmadığını kontrol et
+     *
+     * Bir dersin aynı bloğundaki tüm slotlar, arka arkaya zaman dilimlerinde olmalı
+     */
+    protected function checkBlockConsecutiveness(array $individual): int
+    {
+        $violations = 0;
+
+        // Grup+Ders+Block bazında slotları grupla
+        $blocks = [];
+        foreach ($individual as $slot) {
+            $blockKey = $slot['grup_id'] . '-' . $slot['ders_id'] . '-' . $slot['block_index'];
+
+            if (!isset($blocks[$blockKey])) {
+                $blocks[$blockKey] = [];
+            }
+
+            $blocks[$blockKey][] = $slot;
+        }
+
+        // Her blok için arka arkaya kontrolü
+        foreach ($blocks as $blockKey => $slots) {
+            // Block_size kontrolü
+            $expectedSize = $slots[0]['block_size'];
+            if (count($slots) !== $expectedSize) {
+                $violations += abs(count($slots) - $expectedSize);
+                continue;
+            }
+
+            // Zaman dilimlerini sırala
+            usort($slots, function($a, $b) {
+                return $a['zaman_dilim_id'] <=> $b['zaman_dilim_id'];
+            });
+
+            // Arka arkaya mı kontrol et
+            for ($i = 1; $i < count($slots); $i++) {
+                $prevZamanDilim = $this->zamanDilimleri->firstWhere('id', $slots[$i - 1]['zaman_dilim_id']);
+                $currZamanDilim = $this->zamanDilimleri->firstWhere('id', $slots[$i]['zaman_dilim_id']);
+
+                // Aynı gün mü?
+                if ($prevZamanDilim->haftanin_gunu !== $currZamanDilim->haftanin_gunu) {
+                    $violations++;
+                    continue;
+                }
+
+                // Index olarak arka arkaya mı?
+                $prevIndex = $this->zamanDilimleri->search(function($item) use ($prevZamanDilim) {
+                    return $item->id === $prevZamanDilim->id;
+                });
+
+                $currIndex = $this->zamanDilimleri->search(function($item) use ($currZamanDilim) {
+                    return $item->id === $currZamanDilim->id;
+                });
+
+                if ($currIndex !== $prevIndex + 1) {
+                    $violations++;
+                }
+            }
+
+            // Aynı blokta tüm slotlar aynı öğretmen ve mekanda mı?
+            $firstOgretmen = $slots[0]['ogretmen_id'];
+            $firstMekan = $slots[0]['mekan_id'];
+
+            foreach ($slots as $slot) {
+                if ($slot['ogretmen_id'] !== $firstOgretmen || $slot['mekan_id'] !== $firstMekan) {
+                    $violations++;
+                }
+            }
+        }
+
+        return $violations;
     }
 }
