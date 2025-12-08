@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Imports\ZamanDilimleriImport;
 use App\Exports\ZamanDilimleriTemplateExport;
+use App\Exports\ZamanDilimleriExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ZamanDilimController extends Controller
@@ -77,6 +78,14 @@ class ZamanDilimController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new ZamanDilimleriTemplateExport, 'zaman-dilimleri-sablonu.xlsx');
+    }
+
+    /**
+     * Zaman dilimlerini Excel olarak dışa aktar
+     */
+    public function export()
+    {
+        return Excel::download(new ZamanDilimleriExport, 'zaman-dilimleri.xlsx');
     }
 
     public function import(Request $request)

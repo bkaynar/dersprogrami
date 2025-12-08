@@ -61,15 +61,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ogrenci Gruplari resource routes
     Route::resource('ogrenci-gruplari', OgrenciGrubuController::class)->parameters(['ogrenci-gruplari' => 'ogrenciGrubu']);
 
-    // Zaman Dilimleri resource routes
-    Route::resource('zaman-dilimleri', ZamanDilimController::class)->parameters(['zaman-dilimleri' => 'zamanDilimi']);
-
     // Zaman Dilimleri - Excel import/export routes
     Route::get('zaman-dilimleri/template/download', [ZamanDilimController::class, 'downloadTemplate'])->name('zaman-dilimleri.template.download');
+    Route::get('zaman-dilimleri/export', [ZamanDilimController::class, 'export'])->name('zaman-dilimleri.export');
     Route::post('zaman-dilimleri/import', [ZamanDilimController::class, 'import'])->name('zaman-dilimleri.import');
 
     // Zaman Dilimleri - Otomatik oluşturma
     Route::post('zaman-dilimleri/generate', [ZamanDilimController::class, 'generate'])->name('zaman-dilimleri.generate');
+
+    // Zaman Dilimleri resource routes
+    Route::resource('zaman-dilimleri', ZamanDilimController::class)->parameters(['zaman-dilimleri' => 'zamanDilimi']);
+
+    // Ders Mekan Gereksinimleri - Excel import/export routes
+    Route::get('ders-mekan-gereksinimleri/template/download', [DersMekanGeresinimController::class, 'downloadTemplate'])->name('ders-mekan-gereksinimleri.template.download');
+    Route::get('ders-mekan-gereksinimleri/export', [DersMekanGeresinimController::class, 'export'])->name('ders-mekan-gereksinimleri.export');
+    Route::post('ders-mekan-gereksinimleri/import', [DersMekanGeresinimController::class, 'import'])->name('ders-mekan-gereksinimleri.import');
 
     // Ders Mekan Gereksinimleri routes (ders bazlı)
     Route::get('ders-mekan-gereksinimleri', [DersMekanGeresinimController::class, 'index'])->name('ders-mekan-gereksinimleri.index');
@@ -79,10 +85,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('ders-mekan-gereksinimleri/{ders}/edit', [DersMekanGeresinimController::class, 'edit'])->name('ders-mekan-gereksinimleri.edit');
     Route::put('ders-mekan-gereksinimleri/{ders}', [DersMekanGeresinimController::class, 'update'])->name('ders-mekan-gereksinimleri.update');
     Route::delete('ders-mekan-gereksinimleri/{ders}', [DersMekanGeresinimController::class, 'destroy'])->name('ders-mekan-gereksinimleri.destroy');
-
-    // Ders Mekan Gereksinimleri - Excel import/export routes
-    Route::get('ders-mekan-gereksinimleri/template/download', [DersMekanGeresinimController::class, 'downloadTemplate'])->name('ders-mekan-gereksinimleri.template.download');
-    Route::post('ders-mekan-gereksinimleri/import', [DersMekanGeresinimController::class, 'import'])->name('ders-mekan-gereksinimleri.import');
 
     // Grup Dersleri routes (grup bazlı)
     Route::get('grup-dersleri', [GrupDersController::class, 'index'])->name('grup-dersleri.index');

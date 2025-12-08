@@ -6,6 +6,7 @@ use App\Models\Ders;
 use App\Models\DersMekanGereksinimi;
 use App\Imports\DersMekanGereksinimleriImport;
 use App\Exports\DersMekanGereksinimleriTemplateExport;
+use App\Exports\DersMekanGereksinimleriExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -105,6 +106,11 @@ class DersMekanGeresinimController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new DersMekanGereksinimleriTemplateExport, 'ders-mekan-gereksinimleri-sablonu.xlsx');
+    }
+
+    public function export()
+    {
+        return Excel::download(new DersMekanGereksinimleriExport, 'ders-mekan-gereksinimleri.xlsx');
     }
 
     public function import(Request $request)
