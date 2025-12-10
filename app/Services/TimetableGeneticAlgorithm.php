@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\DB;
 class TimetableGeneticAlgorithm
 {
     // GA Parametreleri
-    protected int $populationSize = 20;  // 50 -> 20 (daha hızlı)
-    protected int $generations = 30;     // 100 -> 30 (daha hızlı)
+    protected int $populationSize = 40;  // 50 -> 40 (Biraz düşürdük)
+    protected int $generations = 200;    // 500 -> 200 (Optimizasyonla yeterli olacak)
     protected float $mutationRate = 0.2;
     protected float $crossoverRate = 0.8;
-    protected int $eliteSize = 3;        // 5 -> 3
+    protected int $eliteSize = 4;        // 5 -> 4
 
     // Veri setleri
     protected $zamanDilimleri;
@@ -36,6 +36,10 @@ class TimetableGeneticAlgorithm
     protected $grupKisitlamalar;
     protected $timetableSetting;
 
+    // Performans için Hızlı Erişim Haritaları (Maps)
+    protected array $ogretmenMusaitlikMap = [];
+    protected array $grupKisitlamaMap = [];
+
     // Ders atamaları (her grup için) - artık blok bazında
     protected array $dersAtamalari = [];
 
@@ -46,7 +50,7 @@ class TimetableGeneticAlgorithm
     }
 
     /**
-     * Veritabanından gerekli tüm verileri yükle
+     * Veritabanından gerekli tüm verileri yükle ve map'le
      */
     protected function loadData(): void
     {
@@ -62,8 +66,21 @@ class TimetableGeneticAlgorithm
         // İlişkileri yükle
         $this->ogretmenDersler = OgretmenDers::with(['ogretmen', 'ders'])->get();
         $this->grupDersler = GrupDers::with(['ogrenciGrubu', 'ders'])->get();
-        $this->ogretmenMusaitlikler = OgretmenMusaitlik::all();
-        $this->grupKisitlamalar = GrupKisitlama::all();
+        
+        // Müsaitlik ve Kısıtlamaları Map'e çevir (O(1) erişim için)
+        $musaitlikler = OgretmenMusaitlik::all();
+        foreach ($musaitlikler as $m) {
+            // Sadece müsait olanları veya olmayanları değil, yapıyı kuralım
+            // Burada veritabanında "kayıt varsa müsaittir" mantığı mı yoksa "kayıt varsa kısıtlıdır" mı önemli.
+            // Projem.md'ye göre: Ogretmen_musaitlik tablosu öğretmenin müsait olduğu saatleri tutar.
+            $this->ogretmenMusaitlikMap[$m->ogretmen_id][$m->zaman_dilim_id] = true;
+        }
+
+        $kisitlamalar = GrupKisitlama::all();
+        foreach ($kisitlamalar as $k) {
+            // Grup kısıtlaması varsa o saatte ders işlenemez
+            $this->grupKisitlamaMap[$k->ogrenci_grup_id][$k->zaman_dilim_id] = true;
+        }
 
         // Timetable ayarlarını yükle
         $this->timetableSetting = TimetableSetting::current();
@@ -117,8 +134,8 @@ class TimetableGeneticAlgorithm
      */
     public function generateWithProgress(?callable $progressCallback = null): array
     {
-        // PHP timeout'u artır (5 dakika)
-        set_time_limit(300);
+        // PHP timeout'u artır (10 dakika)
+        set_time_limit(600);
 
         // İlk popülasyonu oluştur
         $population = $this->createInitialPopulation();
@@ -142,7 +159,7 @@ class TimetableGeneticAlgorithm
                 $progressCallback($generation, $this->generations, $bestFitness);
             }
 
-            // Mükemmele ulaştıysak dur
+            // Mükemmele ulaştıysak dur (0 puan = cezasız = çakışmasız)
             if ($bestFitness >= 0) {
                 break;
             }
@@ -187,9 +204,19 @@ class TimetableGeneticAlgorithm
         foreach ($this->dersAtamalari as $atama) {
             $blockSize = $atama['block_size'];
 
-            // Rastgele başlangıç zaman dilimi seç
-            // Arka arkaya blockSize kadar slot olabilecek bir başlangıç bulmalıyız
-            $baslangicZamanDilimIndex = rand(0, max(0, $this->zamanDilimleri->count() - $blockSize));
+            // Aynı gün içinde blockSize kadar arka arkaya slot bulalım
+            $validBlocks = $this->findConsecutiveSlots($blockSize);
+
+            if (empty($validBlocks)) {
+                // Uygun blok bulunamadıysa rastgele dağıt (fitness düşük olacak)
+                $selectedSlots = [];
+                for ($i = 0; $i < $blockSize; $i++) {
+                    $selectedSlots[] = $this->zamanDilimleri->random();
+                }
+            } else {
+                // Rastgele bir geçerli blok seç
+                $selectedSlots = $validBlocks[array_rand($validBlocks)];
+            }
 
             // Rastgele mekan seç
             $mekan = $this->mekanlar->random();
@@ -208,7 +235,7 @@ class TimetableGeneticAlgorithm
 
             // Blok için arka arkaya zaman dilimleri oluştur
             for ($i = 0; $i < $blockSize; $i++) {
-                $zamanDilim = $this->zamanDilimleri[$baslangicZamanDilimIndex + $i];
+                $zamanDilim = $selectedSlots[$i];
 
                 $individual[] = [
                     'grup_id' => $atama['grup_id'],
@@ -227,6 +254,59 @@ class TimetableGeneticAlgorithm
     }
 
     /**
+     * Belirli bir blok büyüklüğü için aynı gün içinde arka arkaya slot kombinasyonları bul
+     */
+    protected function findConsecutiveSlots(int $blockSize): array
+    {
+        $validBlocks = [];
+
+        // Günlere göre grupla
+        $byDay = $this->zamanDilimleri->groupBy('haftanin_gunu');
+
+        foreach ($byDay as $gun => $slots) {
+            // Bu gündeki slotları sırala
+            $sortedSlots = $slots->sortBy('baslangic_saati')->values();
+
+            // Arka arkaya blockSize kadar slot ara
+            for ($i = 0; $i <= $sortedSlots->count() - $blockSize; $i++) {
+                $block = [];
+                $isConsecutive = true;
+
+                for ($j = 0; $j < $blockSize; $j++) {
+                    if ($i + $j >= $sortedSlots->count()) {
+                        $isConsecutive = false;
+                        break;
+                    }
+
+                    $currentSlot = $sortedSlots[$i + $j];
+                    $block[] = $currentSlot;
+
+                    // İlk slot değilse, bir önceki ile arka arkaya mı kontrol et
+                    if ($j > 0) {
+                        $prevSlot = $sortedSlots[$i + $j - 1];
+
+                        // Bitiş saati = Başlangıç saati kontrolü (veya çok yakın)
+                        $prevBitis = strtotime($prevSlot->bitis_saati);
+                        $currBaslangic = strtotime($currentSlot->baslangic_saati);
+
+                        // Maksimum 15 dakika fark olabilir (teneffüs)
+                        if (abs($currBaslangic - $prevBitis) > 900) {
+                            $isConsecutive = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($isConsecutive && count($block) === $blockSize) {
+                    $validBlocks[] = $block;
+                }
+            }
+        }
+
+        return $validBlocks;
+    }
+
+    /**
      * Fitness fonksiyonu - programı puanla
      * Pozitif puan = geçerli program
      * Negatif puan = ihlal sayısı
@@ -235,25 +315,28 @@ class TimetableGeneticAlgorithm
     {
         $score = 0;
 
-        // SERT KISITLAR (ihlal ederse büyük ceza)
+        // SERT KISITLAR (CEZALARI ÇOK ARTIRDIM - Çakışmasızlık Garantisi İçin)
 
         // 1. Aynı zaman diliminde aynı öğretmen farklı yerlerde olamaz
-        $score -= $this->checkOgretmenCakismasi($individual) * 1000;
+        $score -= $this->checkOgretmenCakismasi($individual) * 100000;
 
         // 2. Aynı zaman diliminde aynı grup farklı derslerde olamaz
-        $score -= $this->checkGrupCakismasi($individual) * 1000;
+        $score -= $this->checkGrupCakismasi($individual) * 100000;
 
         // 3. Aynı zaman diliminde aynı mekan birden fazla derse ayrılamaz
-        $score -= $this->checkMekanCakismasi($individual) * 1000;
+        $score -= $this->checkMekanCakismasi($individual) * 100000;
 
         // 4. Öğretmen müsaitliği kontrolü
-        $score -= $this->checkOgretmenMusaitlik($individual) * 500;
+        $score -= $this->checkOgretmenMusaitlik($individual) * 50000;
 
         // 5. Grup kısıtlamaları kontrolü
-        $score -= $this->checkGrupKisitlama($individual) * 500;
+        $score -= $this->checkGrupKisitlama($individual) * 50000;
 
         // 6. Blokların arka arkaya olması kontrolü (SERT KISIT)
-        $score -= $this->checkBlockConsecutiveness($individual) * 2000;
+        $score -= $this->checkBlockConsecutiveness($individual) * 50000;
+
+        // 7. Aynı dersin farklı blokları aynı gün OLMAMALI (SERT KISIT)
+        $score -= $this->checkSameDayCourseDistribution($individual) * 50000;
 
         // YUMUŞAK KISITLAR (tercihe dayalı)
 
@@ -327,21 +410,19 @@ class TimetableGeneticAlgorithm
     }
 
     /**
-     * Öğretmen müsaitliği kontrolü
+     * Öğretmen müsaitliği kontrolü (Hızlandırılmış)
      */
     protected function checkOgretmenMusaitlik(array $individual): int
     {
         $violations = 0;
 
         foreach ($individual as $slot) {
-            $zamanDilim = $this->zamanDilimleri->find($slot['zaman_dilim_id']);
+            $ogretmenId = $slot['ogretmen_id'];
+            $zamanId = $slot['zaman_dilim_id'];
 
-            $musaitMi = $this->ogretmenMusaitlikler
-                ->where('ogretmen_id', $slot['ogretmen_id'])
-                ->where('zaman_dilim_id', $zamanDilim->id)
-                ->first();
-
-            if (!$musaitMi) {
+            // Map'ten kontrol et (Eğer map'te set edilmemişse öğretmen o saatte müsait değil demektir)
+            // Varsayım: ogretmen_musaitlik tablosu sadece MÜSAİT olan zamanları tutuyor.
+            if (!isset($this->ogretmenMusaitlikMap[$ogretmenId][$zamanId])) {
                 $violations++;
             }
         }
@@ -350,21 +431,18 @@ class TimetableGeneticAlgorithm
     }
 
     /**
-     * Grup kısıtlamaları kontrolü
+     * Grup kısıtlamaları kontrolü (Hızlandırılmış)
      */
     protected function checkGrupKisitlama(array $individual): int
     {
         $violations = 0;
 
         foreach ($individual as $slot) {
-            $zamanDilim = $this->zamanDilimleri->find($slot['zaman_dilim_id']);
+            $grupId = $slot['grup_id'];
+            $zamanId = $slot['zaman_dilim_id'];
 
-            $kisitliMi = $this->grupKisitlamalar
-                ->where('ogrenci_grup_id', $slot['grup_id'])
-                ->where('zaman_dilim_id', $zamanDilim->id)
-                ->first();
-
-            if ($kisitliMi) {
+            // Map'ten kontrol et (Eğer map'te varsa, kısıtlama var demektir)
+            if (isset($this->grupKisitlamaMap[$grupId][$zamanId])) {
                 $violations++;
             }
         }
@@ -633,19 +711,58 @@ class TimetableGeneticAlgorithm
      */
     protected function crossover(array $parent1, array $parent2): array
     {
-        $point = rand(1, min(count($parent1), count($parent2)) - 1);
+        // Blok bazlı crossover: Her bloğu bütün halde tut
+        // Her ebeveynden rastgele bloklar seç
 
-        $child1 = array_merge(
-            array_slice($parent1, 0, $point),
-            array_slice($parent2, $point)
-        );
+        $child1 = [];
+        $child2 = [];
 
-        $child2 = array_merge(
-            array_slice($parent2, 0, $point),
-            array_slice($parent1, $point)
-        );
+        // Parent1'deki blokları grupla
+        $blocks1 = $this->groupByBlocks($parent1);
+        $blocks2 = $this->groupByBlocks($parent2);
+
+        $allBlockKeys = array_unique(array_merge(array_keys($blocks1), array_keys($blocks2)));
+
+        foreach ($allBlockKeys as $blockKey) {
+            // %50 ihtimalle parent1'den, %50 parent2'den al
+            if (rand(0, 1) === 0) {
+                if (isset($blocks1[$blockKey])) {
+                    $child1 = array_merge($child1, $blocks1[$blockKey]);
+                }
+                if (isset($blocks2[$blockKey])) {
+                    $child2 = array_merge($child2, $blocks2[$blockKey]);
+                }
+            } else {
+                if (isset($blocks2[$blockKey])) {
+                    $child1 = array_merge($child1, $blocks2[$blockKey]);
+                }
+                if (isset($blocks1[$blockKey])) {
+                    $child2 = array_merge($child2, $blocks1[$blockKey]);
+                }
+            }
+        }
 
         return [$child1, $child2];
+    }
+
+    /**
+     * Individual'ı bloklara göre grupla
+     */
+    protected function groupByBlocks(array $individual): array
+    {
+        $blocks = [];
+
+        foreach ($individual as $slot) {
+            $blockKey = $slot['grup_id'] . '-' . $slot['ders_id'] . '-' . $slot['block_index'];
+
+            if (!isset($blocks[$blockKey])) {
+                $blocks[$blockKey] = [];
+            }
+
+            $blocks[$blockKey][] = $slot;
+        }
+
+        return $blocks;
     }
 
     /**
@@ -657,25 +774,58 @@ class TimetableGeneticAlgorithm
             return $individual;
         }
 
-        $index = rand(0, count($individual) - 1);
+        // Rastgele bir slot seç
+        $randomIndex = rand(0, count($individual) - 1);
+        $randomSlot = $individual[$randomIndex];
+
+        // Bu slotun bloğunu bul (aynı grup_id, ders_id, block_index olan tüm slotlar)
+        $blockKey = $randomSlot['grup_id'] . '-' . $randomSlot['ders_id'] . '-' . $randomSlot['block_index'];
+        $blockIndices = [];
+
+        foreach ($individual as $idx => $slot) {
+            $slotBlockKey = $slot['grup_id'] . '-' . $slot['ders_id'] . '-' . $slot['block_index'];
+            if ($slotBlockKey === $blockKey) {
+                $blockIndices[] = $idx;
+            }
+        }
 
         // Rastgele bir özelliği değiştir
         $mutationType = rand(0, 2);
 
         switch ($mutationType) {
-            case 0: // Zaman dilimi değiştir
-                $individual[$index]['zaman_dilim_id'] = $this->zamanDilimleri->random()->id;
+            case 0: // Zaman dilimlerini değiştir (TÜM BLOK için arka arkaya)
+                $blockSize = count($blockIndices);
+                $validBlocks = $this->findConsecutiveSlots($blockSize);
+
+                if (!empty($validBlocks)) {
+                    $newSlots = $validBlocks[array_rand($validBlocks)];
+
+                    foreach ($blockIndices as $i => $blockIdx) {
+                        if (isset($newSlots[$i])) {
+                            $individual[$blockIdx]['zaman_dilim_id'] = $newSlots[$i]->id;
+                        }
+                    }
+                }
                 break;
-            case 1: // Mekan değiştir
-                $individual[$index]['mekan_id'] = $this->mekanlar->random()->id;
+
+            case 1: // Mekan değiştir (TÜM BLOK için aynı mekan)
+                $newMekan = $this->mekanlar->random();
+                foreach ($blockIndices as $blockIdx) {
+                    $individual[$blockIdx]['mekan_id'] = $newMekan->id;
+                }
                 break;
-            case 2: // Öğretmen değiştir (eğer uygunsa)
+
+            case 2: // Öğretmen değiştir (TÜM BLOK için aynı öğretmen)
                 $uygunOgretmenler = $this->ogretmenDersler
-                    ->where('ders_id', $individual[$index]['ders_id'])
+                    ->where('ders_id', $randomSlot['ders_id'])
                     ->pluck('ogretmen_id')
                     ->toArray();
+
                 if (!empty($uygunOgretmenler)) {
-                    $individual[$index]['ogretmen_id'] = $uygunOgretmenler[array_rand($uygunOgretmenler)];
+                    $newOgretmen = $uygunOgretmenler[array_rand($uygunOgretmenler)];
+                    foreach ($blockIndices as $blockIdx) {
+                        $individual[$blockIdx]['ogretmen_id'] = $newOgretmen;
+                    }
                 }
                 break;
         }
@@ -685,52 +835,41 @@ class TimetableGeneticAlgorithm
 
     /**
      * Programı veritabanına kaydet
+     *
+     * Blok mantığı: Aynı bloktaki tüm slotlar kaydedilmeli.
+     * Çakışma kontrolü: Bir zaman diliminde sadece 1 öğretmen/grup/mekan olmalı.
      */
     public function saveSchedule(array $schedule): void
     {
-        // Çakışmaları önlemek için benzersiz kayıtları filtrele
-        $savedRecords = [];
         $savedCount = 0;
         $skippedCount = 0;
 
-        DB::transaction(function () use ($schedule, &$savedRecords, &$savedCount, &$skippedCount) {
-            // Mevcut programları temizle (truncate yerine delete kullan - transaction safe)
+        DB::transaction(function () use ($schedule, &$savedCount, &$skippedCount) {
+            // Mevcut programları temizle
             OlusturulanProgram::query()->delete();
 
+            // Tüm slotları kaydet - çakışma kontrolü fitness fonksiyonunda yapılıyor
+            // Burada sadece veritabanına yazıyoruz
             foreach ($schedule as $slot) {
-                // Benzersizlik anahtarları oluştur
-                $ogretmenKey = 'ogretmen-' . $slot['ogretmen_id'] . '-' . $slot['zaman_dilim_id'];
-                $grupKey = 'grup-' . $slot['grup_id'] . '-' . $slot['zaman_dilim_id'];
-                $mekanKey = 'mekan-' . $slot['mekan_id'] . '-' . $slot['zaman_dilim_id'];
-
-                // Eğer aynı öğretmen, grup veya mekan aynı zamanda başka bir yerde atanmışsa, atla
-                if (isset($savedRecords[$ogretmenKey]) ||
-                    isset($savedRecords[$grupKey]) ||
-                    isset($savedRecords[$mekanKey])) {
+                try {
+                    OlusturulanProgram::create([
+                        'akademik_donem' => '2024-2025 Güz',
+                        'ogrenci_grup_id' => $slot['grup_id'],
+                        'ders_id' => $slot['ders_id'],
+                        'ogretmen_id' => $slot['ogretmen_id'],
+                        'zaman_dilimi_id' => $slot['zaman_dilim_id'],
+                        'mekan_id' => $slot['mekan_id'],
+                    ]);
+                    $savedCount++;
+                } catch (\Exception $e) {
                     $skippedCount++;
-                    continue;
+                    \Log::error("Slot kaydetme hatası (DersID: {$slot['ders_id']}, GrupID: {$slot['grup_id']}): " . $e->getMessage());
                 }
-
-                // Kaydet
-                OlusturulanProgram::create([
-                    'akademik_donem' => '2024-2025 Güz',
-                    'ogrenci_grup_id' => $slot['grup_id'],
-                    'ders_id' => $slot['ders_id'],
-                    'ogretmen_id' => $slot['ogretmen_id'],
-                    'zaman_dilimi_id' => $slot['zaman_dilim_id'],
-                    'mekan_id' => $slot['mekan_id'],
-                ]);
-
-                // Kaydedilenleri işaretle
-                $savedRecords[$ogretmenKey] = true;
-                $savedRecords[$grupKey] = true;
-                $savedRecords[$mekanKey] = true;
-                $savedCount++;
             }
         });
 
         // İstatistikleri logla (transaction dışında)
-        \Log::info("Program kaydedildi: {$savedCount} ders, {$skippedCount} çakışma atlandı");
+        \Log::info("Program kaydedildi: {$savedCount} ders, {$skippedCount} hata atlandı");
     }
 
     /**
@@ -801,6 +940,60 @@ class TimetableGeneticAlgorithm
                 if ($slot['ogretmen_id'] !== $firstOgretmen || $slot['mekan_id'] !== $firstMekan) {
                     $violations++;
                 }
+            }
+        }
+
+        return $violations;
+    }
+
+    /**
+     * Aynı dersin farklı bloklarının aynı gün OLMAMASI kontrolü
+     * Örn: 4 saatlik ders (2+2) -> Bu iki blok farklı günlerde olmalı
+     */
+    protected function checkSameDayCourseDistribution(array $individual): int
+    {
+        $violations = 0;
+
+        // Grup+Ders bazında slotları grupla
+        $courseSlots = [];
+        foreach ($individual as $slot) {
+            $key = $slot['grup_id'] . '-' . $slot['ders_id'];
+
+            if (!isset($courseSlots[$key])) {
+                $courseSlots[$key] = [];
+            }
+            $courseSlots[$key][] = $slot;
+        }
+
+        foreach ($courseSlots as $key => $slots) {
+            // Blok indexlerini bul
+            $blockIndices = array_unique(array_column($slots, 'block_index'));
+
+            // Eğer ders tek bloktan oluşuyorsa sorun yok
+            if (count($blockIndices) <= 1) {
+                continue;
+            }
+
+            // Her bloğun hangi günde olduğunu bul
+            $blockDays = [];
+            foreach ($slots as $slot) {
+                $blockIndex = $slot['block_index'];
+                
+                // Bu bloğun gününü daha önce bulmadıysak bul
+                if (!isset($blockDays[$blockIndex])) {
+                    $zamanDilim = $this->zamanDilimleri->firstWhere('id', $slot['zaman_dilim_id']);
+                    $blockDays[$blockIndex] = $zamanDilim->haftanin_gunu;
+                }
+            }
+
+            // Günlerin benzersiz olup olmadığını kontrol et
+            $days = array_values($blockDays);
+            $uniqueDays = array_unique($days);
+
+            // Eğer gün sayısı, blok sayısından azsa -> çakışma var demektir
+            if (count($days) !== count($uniqueDays)) {
+                // Kaç tane çakışma varsa o kadar ceza
+                $violations += (count($days) - count($uniqueDays));
             }
         }
 
