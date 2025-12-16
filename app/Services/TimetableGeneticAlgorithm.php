@@ -188,7 +188,10 @@ class TimetableGeneticAlgorithm
         $population = [];
 
         for ($i = 0; $i < $this->populationSize; $i++) {
-            $population[] = $this->createRandomIndividual();
+            $individual = $this->createRandomIndividual();
+            // Güvenlik için repair et (eksik blok olmaması için)
+            $individual = $this->repairIndividual($individual);
+            $population[] = $individual;
         }
 
         return $population;
@@ -640,9 +643,11 @@ class TimetableGeneticAlgorithm
     {
         $newPopulation = [];
 
-        // Elit bireyleri koru
+        // Elit bireyleri koru (onları da repair et)
         $elites = $this->selectElites($population, $fitnessScores);
-        $newPopulation = array_merge($newPopulation, $elites);
+        foreach ($elites as $elite) {
+            $newPopulation[] = $this->repairIndividual($elite);
+        }
 
         // Geri kalanı oluştur
         while (count($newPopulation) < $this->populationSize) {
@@ -665,6 +670,10 @@ class TimetableGeneticAlgorithm
             if (rand(0, 100) / 100 < $this->mutationRate) {
                 $child2 = $this->mutate($child2);
             }
+
+            // Repair: Eksik blokları tamamla
+            $child1 = $this->repairIndividual($child1);
+            $child2 = $this->repairIndividual($child2);
 
             $newPopulation[] = $child1;
             if (count($newPopulation) < $this->populationSize) {
@@ -725,19 +734,34 @@ class TimetableGeneticAlgorithm
 
         foreach ($allBlockKeys as $blockKey) {
             // %50 ihtimalle parent1'den, %50 parent2'den al
+            // AMA mutlaka her bloğu ekle! (Blok kaybolmasını önle)
             if (rand(0, 1) === 0) {
+                // Child1: önce parent1'den, yoksa parent2'den al
                 if (isset($blocks1[$blockKey])) {
                     $child1 = array_merge($child1, $blocks1[$blockKey]);
-                }
-                if (isset($blocks2[$blockKey])) {
-                    $child2 = array_merge($child2, $blocks2[$blockKey]);
-                }
-            } else {
-                if (isset($blocks2[$blockKey])) {
+                } elseif (isset($blocks2[$blockKey])) {
                     $child1 = array_merge($child1, $blocks2[$blockKey]);
                 }
+
+                // Child2: önce parent2'den, yoksa parent1'den al
+                if (isset($blocks2[$blockKey])) {
+                    $child2 = array_merge($child2, $blocks2[$blockKey]);
+                } elseif (isset($blocks1[$blockKey])) {
+                    $child2 = array_merge($child2, $blocks1[$blockKey]);
+                }
+            } else {
+                // Child1: önce parent2'den, yoksa parent1'den al
+                if (isset($blocks2[$blockKey])) {
+                    $child1 = array_merge($child1, $blocks2[$blockKey]);
+                } elseif (isset($blocks1[$blockKey])) {
+                    $child1 = array_merge($child1, $blocks1[$blockKey]);
+                }
+
+                // Child2: önce parent1'den, yoksa parent2'den al
                 if (isset($blocks1[$blockKey])) {
                     $child2 = array_merge($child2, $blocks1[$blockKey]);
+                } elseif (isset($blocks2[$blockKey])) {
+                    $child2 = array_merge($child2, $blocks2[$blockKey]);
                 }
             }
         }
@@ -763,6 +787,75 @@ class TimetableGeneticAlgorithm
         }
 
         return $blocks;
+    }
+
+    /**
+     * Eksik blokları tamamla (Repair Mekanizması)
+     *
+     * Genetik algoritma sırasında bazı bloklar kaybolabilir.
+     * Bu fonksiyon eksik blokları tespit edip ekler.
+     */
+    protected function repairIndividual(array $individual): array
+    {
+        // Hangi bloklara ihtiyacımız var?
+        $requiredBlocks = [];
+        foreach ($this->dersAtamalari as $atama) {
+            $blockKey = $atama['grup_id'] . '-' . $atama['ders_id'] . '-' . $atama['block_index'];
+            $requiredBlocks[$blockKey] = $atama;
+        }
+
+        // Individual'daki mevcut blokları bul
+        $existingBlocks = [];
+        foreach ($individual as $slot) {
+            $blockKey = $slot['grup_id'] . '-' . $slot['ders_id'] . '-' . $slot['block_index'];
+            $existingBlocks[$blockKey] = true;
+        }
+
+        // Eksik blokları ekle
+        foreach ($requiredBlocks as $blockKey => $atama) {
+            if (!isset($existingBlocks[$blockKey])) {
+                // Bu blok eksik, oluştur ve ekle
+                $blockSize = $atama['block_size'];
+                $validBlocks = $this->findConsecutiveSlots($blockSize);
+
+                if (empty($validBlocks)) {
+                    $selectedSlots = [];
+                    for ($i = 0; $i < $blockSize; $i++) {
+                        $selectedSlots[] = $this->zamanDilimleri->random();
+                    }
+                } else {
+                    $selectedSlots = $validBlocks[array_rand($validBlocks)];
+                }
+
+                $mekan = $this->mekanlar->random();
+
+                $uygunOgretmenler = $this->ogretmenDersler
+                    ->where('ders_id', $atama['ders_id'])
+                    ->pluck('ogretmen_id')
+                    ->toArray();
+
+                if (!empty($uygunOgretmenler)) {
+                    $ogretmenId = $uygunOgretmenler[array_rand($uygunOgretmenler)];
+
+                    for ($i = 0; $i < $blockSize; $i++) {
+                        $zamanDilim = $selectedSlots[$i];
+
+                        $individual[] = [
+                            'grup_id' => $atama['grup_id'],
+                            'ders_id' => $atama['ders_id'],
+                            'block_index' => $atama['block_index'],
+                            'block_size' => $blockSize,
+                            'slot_in_block' => $i,
+                            'ogretmen_id' => $ogretmenId,
+                            'zaman_dilim_id' => $zamanDilim->id,
+                            'mekan_id' => $mekan->id,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $individual;
     }
 
     /**
