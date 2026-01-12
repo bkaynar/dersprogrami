@@ -35,11 +35,15 @@ class ProgramOlusturController extends Controller
         // Eksik verileri kontrol et
         $missingData = $this->getMissingData();
 
+        // Job durumunu kontrol et
+        $jobStatus = $this->getJobStatus();
+
         return Inertia::render('ProgramOlustur/Index', [
             'mevcut_program' => $mevcutProgram,
             'program_var' => $mevcutProgram->count() > 0,
             'missing_data' => $missingData,
             'can_generate' => empty($missingData),
+            'job_status' => $jobStatus, // Job durumunu frontend'e gönder
         ]);
     }
 
@@ -138,6 +142,18 @@ class ProgramOlusturController extends Controller
         ]);
 
         return response()->json($status);
+    }
+
+    /**
+     * Job durumunu getir (internal kullanım için)
+     */
+    private function getJobStatus()
+    {
+        return Cache::get('timetable_generation_status', [
+            'status' => 'idle',
+            'progress' => 0,
+            'message' => 'Henüz başlatılmadı',
+        ]);
     }
 
     /**

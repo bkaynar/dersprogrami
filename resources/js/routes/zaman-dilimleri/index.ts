@@ -416,7 +416,7 @@ store.form = storeForm
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-export const show = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -431,7 +431,7 @@ show.definition = {
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-show.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+show.url = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { zamanDilimi: args }
     }
@@ -464,7 +464,7 @@ show.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numbe
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-show.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -474,7 +474,7 @@ show.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numbe
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-show.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -484,7 +484,7 @@ show.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numb
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-const showForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -494,7 +494,7 @@ const showForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi:
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-showForm.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -504,7 +504,7 @@ showForm.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: n
 * @see app/Http/Controllers/ZamanDilimController.php:44
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-showForm.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -521,7 +521,7 @@ show.form = showForm
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-export const edit = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -536,7 +536,7 @@ edit.definition = {
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-edit.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+edit.url = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { zamanDilimi: args }
     }
@@ -569,7 +569,7 @@ edit.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numbe
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-edit.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -579,7 +579,7 @@ edit.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numbe
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-edit.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -589,7 +589,7 @@ edit.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: numb
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-const editForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -599,7 +599,7 @@ const editForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi:
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-editForm.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -609,7 +609,7 @@ editForm.get = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: n
 * @see app/Http/Controllers/ZamanDilimController.php:51
 * @route '/zaman-dilimleri/{zamanDilimi}/edit'
 */
-editForm.head = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -626,7 +626,7 @@ edit.form = editForm
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-export const update = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -641,7 +641,7 @@ update.definition = {
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-update.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { zamanDilimi: args }
     }
@@ -674,7 +674,7 @@ update.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: num
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-update.put = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -684,7 +684,7 @@ update.put = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: num
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-update.patch = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -694,7 +694,7 @@ update.patch = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: n
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-const updateForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -709,7 +709,7 @@ const updateForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilim
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-updateForm.put = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -724,7 +724,7 @@ updateForm.put = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi:
 * @see app/Http/Controllers/ZamanDilimController.php:58
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-updateForm.patch = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -741,7 +741,7 @@ update.form = updateForm
 * @see app/Http/Controllers/ZamanDilimController.php:71
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-export const destroy = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -756,7 +756,7 @@ destroy.definition = {
 * @see app/Http/Controllers/ZamanDilimController.php:71
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-destroy.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { zamanDilimi: args }
     }
@@ -789,7 +789,7 @@ destroy.url = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: nu
 * @see app/Http/Controllers/ZamanDilimController.php:71
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-destroy.delete = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -799,7 +799,7 @@ destroy.delete = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi:
 * @see app/Http/Controllers/ZamanDilimController.php:71
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-const destroyForm = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -814,7 +814,7 @@ const destroyForm = (args: { zamanDilimi: number | { id: number } } | [zamanDili
 * @see app/Http/Controllers/ZamanDilimController.php:71
 * @route '/zaman-dilimleri/{zamanDilimi}'
 */
-destroyForm.delete = (args: { zamanDilimi: number | { id: number } } | [zamanDilimi: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { zamanDilimi: string | number | { id: string | number } } | [zamanDilimi: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

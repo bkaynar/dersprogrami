@@ -440,7 +440,7 @@ store.form = storeForm
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-export const show = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -455,7 +455,7 @@ show.definition = {
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-show.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+show.url = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ogretmen: args }
     }
@@ -488,7 +488,7 @@ show.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { 
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-show.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -498,7 +498,7 @@ show.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { 
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-show.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -508,7 +508,7 @@ show.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | {
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-const showForm = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -518,7 +518,7 @@ const showForm = (args: { ogretmen: number | { id: number } } | [ogretmen: numbe
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-showForm.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -528,7 +528,7 @@ showForm.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number 
 * @see app/Http/Controllers/OgretmenController.php:42
 * @route '/ogretmenler/{ogretmen}'
 */
-showForm.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -545,7 +545,7 @@ show.form = showForm
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-export const edit = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -560,7 +560,7 @@ edit.definition = {
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-edit.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+edit.url = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ogretmen: args }
     }
@@ -593,7 +593,7 @@ edit.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { 
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-edit.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -603,7 +603,7 @@ edit.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { 
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-edit.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -613,7 +613,7 @@ edit.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | {
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-const editForm = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -623,7 +623,7 @@ const editForm = (args: { ogretmen: number | { id: number } } | [ogretmen: numbe
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-editForm.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -633,7 +633,7 @@ editForm.get = (args: { ogretmen: number | { id: number } } | [ogretmen: number 
 * @see app/Http/Controllers/OgretmenController.php:49
 * @route '/ogretmenler/{ogretmen}/edit'
 */
-editForm.head = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -650,7 +650,7 @@ edit.form = editForm
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-export const update = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -665,7 +665,7 @@ update.definition = {
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-update.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ogretmen: args }
     }
@@ -698,7 +698,7 @@ update.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | 
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-update.put = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -708,7 +708,7 @@ update.put = (args: { ogretmen: number | { id: number } } | [ogretmen: number | 
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-update.patch = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -718,7 +718,7 @@ update.patch = (args: { ogretmen: number | { id: number } } | [ogretmen: number 
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-const updateForm = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -733,7 +733,7 @@ const updateForm = (args: { ogretmen: number | { id: number } } | [ogretmen: num
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-updateForm.put = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -748,7 +748,7 @@ updateForm.put = (args: { ogretmen: number | { id: number } } | [ogretmen: numbe
 * @see app/Http/Controllers/OgretmenController.php:56
 * @route '/ogretmenler/{ogretmen}'
 */
-updateForm.patch = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -765,7 +765,7 @@ update.form = updateForm
 * @see app/Http/Controllers/OgretmenController.php:69
 * @route '/ogretmenler/{ogretmen}'
 */
-export const destroy = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -780,7 +780,7 @@ destroy.definition = {
 * @see app/Http/Controllers/OgretmenController.php:69
 * @route '/ogretmenler/{ogretmen}'
 */
-destroy.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ogretmen: args }
     }
@@ -813,7 +813,7 @@ destroy.url = (args: { ogretmen: number | { id: number } } | [ogretmen: number |
 * @see app/Http/Controllers/OgretmenController.php:69
 * @route '/ogretmenler/{ogretmen}'
 */
-destroy.delete = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -823,7 +823,7 @@ destroy.delete = (args: { ogretmen: number | { id: number } } | [ogretmen: numbe
 * @see app/Http/Controllers/OgretmenController.php:69
 * @route '/ogretmenler/{ogretmen}'
 */
-const destroyForm = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -838,7 +838,7 @@ const destroyForm = (args: { ogretmen: number | { id: number } } | [ogretmen: nu
 * @see app/Http/Controllers/OgretmenController.php:69
 * @route '/ogretmenler/{ogretmen}'
 */
-destroyForm.delete = (args: { ogretmen: number | { id: number } } | [ogretmen: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { ogretmen: string | number | { id: string | number } } | [ogretmen: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

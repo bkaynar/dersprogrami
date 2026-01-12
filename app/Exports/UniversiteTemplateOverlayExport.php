@@ -244,7 +244,7 @@ class UniversiteTemplateOverlayExport implements FromArray, WithEvents
         }
 
         // Unvanları temizle
-        $ad = preg_replace('/^(Prof\.|Dr\.|Doç\.|Öğr\.|Üyesi|Gör\.)\s*/i', '', $ad);
+        $ad = preg_replace('/^(Prof\.|Dr\.|Doç\.|Öğr\.|Üyesi|Gör\.)\s*/iu', '', $ad);
         $ad = trim($ad);
 
         // Boşluklara göre ayır
@@ -252,13 +252,13 @@ class UniversiteTemplateOverlayExport implements FromArray, WithEvents
 
         if (count($parcalar) == 1) {
             // Tek kelime ise olduğu gibi döndür
-            return strtoupper($parcalar[0]);
+            return mb_strtoupper($parcalar[0], 'UTF-8');
         }
 
         if (count($parcalar) == 2) {
             // İki kelime: "Fatih KOÇ" -> "F.KOÇ"
-            $ilkHarf = strtoupper(substr($parcalar[0], 0, 1));
-            $soyad = strtoupper($parcalar[1]);
+            $ilkHarf = mb_strtoupper(mb_substr($parcalar[0], 0, 1, 'UTF-8'), 'UTF-8');
+            $soyad = mb_strtoupper($parcalar[1], 'UTF-8');
             return $ilkHarf . '.' . $soyad;
         }
 
@@ -268,15 +268,15 @@ class UniversiteTemplateOverlayExport implements FromArray, WithEvents
 
             // Son kelime hariç tüm kelimelerin ilk harfini al
             for ($i = 0; $i < count($parcalar) - 1; $i++) {
-                $kisaltma .= strtoupper(substr($parcalar[$i], 0, 1)) . '.';
+                $kisaltma .= mb_strtoupper(mb_substr($parcalar[$i], 0, 1, 'UTF-8'), 'UTF-8') . '.';
             }
 
             // Son kelimeyi (soyad) ekle
-            $kisaltma .= strtoupper($parcalar[count($parcalar) - 1]);
+            $kisaltma .= mb_strtoupper($parcalar[count($parcalar) - 1], 'UTF-8');
 
             return $kisaltma;
         }
 
-        return strtoupper($ad);
+        return mb_strtoupper($ad, 'UTF-8');
     }
 }

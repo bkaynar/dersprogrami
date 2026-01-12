@@ -10,6 +10,7 @@ const props = defineProps<{
     program_var: boolean;
     missing_data: Array<{ name: string; route: string }>;
     can_generate: boolean;
+    job_status?: any; // Job durumu prop'u ekle
 }>();
 
 const page = usePage();
@@ -87,10 +88,22 @@ const stopStatusPolling = () => {
 
 // Component mount olduğunda devam eden işlem var mı kontrol et
 onMounted(() => {
-    checkStatus();
-    if (generationStatus.value?.status === 'running') {
-        isGenerating.value = true;
-        startStatusPolling();
+    // Eğer props'tan gelen job_status varsa onu kullan
+    if (props.job_status) {
+        generationStatus.value = props.job_status;
+
+        // Eğer job çalışıyorsa polling'i başlat
+        if (props.job_status.status === 'running') {
+            isGenerating.value = true;
+            startStatusPolling();
+        }
+    } else {
+        // Props'ta yoksa API'den kontrol et
+        checkStatus();
+        if (generationStatus.value?.status === 'running') {
+            isGenerating.value = true;
+            startStatusPolling();
+        }
     }
 });
 

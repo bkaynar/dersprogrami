@@ -83,7 +83,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::generate
-* @see app/Http/Controllers/ProgramOlusturController.php:49
+* @see app/Http/Controllers/ProgramOlusturController.php:53
 * @route '/program-olustur/generate'
 */
 export const generate = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -98,7 +98,7 @@ generate.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::generate
-* @see app/Http/Controllers/ProgramOlusturController.php:49
+* @see app/Http/Controllers/ProgramOlusturController.php:53
 * @route '/program-olustur/generate'
 */
 generate.url = (options?: RouteQueryOptions) => {
@@ -107,7 +107,7 @@ generate.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::generate
-* @see app/Http/Controllers/ProgramOlusturController.php:49
+* @see app/Http/Controllers/ProgramOlusturController.php:53
 * @route '/program-olustur/generate'
 */
 generate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -117,7 +117,7 @@ generate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::generate
-* @see app/Http/Controllers/ProgramOlusturController.php:49
+* @see app/Http/Controllers/ProgramOlusturController.php:53
 * @route '/program-olustur/generate'
 */
 const generateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -127,7 +127,7 @@ const generateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> 
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::generate
-* @see app/Http/Controllers/ProgramOlusturController.php:49
+* @see app/Http/Controllers/ProgramOlusturController.php:53
 * @route '/program-olustur/generate'
 */
 generateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -139,7 +139,7 @@ generate.form = generateForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 export const status = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -154,7 +154,7 @@ status.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 status.url = (options?: RouteQueryOptions) => {
@@ -163,7 +163,7 @@ status.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 status.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -173,7 +173,7 @@ status.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 status.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -183,7 +183,7 @@ status.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 const statusForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -193,7 +193,7 @@ const statusForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 statusForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -203,7 +203,7 @@ statusForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::status
-* @see app/Http/Controllers/ProgramOlusturController.php:132
+* @see app/Http/Controllers/ProgramOlusturController.php:136
 * @route '/program-olustur/status'
 */
 statusForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -220,7 +220,7 @@ status.form = statusForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 export const show = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -235,7 +235,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 show.url = (options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ show.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 show.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -254,7 +254,7 @@ show.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -264,7 +264,7 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -274,7 +274,7 @@ const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -284,7 +284,7 @@ showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::show
-* @see app/Http/Controllers/ProgramOlusturController.php:146
+* @see app/Http/Controllers/ProgramOlusturController.php:162
 * @route '/program-olustur/show'
 */
 showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -301,7 +301,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::destroy
-* @see app/Http/Controllers/ProgramOlusturController.php:198
+* @see app/Http/Controllers/ProgramOlusturController.php:214
 * @route '/program-olustur'
 */
 export const destroy = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -316,7 +316,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::destroy
-* @see app/Http/Controllers/ProgramOlusturController.php:198
+* @see app/Http/Controllers/ProgramOlusturController.php:214
 * @route '/program-olustur'
 */
 destroy.url = (options?: RouteQueryOptions) => {
@@ -325,7 +325,7 @@ destroy.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::destroy
-* @see app/Http/Controllers/ProgramOlusturController.php:198
+* @see app/Http/Controllers/ProgramOlusturController.php:214
 * @route '/program-olustur'
 */
 destroy.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -335,7 +335,7 @@ destroy.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::destroy
-* @see app/Http/Controllers/ProgramOlusturController.php:198
+* @see app/Http/Controllers/ProgramOlusturController.php:214
 * @route '/program-olustur'
 */
 const destroyForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -350,7 +350,7 @@ const destroyForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::destroy
-* @see app/Http/Controllers/ProgramOlusturController.php:198
+* @see app/Http/Controllers/ProgramOlusturController.php:214
 * @route '/program-olustur'
 */
 destroyForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
