@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 export const template = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ template.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 template.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ template.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 template.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -116,7 +116,7 @@ template.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 template.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -126,7 +126,7 @@ template.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 const templateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -136,7 +136,7 @@ const templateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 templateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -146,7 +146,7 @@ templateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::template
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:179
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:209
 * @route '/ogretmen-musaitlik/template'
 */
 templateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -163,7 +163,7 @@ template.form = templateForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:190
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
 * @route '/ogretmen-musaitlik/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -178,7 +178,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:190
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -187,7 +187,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:190
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -197,7 +197,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:190
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
 * @route '/ogretmen-musaitlik/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -207,7 +207,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:190
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
 * @route '/ogretmen-musaitlik/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -219,7 +219,7 @@ importMethod.form = importMethodForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -234,7 +234,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -243,7 +243,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -253,7 +253,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -263,7 +263,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -273,7 +273,7 @@ const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -283,7 +283,7 @@ createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:31
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:41
 * @route '/ogretmen-musaitlik/create'
 */
 createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -300,7 +300,7 @@ create.form = createForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::store
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:44
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:54
 * @route '/ogretmen-musaitlik'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -315,7 +315,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::store
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:44
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:54
 * @route '/ogretmen-musaitlik'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -324,7 +324,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::store
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:44
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:54
 * @route '/ogretmen-musaitlik'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -334,7 +334,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::store
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:44
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:54
 * @route '/ogretmen-musaitlik'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -344,7 +344,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::store
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:44
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:54
 * @route '/ogretmen-musaitlik'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -356,7 +356,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 export const show = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -371,7 +371,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 show.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -398,7 +398,7 @@ show.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] |
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 show.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -408,7 +408,7 @@ show.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] |
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 show.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -418,7 +418,7 @@ show.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 const showForm = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -428,7 +428,7 @@ const showForm = (args: { ogretmen: string | number } | [ogretmen: string | numb
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 showForm.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -438,7 +438,7 @@ showForm.get = (args: { ogretmen: string | number } | [ogretmen: string | number
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::show
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:67
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:77
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 showForm.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -455,7 +455,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 export const edit = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -470,7 +470,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 edit.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -497,7 +497,7 @@ edit.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] |
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 edit.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -507,7 +507,7 @@ edit.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] |
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 edit.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -517,7 +517,7 @@ edit.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 const editForm = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -527,7 +527,7 @@ const editForm = (args: { ogretmen: string | number } | [ogretmen: string | numb
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 editForm.get = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -537,7 +537,7 @@ editForm.get = (args: { ogretmen: string | number } | [ogretmen: string | number
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::edit
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:105
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:125
 * @route '/ogretmen-musaitlik/{ogretmen}/edit'
 */
 editForm.head = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -554,7 +554,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::update
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:143
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:173
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 export const update = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -569,7 +569,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::update
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:143
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:173
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 update.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -596,7 +596,7 @@ update.url = (args: { ogretmen: string | number } | [ogretmen: string | number ]
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::update
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:143
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:173
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 update.put = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -606,7 +606,7 @@ update.put = (args: { ogretmen: string | number } | [ogretmen: string | number ]
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::update
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:143
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:173
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 const updateForm = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -621,7 +621,7 @@ const updateForm = (args: { ogretmen: string | number } | [ogretmen: string | nu
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::update
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:143
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:173
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 updateForm.put = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -638,7 +638,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::destroy
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:168
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:198
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 export const destroy = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -653,7 +653,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::destroy
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:168
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:198
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 destroy.url = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -680,7 +680,7 @@ destroy.url = (args: { ogretmen: string | number } | [ogretmen: string | number 
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::destroy
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:168
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:198
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 destroy.delete = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -690,7 +690,7 @@ destroy.delete = (args: { ogretmen: string | number } | [ogretmen: string | numb
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::destroy
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:168
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:198
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 const destroyForm = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -705,7 +705,7 @@ const destroyForm = (args: { ogretmen: string | number } | [ogretmen: string | n
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::destroy
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:168
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:198
 * @route '/ogretmen-musaitlik/{ogretmen}'
 */
 destroyForm.delete = (args: { ogretmen: string | number } | [ogretmen: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

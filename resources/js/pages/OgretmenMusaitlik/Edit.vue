@@ -31,6 +31,8 @@ const props = defineProps<{
     ogretmen: Ogretmen;
     zaman_dilimleri: ZamanDilimi[];
     musaitlikler: Record<number, Musaitlik>;
+    gerekli_ders_saati: number;
+    musait_saat_sayisi: number;
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -120,11 +122,11 @@ const getButtonClass = (zamanDilimiId: number, typeValue: string, typeConfig: an
 const getContainerClass = (zamanDilimiId: number) => {
     const status = musaitlikDurumlari.value[zamanDilimiId];
     if (!status) return 'bg-card border-border';
-    
+
     if (status === 'musait') return 'bg-green-50/50 border-green-200';
     if (status === 'tercih_edilen') return 'bg-blue-50/50 border-blue-200';
     if (status === 'musait_degil') return 'bg-red-50/50 border-red-200';
-    
+
     return 'bg-card border-border';
 };
 
@@ -236,8 +238,48 @@ const stats = computed(() => {
             <form @submit.prevent="submit" class="space-y-6">
                 <!-- İstatistikler ve Kontroller -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- İstatistikler ve Ders Saati Bilgisi -->
+                <div class="lg:col-span-2 space-y-4">
+                    <!-- Ders Saati Bilgisi -->
+                    <div class="rounded-lg border bg-card p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Ders Saati Durumu</h3>
+                                <p class="text-sm text-muted-foreground mt-1">
+                                    Bu öğretmenin vermesi gereken toplam ders saati
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">{{ gerekli_ders_saati }}</div>
+                                <div class="text-xs text-muted-foreground">saat gerekli</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <div
+                                    :class="[
+                                        'w-3 h-3 rounded-full',
+                                        stats.musait >= gerekli_ders_saati ? 'bg-green-500' : 'bg-red-500'
+                                    ]"
+                                ></div>
+                                <span class="text-sm">
+                                    {{ stats.musait }}/{{ gerekli_ders_saati }} müsait saat
+                                </span>
+                            </div>
+                            <div
+                                v-if="gerekli_ders_saati > 0"
+                                :class="[
+                                    'text-sm font-medium',
+                                    stats.musait >= gerekli_ders_saati ? 'text-green-600' : 'text-red-600'
+                                ]"
+                            >
+                                {{ stats.musait >= gerekli_ders_saati ? '✓ Yeterli' : `${gerekli_ders_saati - stats.musait} saat eksik` }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- İstatistikler -->
-                    <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div class="rounded-lg border bg-card p-4">
                             <div class="text-2xl font-bold">{{ stats.toplam }}</div>
                             <div class="text-xs text-muted-foreground mt-1">Toplam Dilim</div>
@@ -327,7 +369,7 @@ const stats = computed(() => {
                                     <div class="font-semibold text-xs">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
                                     <div class="text-[10px] opacity-70">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
                                 </div>
-                                
+
                                 <div class="flex justify-center gap-1">
                                     <button
                                         type="button"
@@ -394,7 +436,7 @@ const stats = computed(() => {
                                         <div class="font-semibold text-sm">{{ formatSaat(zamanDilimi.baslangic_saati) }}</div>
                                         <div class="text-xs opacity-70">{{ formatSaat(zamanDilimi.bitis_saati) }}</div>
                                     </div>
-                                    
+
                                     <div class="flex gap-1">
                                         <button
                                             type="button"

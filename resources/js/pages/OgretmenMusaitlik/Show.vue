@@ -30,6 +30,8 @@ const props = defineProps<{
     ogretmen: Ogretmen;
     zaman_dilimleri: ZamanDilimi[];
     musaitlikler: Record<number, Musaitlik>;
+    gerekli_ders_saati: number;
+    musait_saat_sayisi: number;
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -130,6 +132,57 @@ const getMusaitlik = (zamanDilimiId: number) => {
                         </svg>
                         Düzenle
                     </Link>
+                </div>
+            </div>
+
+            <!-- Ders Saati Bilgisi -->
+            <div class="mb-6 rounded-lg border bg-card p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-semibold">Ders Saati Durumu</h2>
+                        <p class="text-sm text-muted-foreground mt-1">
+                            Bu öğretmenin vermesi gereken toplam ders saati ve müsaitlik durumu
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold">{{ gerekli_ders_saati }}</div>
+                        <div class="text-sm text-muted-foreground">saat gerekli</div>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                        <div>
+                            <div class="font-medium">{{ musait_saat_sayisi }} saat</div>
+                            <div class="text-sm text-muted-foreground">Müsait</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+                        <div>
+                            <div class="font-medium">{{ zaman_dilimleri.length - musait_saat_sayisi }} saat</div>
+                            <div class="text-sm text-muted-foreground">Müsait Değil</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div
+                            :class="[
+                                'w-4 h-4 rounded-full',
+                                musait_saat_sayisi >= gerekli_ders_saati ? 'bg-green-500' : 'bg-red-500'
+                            ]"
+                        ></div>
+                        <div>
+                            <div
+                                :class="[
+                                    'font-medium',
+                                    musait_saat_sayisi >= gerekli_ders_saati ? 'text-green-600' : 'text-red-600'
+                                ]"
+                            >
+                                {{ musait_saat_sayisi >= gerekli_ders_saati ? 'Yeterli' : `${gerekli_ders_saati - musait_saat_sayisi} Eksik` }}
+                            </div>
+                            <div class="text-sm text-muted-foreground">Durum</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -19,7 +19,17 @@ class OgretmenMusaitlikController extends Controller
         $ogretmenler = Ogretmen::orderBy('isim')
             ->get(['id', 'isim', 'unvan', 'email'])
             ->map(function ($ogretmen) {
+                // Müsaitlik kayıt sayısı
                 $ogretmen->musaitlikler_count = OgretmenMusaitlik::where('ogretmen_id', $ogretmen->id)->count();
+
+                // Müsait olan saat sayısı
+                $ogretmen->musait_saat_sayisi = OgretmenMusaitlik::where('ogretmen_id', $ogretmen->id)
+                    ->where('musaitlik_tipi', 'musait')
+                    ->count();
+
+                // Bu öğretmenin vermesi gereken toplam ders saati
+                $ogretmen->gerekli_ders_saati = $this->calculateRequiredHours($ogretmen->id);
+
                 return $ogretmen;
             });
 
@@ -95,10 +105,20 @@ class OgretmenMusaitlikController extends Controller
             ->get()
             ->keyBy('zaman_dilimi_id');
 
+        // Gerekli ders saati hesapla
+        $gerekliDersSaati = $this->calculateRequiredHours($ogretmenId);
+
+        // Müsait saat sayısı
+        $musaitSaatSayisi = OgretmenMusaitlik::where('ogretmen_id', $ogretmenId)
+            ->where('musaitlik_tipi', 'musait')
+            ->count();
+
         return Inertia::render('OgretmenMusaitlik/Show', [
             'ogretmen' => $ogretmen,
             'zaman_dilimleri' => $zamanDilimleri,
             'musaitlikler' => $musaitlikler,
+            'gerekli_ders_saati' => $gerekliDersSaati,
+            'musait_saat_sayisi' => $musaitSaatSayisi,
         ]);
     }
 
@@ -133,10 +153,20 @@ class OgretmenMusaitlikController extends Controller
             ->get()
             ->keyBy('zaman_dilimi_id');
 
+        // Gerekli ders saati hesapla
+        $gerekliDersSaati = $this->calculateRequiredHours($ogretmenId);
+
+        // Müsait saat sayısı
+        $musaitSaatSayisi = OgretmenMusaitlik::where('ogretmen_id', $ogretmenId)
+            ->where('musaitlik_tipi', 'musait')
+            ->count();
+
         return Inertia::render('OgretmenMusaitlik/Edit', [
             'ogretmen' => $ogretmen,
             'zaman_dilimleri' => $zamanDilimleri,
             'musaitlikler' => $musaitlikler,
+            'gerekli_ders_saati' => $gerekliDersSaati,
+            'musait_saat_sayisi' => $musaitSaatSayisi,
         ]);
     }
 
@@ -215,5 +245,30 @@ class OgretmenMusaitlikController extends Controller
                 ->route('ogretmen-musaitlik.index')
                 ->with('error', 'Excel içe aktarılırken hata oluştu: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Öğretmenin vermesi gereken toplam ders saatini hesapla
+     */
+    private function calculateRequiredHours($ogretmenId)
+    {
+        // Bu öğretmenin verdiği dersleri bul
+        $ogretmenDersler = \App\Models\OgretmenDers::where('ogretmen_id', $ogretmenId)
+            ->with(['ders'])
+            ->get();
+
+        $toplamSaat = 0;
+
+        foreach ($ogretmenDersler as $ogretmenDers) {
+            $ders = $ogretmenDers->ders;
+
+            // Bu dersi kaç grup alıyor?
+            $grupSayisi = \App\Models\GrupDers::where('ders_id', $ders->id)->count();
+
+            // Toplam saat = ders haftalık saati × grup sayısı
+            $toplamSaat += $ders->haftalik_saat * $grupSayisi;
+        }
+
+        return $toplamSaat;
     }
 }

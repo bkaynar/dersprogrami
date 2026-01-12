@@ -10,6 +10,8 @@ interface Ogretmen {
     unvan: string;
     email: string;
     musaitlikler_count: number;
+    musait_saat_sayisi: number;
+    gerekli_ders_saati: number;
 }
 
 defineProps<{
@@ -59,7 +61,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <tr class="border-b bg-muted/50">
                             <th class="px-6 py-3 text-left text-sm font-medium">Öğretmen</th>
                             <th class="px-6 py-3 text-left text-sm font-medium">E-posta</th>
-                            <th class="px-6 py-3 text-center text-sm font-medium">Tanımlı Müsaitlik</th>
+                            <th class="px-6 py-3 text-center text-sm font-medium">Ders Saati</th>
+                            <th class="px-6 py-3 text-center text-sm font-medium">Müsaitlik</th>
                             <th class="px-6 py-3 text-right text-sm font-medium">İşlemler</th>
                         </tr>
                     </thead>
@@ -77,9 +80,35 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 {{ ogretmen.email }}
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center rounded-md bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-                                    {{ ogretmen.musaitlikler_count }} zaman dilimi
-                                </span>
+                                <div class="flex flex-col items-center gap-1">
+                                    <span class="text-sm font-medium">{{ ogretmen.gerekli_ders_saati }} saat</span>
+                                    <span class="text-xs text-muted-foreground">gerekli</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex flex-col items-center gap-1">
+                                    <span
+                                        :class="[
+                                            'inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium',
+                                            ogretmen.musait_saat_sayisi >= ogretmen.gerekli_ders_saati
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                        ]"
+                                    >
+                                        {{ ogretmen.musait_saat_sayisi }}/{{ ogretmen.musaitlikler_count }} müsait
+                                    </span>
+                                    <span
+                                        v-if="ogretmen.gerekli_ders_saati > 0"
+                                        :class="[
+                                            'text-xs',
+                                            ogretmen.musait_saat_sayisi >= ogretmen.gerekli_ders_saati
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
+                                        ]"
+                                    >
+                                        {{ ogretmen.musait_saat_sayisi >= ogretmen.gerekli_ders_saati ? '✓ Yeterli' : `${ogretmen.gerekli_ders_saati - ogretmen.musait_saat_sayisi} eksik` }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
