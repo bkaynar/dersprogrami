@@ -47,6 +47,19 @@ class UniversiteOfficialTimetablePdfExport
             'cuma' => 'CUMA'
         ];
 
+        // Sabit saat dilimleri (okulun şablonuna uygun)
+        $saatDilimleri = [
+            '08:15 – 09:00',
+            '09:15 – 10:00',
+            '10:15 – 11:00',
+            '11:15 – 12:00',
+            '12:00 – 13:00',
+            '13:00 – 13:45',
+            '14:00 – 14:45',
+            '15:00 – 15:45',
+            '16:00 – 16:45'
+        ];
+
         $zamanByGun = [];
         foreach ($zamanDilimleri as $zd) {
             if (in_array($zd->haftanin_gunu, $gunSirasi)) {
@@ -57,15 +70,23 @@ class UniversiteOfficialTimetablePdfExport
         // Program verilerini hazırla
         $programData = [];
         foreach ($gunSirasi as $gun) {
-            if (!isset($zamanByGun[$gun])) continue;
+            for ($saatIndex = 0; $saatIndex < 9; $saatIndex++) {
+                // Mevcut zaman dilimini bul
+                $mevcutZaman = null;
+                if (isset($zamanByGun[$gun])) {
+                    foreach ($zamanByGun[$gun] as $zaman) {
+                        $zamanSaat = substr($zaman->baslangic_saati, 0, 5) . ' – ' . substr($zaman->bitis_saati, 0, 5);
+                        if ($zamanSaat === $saatDilimleri[$saatIndex]) {
+                            $mevcutZaman = $zaman;
+                            break;
+                        }
+                    }
+                }
 
-            $gunZamanlari = $zamanByGun[$gun];
-
-            foreach ($gunZamanlari as $index => $zaman) {
                 $row = [
-                    'saat' => substr($zaman->baslangic_saati, 0, 5) . '-' . substr($zaman->bitis_saati, 0, 5),
-                    'gun' => $index === 0 ? $gunIsimleri[$gun] : '',
-                    'gun_rowspan' => $index === 0 ? count($gunZamanlari) : 0,
+                    'saat' => $saatDilimleri[$saatIndex],
+                    'gun' => $saatIndex === 0 ? $gunIsimleri[$gun] : '',
+                    'gun_rowspan' => $saatIndex === 0 ? 9 : 0,
                     'siniflar' => []
                 ];
 
@@ -74,30 +95,33 @@ class UniversiteOfficialTimetablePdfExport
                     $grupAdi = "{$sinif}-{$this->subeType}";
                     $grup = OgrenciGrubu::where('isim', $grupAdi)->first();
 
-                    if ($grup) {
+                    if ($grup && $mevcutZaman) {
                         $program = OlusturulanProgram::where('ogrenci_grup_id', $grup->id)
-                            ->where('zaman_dilimi_id', $zaman->id)
+                            ->where('zaman_dilimi_id', $mevcutZaman->id)
                             ->with(['ders', 'ogretmen', 'mekan'])
                             ->first();
 
                         if ($program) {
                             $row['siniflar'][$sinif] = [
-                                'ders' => $program->ders->isim ?? '',
-                                'hoca' => $this->formatOgretmenAdi($program->ogretmen->isim ?? ''),
-                                'yer' => $program->mekan->isim ?? ''
+                                'ders_kodu' => $program->ders->ders_kodu ?? '',
+                                'ders_adi' => $program->ders->isim ?? '',
+                                'derslik' => $program->mekan->isim ?? '',
+                                'ogretim_elemani' => $this->formatOgretmenAdi($program->ogretmen->isim ?? '')
                             ];
                         } else {
                             $row['siniflar'][$sinif] = [
-                                'ders' => '',
-                                'hoca' => '',
-                                'yer' => ''
+                                'ders_kodu' => '',
+                                'ders_adi' => '',
+                                'derslik' => '',
+                                'ogretim_elemani' => ''
                             ];
                         }
                     } else {
                         $row['siniflar'][$sinif] = [
-                            'ders' => '',
-                            'hoca' => '',
-                            'yer' => ''
+                            'ders_kodu' => '',
+                            'ders_adi' => '',
+                            'derslik' => '',
+                            'ogretim_elemani' => ''
                         ];
                     }
                 }
@@ -120,10 +144,10 @@ class UniversiteOfficialTimetablePdfExport
      */
     private function formatOgretmenAdi($ad): string
     {
-        if (strlen($ad) > 15) {
+        if (strlen($ad) > 20) {
             $parcalar = explode(' ', $ad);
             if (count($parcalar) >= 2) {
-                return $parcalar[0] . ' ' . substr($parcalar[count($parcalar) - 1], 0, 8);
+                return $parcalar[0] . ' ' . substr($parcalar[count($parcalar) - 1], 0, 10);
             }
         }
         return $ad;

@@ -30,28 +30,30 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
     {
         $data = [];
 
-        // Başlık kısmı
-        $data[] = ['KIRŞEHİR AHİ EVRAN ÜNİVERSİTESİ MÜHENDİSLİK-MİMARLIK FAKÜLTESİ'];
-        $data[] = ["BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ (TÜRKÇE) {$this->akademikYil} EĞİTİM-ÖĞRETİM YILI {$this->donem} DÖNEMİ HAFTALIK DERS PROGRAMI ({$this->subeType} ŞUBESİ)"];
-        $data[] = [''];
+        // Başlık kısmı - Okulun resmi şablonuna uygun
+        $data[] = [
+            'KIRŞEHİR AHİ EVRAN ÜNİVERSİTESİ MÜHENDİSLİK-MİMARLIK FAKÜLTESİ',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+        ];
+        $data[] = [
+            "BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ (TÜRKÇE) {$this->akademikYil} EĞİTİM-ÖĞRETİM YILI {$this->donem} DÖNEMİ HAFTALIK DERS PROGRAMI ({$this->subeType} ŞUBESİ)",
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+        ];
+        $data[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+
+        // Sınıf başlıkları
+        $data[] = [
+            '', '', 'I. SINIF', '', '', '', 'II. SINIF', '', '', '', 'III. SINIF', '', '', '', 'IV. SINIF', '', '', ''
+        ];
 
         // Tablo başlıkları
-        $headerRow1 = ['SAAT', 'GÜN'];
-        $headerRow2 = ['', ''];
-
-        // Her sınıf için başlık
-        for ($sinif = 1; $sinif <= 4; $sinif++) {
-            $headerRow1[] = "{$sinif}-{$this->subeType} SINIFI";
-            $headerRow1[] = '';
-            $headerRow1[] = '';
-
-            $headerRow2[] = 'DERS';
-            $headerRow2[] = 'HOCA';
-            $headerRow2[] = 'YER';
-        }
-
-        $data[] = $headerRow1;
-        $data[] = $headerRow2;
+        $data[] = [
+            'GÜN', 'SAAT',
+            'DERS KODU', 'DERS ADI', 'DERSLİK', 'ÖĞRETİM ELEMANI',
+            'DERS KODU', 'DERS ADI', 'DERSLİK', 'ÖĞRETİM ELEMANI',
+            'DERS KODU', 'DERS ADI', 'DERSLİK', 'ÖĞRETİM ELEMANI',
+            'DERS KODU', 'DERS ADI', 'DERSLİK', 'ÖĞRETİM ELEMANI'
+        ];
 
         // Zaman dilimlerini al ve sırala
         $zamanDilimleri = ZamanDilim::orderBy('baslangic_saati')->get();
@@ -66,6 +68,19 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
             'cuma' => 'CUMA'
         ];
 
+        // Sabit saat dilimleri (okulun şablonuna uygun)
+        $saatDilimleri = [
+            '08:15 – 09:00',
+            '09:15 – 10:00',
+            '10:15 – 11:00',
+            '11:15 – 12:00',
+            '12:00 – 13:00',
+            '13:00 – 13:45',
+            '14:00 – 14:45',
+            '15:00 – 15:45',
+            '16:00 – 16:45'
+        ];
+
         $zamanByGun = [];
         foreach ($zamanDilimleri as $zd) {
             if (in_array($zd->haftanin_gunu, $gunSirasi)) {
@@ -75,42 +90,56 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
 
         // Her gün için satırlar oluştur
         foreach ($gunSirasi as $gun) {
-            if (!isset($zamanByGun[$gun])) continue;
-
-            $gunZamanlari = $zamanByGun[$gun];
             $gunBaslangic = true;
 
-            foreach ($gunZamanlari as $zaman) {
+            // Her gün için 9 saat dilimi (08:15-16:45 arası)
+            for ($saatIndex = 0; $saatIndex < 9; $saatIndex++) {
                 $row = [];
-
-                // Saat sütunu
-                $row[] = substr($zaman->baslangic_saati, 0, 5) . '-' . substr($zaman->bitis_saati, 0, 5);
 
                 // Gün sütunu (sadece ilk satırda)
                 $row[] = $gunBaslangic ? $gunIsimleri[$gun] : '';
+
+                // Saat sütunu
+                $row[] = $saatDilimleri[$saatIndex];
+
                 $gunBaslangic = false;
 
-                // Her sınıf için ders bilgileri
+                // Mevcut zaman dilimini bul
+                $mevcutZaman = null;
+                if (isset($zamanByGun[$gun])) {
+                    foreach ($zamanByGun[$gun] as $zaman) {
+                        $zamanSaat = substr($zaman->baslangic_saati, 0, 5) . ' – ' . substr($zaman->bitis_saati, 0, 5);
+                        if ($zamanSaat === $saatDilimleri[$saatIndex]) {
+                            $mevcutZaman = $zaman;
+                            break;
+                        }
+                    }
+                }
+
+                // Her sınıf için ders bilgileri (1-A, 2-A, 3-A, 4-A)
                 for ($sinif = 1; $sinif <= 4; $sinif++) {
                     $grupAdi = "{$sinif}-{$this->subeType}";
                     $grup = OgrenciGrubu::where('isim', $grupAdi)->first();
 
-                    if ($grup) {
+                    if ($grup && $mevcutZaman) {
                         $program = OlusturulanProgram::where('ogrenci_grup_id', $grup->id)
-                            ->where('zaman_dilimi_id', $zaman->id)
+                            ->where('zaman_dilimi_id', $mevcutZaman->id)
                             ->with(['ders', 'ogretmen', 'mekan'])
                             ->first();
 
                         if ($program) {
+                            $row[] = $program->ders->ders_kodu ?? '';
                             $row[] = $program->ders->isim ?? '';
-                            $row[] = $this->formatOgretmenAdi($program->ogretmen->isim ?? '');
                             $row[] = $program->mekan->isim ?? '';
+                            $row[] = $this->formatOgretmenAdi($program->ogretmen->isim ?? '');
                         } else {
+                            $row[] = '';
                             $row[] = '';
                             $row[] = '';
                             $row[] = '';
                         }
                     } else {
+                        $row[] = '';
                         $row[] = '';
                         $row[] = '';
                         $row[] = '';
@@ -121,12 +150,9 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
             }
         }
 
-        // Alt kısım
-        $data[] = [''];
-        $data[] = [''];
-        $data[] = ['BÖLÜM BAŞKANI', '', '', '', '', '', '', '', '', '', '', '', '', 'DEKAN'];
-        $data[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-        $data[] = ['Doç. Dr. Öğr. Üyesi Ahmet BİLİR', '', '', '', '', '', '', '', '', '', '', '', '', 'Prof. Dr. Cengiz ELDEM'];
+        // Alt boşluk
+        $data[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+        $data[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
 
         return $data;
     }
@@ -136,10 +162,10 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
      */
     private function formatOgretmenAdi($ad): string
     {
-        if (strlen($ad) > 15) {
+        if (strlen($ad) > 20) {
             $parcalar = explode(' ', $ad);
             if (count($parcalar) >= 2) {
-                return $parcalar[0] . ' ' . substr($parcalar[count($parcalar) - 1], 0, 8);
+                return $parcalar[0] . ' ' . substr($parcalar[count($parcalar) - 1], 0, 10);
             }
         }
         return $ad;
@@ -151,20 +177,24 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
     public function columnWidths(): array
     {
         return [
-            'A' => 12,  // Saat
-            'B' => 12,  // Gün
-            'C' => 20,  // 1-A Ders
-            'D' => 15,  // 1-A Hoca
-            'E' => 8,   // 1-A Yer
-            'F' => 20,  // 2-A Ders
-            'G' => 15,  // 2-A Hoca
-            'H' => 8,   // 2-A Yer
-            'I' => 20,  // 3-A Ders
-            'J' => 15,  // 3-A Hoca
-            'K' => 8,   // 3-A Yer
-            'L' => 20,  // 4-A Ders
-            'M' => 15,  // 4-A Hoca
-            'N' => 8,   // 4-A Yer
+            'A' => 12,  // Gün
+            'B' => 15,  // Saat
+            'C' => 12,  // 1. Sınıf Ders Kodu
+            'D' => 25,  // 1. Sınıf Ders Adı
+            'E' => 10,  // 1. Sınıf Derslik
+            'F' => 20,  // 1. Sınıf Öğretim Elemanı
+            'G' => 12,  // 2. Sınıf Ders Kodu
+            'H' => 25,  // 2. Sınıf Ders Adı
+            'I' => 10,  // 2. Sınıf Derslik
+            'J' => 20,  // 2. Sınıf Öğretim Elemanı
+            'K' => 12,  // 3. Sınıf Ders Kodu
+            'L' => 25,  // 3. Sınıf Ders Adı
+            'M' => 10,  // 3. Sınıf Derslik
+            'N' => 20,  // 3. Sınıf Öğretim Elemanı
+            'O' => 12,  // 4. Sınıf Ders Kodu
+            'P' => 25,  // 4. Sınıf Ders Adı
+            'Q' => 10,  // 4. Sınıf Derslik
+            'R' => 20,  // 4. Sınıf Öğretim Elemanı
         ];
     }
 
@@ -176,11 +206,11 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
         // Satır yüksekliklerini ayarla
         $sheet->getRowDimension(1)->setRowHeight(25);  // Başlık
         $sheet->getRowDimension(2)->setRowHeight(25);  // Alt başlık
-        $sheet->getRowDimension(4)->setRowHeight(20);  // Tablo başlığı 1
-        $sheet->getRowDimension(5)->setRowHeight(20);  // Tablo başlığı 2
+        $sheet->getRowDimension(4)->setRowHeight(20);  // Sınıf başlıkları
+        $sheet->getRowDimension(5)->setRowHeight(20);  // Tablo başlıkları
 
-        // Başlık stilleri
-        $sheet->getStyle('A1:N1')->applyFromArray([
+        // Ana başlık stilleri
+        $sheet->getStyle('A1:R1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -190,9 +220,9 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
                 'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
-        $sheet->mergeCells('A1:N1');
+        $sheet->mergeCells('A1:R1');
 
-        $sheet->getStyle('A2:N2')->applyFromArray([
+        $sheet->getStyle('A2:R2')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 10,
@@ -202,10 +232,28 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
                 'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
-        $sheet->mergeCells('A2:N2');
+        $sheet->mergeCells('A2:R2');
+
+        // Sınıf başlık stilleri
+        $sheet->getStyle('A4:R4')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+
+        // Sınıf başlıklarını merge et
+        $sheet->mergeCells('C4:F4'); // I. SINIF
+        $sheet->mergeCells('G4:J4'); // II. SINIF
+        $sheet->mergeCells('K4:N4'); // III. SINIF
+        $sheet->mergeCells('O4:R4'); // IV. SINIF
 
         // Tablo başlık stilleri
-        $sheet->getStyle('A4:N5')->applyFromArray([
+        $sheet->getStyle('A5:R5')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 9,
@@ -226,32 +274,17 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
             ],
         ]);
 
-        // Sınıf başlıklarını merge et
-        $sheet->mergeCells('C4:E4'); // 1-A
-        $sheet->mergeCells('F4:H4'); // 2-A
-        $sheet->mergeCells('I4:K4'); // 3-A
-        $sheet->mergeCells('L4:N4'); // 4-A
-
-        // Gün sütunlarını merge et (dinamik olarak)
+        // Gün sütunlarını merge et
         $currentRow = 6;
-        $gunSirasi = ['pazartesi', 'sali', 'carsamba', 'persembe', 'cuma'];
-
-        foreach ($gunSirasi as $gun) {
-            $zamanDilimleri = ZamanDilim::where('haftanin_gunu', $gun)
-                ->orderBy('baslangic_saati')
-                ->get();
-
-            if ($zamanDilimleri->count() > 1) {
-                $endRow = $currentRow + $zamanDilimleri->count() - 1;
-                $sheet->mergeCells("B{$currentRow}:B{$endRow}");
-            }
-
-            $currentRow += $zamanDilimleri->count();
+        foreach (['pazartesi', 'sali', 'carsamba', 'persembe', 'cuma'] as $gun) {
+            $endRow = $currentRow + 8; // Her gün 9 saat dilimi
+            $sheet->mergeCells("A{$currentRow}:A{$endRow}");
+            $currentRow += 9;
         }
 
         // Tablo içeriği stilleri
-        $lastRow = $currentRow - 1;
-        $sheet->getStyle("A6:N{$lastRow}")->applyFromArray([
+        $lastRow = 50; // Yaklaşık son satır
+        $sheet->getStyle("A6:R{$lastRow}")->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
@@ -264,18 +297,6 @@ class UniversiteOfficialTimetableExport implements FromArray, WithStyles, WithCo
             ],
             'font' => [
                 'size' => 8,
-            ],
-        ]);
-
-        // Alt imza kısmı
-        $signatureRow = $lastRow + 3;
-        $sheet->getStyle("A{$signatureRow}:N{$signatureRow}")->applyFromArray([
-            'font' => [
-                'bold' => true,
-                'size' => 10,
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
         ]);
 

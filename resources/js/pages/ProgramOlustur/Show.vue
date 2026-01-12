@@ -132,7 +132,7 @@ onUnmounted(() => {
                         <!-- Dropdown Menu -->
                         <div
                             v-show="showExportDropdown"
-                            class="absolute right-0 z-10 mt-2 w-64 rounded-lg border bg-white shadow-lg"
+                            class="absolute right-0 z-10 mt-2 w-64 rounded-lg border border-border bg-background shadow-lg dark:shadow-xl"
                         >
                             <div class="p-2">
                                 <!-- Standart Export -->
@@ -141,7 +141,7 @@ onUnmounted(() => {
                                 </div>
                                 <a
                                     href="/program-olustur/export/excel"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                                 >
                                     <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -150,7 +150,7 @@ onUnmounted(() => {
                                 </a>
                                 <a
                                     href="/program-olustur/export/pdf"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                                 >
                                     <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -164,12 +164,12 @@ onUnmounted(() => {
                                 </div>
 
                                 <!-- A Şubesi -->
-                                <div class="mb-1 px-2 py-1 text-xs font-medium text-blue-600">
+                                <div class="mb-1 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
                                     A Şubesi (1-A, 2-A, 3-A, 4-A)
                                 </div>
                                 <a
                                     href="/program-olustur/export/universite/excel/a"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                                 >
                                     <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -178,7 +178,6 @@ onUnmounted(() => {
                                 </a>
                                 <a
                                     href="/program-olustur/export/universite/pdf/a"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
                                 >
                                     <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -187,12 +186,12 @@ onUnmounted(() => {
                                 </a>
 
                                 <!-- B Şubesi -->
-                                <div class="mb-1 mt-2 px-2 py-1 text-xs font-medium text-purple-600">
+                                <div class="mb-1 mt-2 px-2 py-1 text-xs font-medium text-purple-600 dark:text-purple-400">
                                     B Şubesi (1-B, 2-B, 3-B, 4-B)
                                 </div>
                                 <a
                                     href="/program-olustur/export/universite/excel/b"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                                 >
                                     <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -201,12 +200,36 @@ onUnmounted(() => {
                                 </a>
                                 <a
                                     href="/program-olustur/export/universite/pdf/b"
-                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                                 >
                                     <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                     PDF (B Şubesi)
+                                </a>
+
+                                <!-- Okulun Orijinal Şablonu Üzerine -->
+                                <div class="mb-2 mt-4 px-2 py-1 text-xs font-semibold text-orange-600 dark:text-orange-400">
+                                    🎯 Okulun Orijinal Şablonu Üzerine
+                                </div>
+
+                                <a
+                                    href="/program-olustur/export/template/a"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors bg-orange-50 dark:bg-orange-950/20"
+                                >
+                                    <svg class="h-4 w-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Template Excel (A Şubesi)
+                                </a>
+                                <a
+                                    href="/program-olustur/export/template/b"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors bg-orange-50 dark:bg-orange-950/20"
+                                >
+                                    <svg class="h-4 w-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Template Excel (B Şubesi)
                                 </a>
                             </div>
                         </div>
@@ -214,7 +237,7 @@ onUnmounted(() => {
 
                     <a
                         href="/program-olustur"
-                        class="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                        class="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                     >
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

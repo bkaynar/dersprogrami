@@ -10,6 +10,7 @@ use App\Models\OgrenciGrubu;
 use App\Exports\TimetableExport;
 use App\Exports\UniversiteOfficialTimetableExport;
 use App\Exports\UniversiteOfficialTimetablePdfExport;
+use App\Exports\UniversiteTemplateOverlayExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
@@ -301,5 +302,27 @@ class ProgramOlusturController extends Controller
         $pdf = $pdfExport->generate();
 
         return $pdf->download('ders-programi-b-subesi-' . date('Y-m-d') . '.pdf');
+    }
+
+    /**
+     * Üniversite template overlay export (A şubesi) - Okulun orijinal şablonu üzerine veri yazar
+     */
+    public function exportUniversiteTemplateA()
+    {
+        return Excel::download(
+            new UniversiteTemplateOverlayExport('A'),
+            'ders-programi-template-a-subesi-' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
+     * Üniversite template overlay export (B şubesi) - Okulun orijinal şablonu üzerine veri yazar
+     */
+    public function exportUniversiteTemplateB()
+    {
+        return Excel::download(
+            new UniversiteTemplateOverlayExport('B'),
+            'ders-programi-template-b-subesi-' . date('Y-m-d') . '.xlsx'
+        );
     }
 }

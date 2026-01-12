@@ -141,6 +141,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('program-olustur/export/universite/pdf/a', [ProgramOlusturController::class, 'exportUniversitePdfA'])->name('program-olustur.export.universite.pdf.a');
     Route::get('program-olustur/export/universite/pdf/b', [ProgramOlusturController::class, 'exportUniversitePdfB'])->name('program-olustur.export.universite.pdf.b');
 
+    // Üniversite template overlay export routes (okulun orijinal şablonu üzerine veri yazar)
+    Route::get('program-olustur/export/template/a', [ProgramOlusturController::class, 'exportUniversiteTemplateA'])->name('program-olustur.export.template.a');
+    Route::get('program-olustur/export/template/b', [ProgramOlusturController::class, 'exportUniversiteTemplateB'])->name('program-olustur.export.template.b');
+
     Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
 
     // Timetable Settings routes
