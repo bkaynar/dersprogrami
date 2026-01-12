@@ -8,6 +8,8 @@ use App\Models\OlusturulanProgram;
 use App\Models\ZamanDilim;
 use App\Models\OgrenciGrubu;
 use App\Exports\TimetableExport;
+use App\Exports\UniversiteOfficialTimetableExport;
+use App\Exports\UniversiteOfficialTimetablePdfExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
@@ -255,5 +257,49 @@ class ProgramOlusturController extends Controller
         $pdf->setPaper('a4', 'landscape');
 
         return $pdf->download('ders-programi-' . date('Y-m-d') . '.pdf');
+    }
+
+    /**
+     * Üniversite resmi şablonunda Excel export (A şubesi)
+     */
+    public function exportUniversiteExcelA()
+    {
+        return Excel::download(
+            new UniversiteOfficialTimetableExport('A'),
+            'ders-programi-a-subesi-' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
+     * Üniversite resmi şablonunda Excel export (B şubesi)
+     */
+    public function exportUniversiteExcelB()
+    {
+        return Excel::download(
+            new UniversiteOfficialTimetableExport('B'),
+            'ders-programi-b-subesi-' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
+     * Üniversite resmi şablonunda PDF export (A şubesi)
+     */
+    public function exportUniversitePdfA()
+    {
+        $pdfExport = new UniversiteOfficialTimetablePdfExport('A');
+        $pdf = $pdfExport->generate();
+
+        return $pdf->download('ders-programi-a-subesi-' . date('Y-m-d') . '.pdf');
+    }
+
+    /**
+     * Üniversite resmi şablonunda PDF export (B şubesi)
+     */
+    public function exportUniversitePdfB()
+    {
+        $pdfExport = new UniversiteOfficialTimetablePdfExport('B');
+        $pdf = $pdfExport->generate();
+
+        return $pdf->download('ders-programi-b-subesi-' . date('Y-m-d') . '.pdf');
     }
 }

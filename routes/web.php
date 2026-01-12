@@ -134,6 +134,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('program-olustur/show', [ProgramOlusturController::class, 'show'])->name('program-olustur.show');
     Route::get('program-olustur/export/excel', [ProgramOlusturController::class, 'exportExcel'])->name('program-olustur.export.excel');
     Route::get('program-olustur/export/pdf', [ProgramOlusturController::class, 'exportPdf'])->name('program-olustur.export.pdf');
+
+    // Üniversite resmi şablonu export routes
+    Route::get('program-olustur/export/universite/excel/a', [ProgramOlusturController::class, 'exportUniversiteExcelA'])->name('program-olustur.export.universite.excel.a');
+    Route::get('program-olustur/export/universite/excel/b', [ProgramOlusturController::class, 'exportUniversiteExcelB'])->name('program-olustur.export.universite.excel.b');
+    Route::get('program-olustur/export/universite/pdf/a', [ProgramOlusturController::class, 'exportUniversitePdfA'])->name('program-olustur.export.universite.pdf.a');
+    Route::get('program-olustur/export/universite/pdf/b', [ProgramOlusturController::class, 'exportUniversitePdfB'])->name('program-olustur.export.universite.pdf.b');
+
     Route::delete('program-olustur', [ProgramOlusturController::class, 'destroy'])->name('program-olustur.destroy');
 
     // Timetable Settings routes

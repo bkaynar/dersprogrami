@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 interface ZamanDilim {
     id: number;
@@ -72,6 +73,30 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+
+// Dropdown state
+const showExportDropdown = ref(false);
+
+const toggleExportDropdown = () => {
+    showExportDropdown.value = !showExportDropdown.value;
+};
+
+const closeDropdown = (event: Event) => {
+    const target = event.target as HTMLElement;
+    const button = document.getElementById('export-dropdown-button');
+
+    if (button && !button.contains(target)) {
+        showExportDropdown.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('click', closeDropdown);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', closeDropdown);
+});
 </script>
 
 <template>
@@ -89,24 +114,104 @@ const gunler = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumart
                 </div>
                 <div class="flex gap-2">
                     <!-- Export Butonları -->
-                    <a
-                        href="/program-olustur/export/excel"
-                        class="inline-flex items-center gap-2 rounded-lg border bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
-                    >
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Excel
-                    </a>
-                    <a
-                        href="/program-olustur/export/pdf"
-                        class="inline-flex items-center gap-2 rounded-lg border bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                    >
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        PDF
-                    </a>
+                    <div class="relative">
+                        <button
+                            id="export-dropdown-button"
+                            class="inline-flex items-center gap-2 rounded-lg border bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                            @click="toggleExportDropdown"
+                        >
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Export
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div
+                            v-show="showExportDropdown"
+                            class="absolute right-0 z-10 mt-2 w-64 rounded-lg border bg-white shadow-lg"
+                        >
+                            <div class="p-2">
+                                <!-- Standart Export -->
+                                <div class="mb-2 px-2 py-1 text-xs font-semibold text-muted-foreground">
+                                    Standart Format
+                                </div>
+                                <a
+                                    href="/program-olustur/export/excel"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Excel (Standart)
+                                </a>
+                                <a
+                                    href="/program-olustur/export/pdf"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    PDF (Standart)
+                                </a>
+
+                                <!-- Üniversite Resmi Şablonu -->
+                                <div class="mb-2 mt-4 px-2 py-1 text-xs font-semibold text-muted-foreground">
+                                    Üniversite Resmi Şablonu
+                                </div>
+
+                                <!-- A Şubesi -->
+                                <div class="mb-1 px-2 py-1 text-xs font-medium text-blue-600">
+                                    A Şubesi (1-A, 2-A, 3-A, 4-A)
+                                </div>
+                                <a
+                                    href="/program-olustur/export/universite/excel/a"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Excel (A Şubesi)
+                                </a>
+                                <a
+                                    href="/program-olustur/export/universite/pdf/a"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    PDF (A Şubesi)
+                                </a>
+
+                                <!-- B Şubesi -->
+                                <div class="mb-1 mt-2 px-2 py-1 text-xs font-medium text-purple-600">
+                                    B Şubesi (1-B, 2-B, 3-B, 4-B)
+                                </div>
+                                <a
+                                    href="/program-olustur/export/universite/excel/b"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Excel (B Şubesi)
+                                </a>
+                                <a
+                                    href="/program-olustur/export/universite/pdf/b"
+                                    class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                >
+                                    <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    PDF (B Şubesi)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <a
                         href="/program-olustur"
                         class="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-muted"

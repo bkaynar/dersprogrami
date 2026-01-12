@@ -1,7 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
+import universite from './universite'
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 export const excel = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +17,7 @@ excel.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 excel.url = (options?: RouteQueryOptions) => {
@@ -25,7 +26,7 @@ excel.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 excel.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +36,7 @@ excel.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 excel.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +46,7 @@ excel.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 const excelForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +56,7 @@ const excelForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 excelForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +66,7 @@ excelForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::excel
-* @see app/Http/Controllers/ProgramOlusturController.php:207
+* @see app/Http/Controllers/ProgramOlusturController.php:209
 * @route '/program-olustur/export/excel'
 */
 excelForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +83,7 @@ excel.form = excelForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 export const pdf = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +98,7 @@ pdf.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 pdf.url = (options?: RouteQueryOptions) => {
@@ -106,7 +107,7 @@ pdf.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 pdf.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -116,7 +117,7 @@ pdf.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 pdf.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -126,7 +127,7 @@ pdf.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 const pdfForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -136,7 +137,7 @@ const pdfForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 pdfForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -146,7 +147,7 @@ pdfForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::pdf
-* @see app/Http/Controllers/ProgramOlusturController.php:215
+* @see app/Http/Controllers/ProgramOlusturController.php:217
 * @route '/program-olustur/export/pdf'
 */
 pdfForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,6 +165,7 @@ pdf.form = pdfForm
 const exportMethod = {
     excel: Object.assign(excel, excel),
     pdf: Object.assign(pdf, pdf),
+    universite: Object.assign(universite, universite),
 }
 
 export default exportMethod
