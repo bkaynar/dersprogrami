@@ -107,6 +107,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Ogretmen Musaitlik routes (öğretmen bazlı)
     Route::get('ogretmen-musaitlik', [OgretmenMusaitlikController::class, 'index'])->name('ogretmen-musaitlik.index');
+    Route::get('ogretmen-musaitlik/template', [OgretmenMusaitlikController::class, 'downloadTemplate'])->name('ogretmen-musaitlik.template');
+    Route::post('ogretmen-musaitlik/import', [OgretmenMusaitlikController::class, 'import'])->name('ogretmen-musaitlik.import');
     Route::get('ogretmen-musaitlik/create', [OgretmenMusaitlikController::class, 'create'])->name('ogretmen-musaitlik.create');
     Route::post('ogretmen-musaitlik', [OgretmenMusaitlikController::class, 'store'])->name('ogretmen-musaitlik.store');
     Route::get('ogretmen-musaitlik/{ogretmen}', [OgretmenMusaitlikController::class, 'show'])->name('ogretmen-musaitlik.show');

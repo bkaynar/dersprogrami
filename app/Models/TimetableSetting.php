@@ -26,13 +26,28 @@ class TimetableSetting extends Model
      */
     public function getSplitRule(int $weeklyHours): array
     {
-        // split_rules içinde varsa onu döndür
-        if (isset($this->split_rules[$weeklyHours])) {
-            return $this->split_rules[$weeklyHours];
-        }
+        // Sabit kurallar:
+        // 1 saat -> [1] (tek blok)
+        // 2 saat -> [2] (tek blok, arka arkaya)
+        // 3 saat -> [3] (tek blok, arka arkaya)
+        // 4 saat -> [2, 2] (2 blok, farklı günlerde)
+        // 5 saat -> [2, 3] (2 blok, farklı günlerde)
+        // 6 saat -> [3, 3] (2 blok, farklı günlerde)
+        // 7 saat -> [2, 2, 3] (3 blok, farklı günlerde)
+        // 8 saat -> [2, 3, 3] (3 blok, farklı günlerde)
 
-        // Yoksa tüm saatleri tek blokta döndür
-        return [$weeklyHours];
+        $rules = [
+            1 => [1],
+            2 => [2],
+            3 => [3],
+            4 => [2, 2],
+            5 => [2, 3],
+            6 => [3, 3],
+            7 => [2, 2, 3],
+            8 => [2, 3, 3],
+        ];
+
+        return $rules[$weeklyHours] ?? [$weeklyHours];
     }
 
     /**

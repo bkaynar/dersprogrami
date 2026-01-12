@@ -6,13 +6,14 @@ use App\Services\TimetableGeneticAlgorithm;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class GenerateTimetable implements ShouldQueue
 {
     use Queueable;
 
-    public $timeout = 600; // 10 dakika timeout
+    public $timeout = 900; // 15 dakika timeout
     public $tries = 1; // Sadece 1 kez dene
 
     /**
@@ -29,6 +30,9 @@ class GenerateTimetable implements ShouldQueue
     public function handle(): void
     {
         try {
+            // Veritabanı bağlantısını yenile (MySQL gone away hatasını önle)
+            DB::reconnect();
+
             // İşlem durumunu başlat
             Cache::put('timetable_generation_status', [
                 'status' => 'running',
@@ -59,11 +63,20 @@ class GenerateTimetable implements ShouldQueue
             // Programı kaydet
             $ga->saveSchedule($result['schedule']);
 
+            // Fitness kontrolü - negatifse ihlal var demektir
+            $status = 'completed';
+            $message = 'Program başarıyla oluşturuldu!';
+
+            if ($result['fitness'] < 0) {
+                $status = 'completed_with_warnings';
+                $message = 'Program oluşturuldu ancak bazı kısıtlamalar ihlal edildi. Lütfen öğretmen müsaitliklerini kontrol edin.';
+            }
+
             // Başarılı durumu kaydet
             Cache::put('timetable_generation_status', [
-                'status' => 'completed',
+                'status' => $status,
                 'progress' => 100,
-                'message' => 'Program başarıyla oluşturuldu!',
+                'message' => $message,
                 'fitness' => $result['fitness'],
                 'generations' => $result['generations'],
                 'completed_at' => now(),

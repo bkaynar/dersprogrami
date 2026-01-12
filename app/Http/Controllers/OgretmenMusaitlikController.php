@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OgretmenMusaitlikTemplateExport;
+use App\Imports\OgretmenMusaitlikImport;
 use App\Models\Ogretmen;
 use App\Models\OgretmenMusaitlik;
 use App\Models\ZamanDilim;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OgretmenMusaitlikController extends Controller
 {
@@ -168,5 +171,49 @@ class OgretmenMusaitlikController extends Controller
 
         return redirect()->route('ogretmen-musaitlik.index')
             ->with('success', 'Öğretmen müsaitliği silindi.');
+    }
+
+    /**
+     * Excel şablonunu indir
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(
+            new OgretmenMusaitlikTemplateExport(),
+            'ogretmen-musaitlik-sablonu-' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
+     * Excel'den import et
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:10240', // Max 10MB
+        ]);
+
+        try {
+            $import = new OgretmenMusaitlikImport();
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+            $errors = $import->getErrors();
+
+            if (count($errors) > 0) {
+                return redirect()
+                    ->route('ogretmen-musaitlik.index')
+                    ->with('warning', "İşlem tamamlandı ancak bazı hatalar oluştu. Başarılı: {$stats['success']}, Hata: {$stats['errors']}")
+                    ->with('import_errors', $errors);
+            }
+
+            return redirect()
+                ->route('ogretmen-musaitlik.index')
+                ->with('success', "Excel başarıyla içe aktarıldı! {$stats['success']} öğretmenin müsaitliği güncellendi.");
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('ogretmen-musaitlik.index')
+                ->with('error', 'Excel içe aktarılırken hata oluştu: ' . $e->getMessage());
+        }
     }
 }
