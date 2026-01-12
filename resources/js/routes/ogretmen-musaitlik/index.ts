@@ -1,4 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import templateB6c898 from './template'
+import importMethod7367d2 from './import'
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::index
 * @see app/Http/Controllers/OgretmenMusaitlikController.php:16
@@ -163,7 +165,7 @@ template.form = templateForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -178,7 +180,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -187,7 +189,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -197,7 +199,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -207,7 +209,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -722,8 +724,8 @@ destroy.form = destroyForm
 
 const ogretmenMusaitlik = {
     index: Object.assign(index, index),
-    template: Object.assign(template, template),
-    import: Object.assign(importMethod, importMethod),
+    template: Object.assign(template, templateB6c898),
+    import: Object.assign(importMethod, importMethod7367d2),
     create: Object.assign(create, create),
     store: Object.assign(store, store),
     show: Object.assign(show, show),

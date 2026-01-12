@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 interface Ogretmen {
     id: number;
@@ -28,6 +28,28 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/ogretmen-musaitlik',
     },
 ];
+
+const handleFileUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (file) {
+        // Dosya tipine göre hangi import endpoint'ini kullanacağımızı belirle
+        // Şimdilik gelişmiş import kullan
+        const formData = new FormData();
+        formData.append('file', file);
+
+        router.post('/ogretmen-musaitlik/import-advanced', formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                target.value = ''; // Input'u temizle
+            },
+            onError: () => {
+                target.value = ''; // Input'u temizle
+            }
+        });
+    }
+};
 </script>
 
 <template>
@@ -43,15 +65,71 @@ const breadcrumbs: BreadcrumbItem[] = [
                         Öğretmenlerin müsaitlik durumlarını görüntüleyin ve yönetin
                     </p>
                 </div>
-                <Link
-                    href="/ogretmen-musaitlik/create"
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Yeni Müsaitlik Ekle
-                </Link>
+                <div class="flex items-center gap-3">
+                    <!-- Excel İşlemleri -->
+                    <div class="flex items-center gap-2">
+                        <!-- Şablon İndir Dropdown -->
+                        <div class="relative group">
+                            <button class="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Şablon İndir
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-64 rounded-lg border bg-card shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                <div class="p-2">
+                                    <a
+                                        href="/ogretmen-musaitlik/template"
+                                        class="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                                    >
+                                        <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Basit Şablon</div>
+                                            <div class="text-xs text-muted-foreground">Tek sayfa, tüm öğretmenler</div>
+                                        </div>
+                                    </a>
+                                    <a
+                                        href="/ogretmen-musaitlik/template-advanced"
+                                        class="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                                    >
+                                        <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Detaylı Şablon ⭐</div>
+                                            <div class="text-xs text-muted-foreground">Her öğretmen için ayrı tab</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Import Butonu -->
+                        <label class="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                            </svg>
+                            Excel Yükle
+                            <input type="file" class="hidden" accept=".xlsx,.xls" @change="handleFileUpload" />
+                        </label>
+                    </div>
+
+                    <!-- Yeni Müsaitlik Ekle -->
+                    <Link
+                        href="/ogretmen-musaitlik/create"
+                        class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Yeni Müsaitlik Ekle
+                    </Link>
+                </div>
             </div>
 
             <!-- Öğretmen Listesi -->

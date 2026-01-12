@@ -162,8 +162,89 @@ downloadTemplateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'
 downloadTemplate.form = downloadTemplateForm
 
 /**
-* @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
 * @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+export const downloadAdvancedTemplate = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: downloadAdvancedTemplate.url(options),
+    method: 'get',
+})
+
+downloadAdvancedTemplate.definition = {
+    methods: ["get","head"],
+    url: '/ogretmen-musaitlik/template-advanced',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+downloadAdvancedTemplate.url = (options?: RouteQueryOptions) => {
+    return downloadAdvancedTemplate.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+downloadAdvancedTemplate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: downloadAdvancedTemplate.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+downloadAdvancedTemplate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: downloadAdvancedTemplate.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+const downloadAdvancedTemplateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: downloadAdvancedTemplate.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+downloadAdvancedTemplateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: downloadAdvancedTemplate.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::downloadAdvancedTemplate
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @route '/ogretmen-musaitlik/template-advanced'
+*/
+downloadAdvancedTemplateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: downloadAdvancedTemplate.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+downloadAdvancedTemplate.form = downloadAdvancedTemplateForm
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 export const importMethod = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -178,7 +259,7 @@ importMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.url = (options?: RouteQueryOptions) => {
@@ -187,7 +268,7 @@ importMethod.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -197,7 +278,7 @@ importMethod.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -207,7 +288,7 @@ const importMethodForm = (options?: RouteQueryOptions): RouteFormDefinition<'pos
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::importMethod
-* @see app/Http/Controllers/OgretmenMusaitlikController.php:220
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:231
 * @route '/ogretmen-musaitlik/import'
 */
 importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -216,6 +297,62 @@ importMethodForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post
 })
 
 importMethod.form = importMethodForm
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importAdvanced
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:264
+* @route '/ogretmen-musaitlik/import-advanced'
+*/
+export const importAdvanced = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: importAdvanced.url(options),
+    method: 'post',
+})
+
+importAdvanced.definition = {
+    methods: ["post"],
+    url: '/ogretmen-musaitlik/import-advanced',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importAdvanced
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:264
+* @route '/ogretmen-musaitlik/import-advanced'
+*/
+importAdvanced.url = (options?: RouteQueryOptions) => {
+    return importAdvanced.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importAdvanced
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:264
+* @route '/ogretmen-musaitlik/import-advanced'
+*/
+importAdvanced.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: importAdvanced.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importAdvanced
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:264
+* @route '/ogretmen-musaitlik/import-advanced'
+*/
+const importAdvancedForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: importAdvanced.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\OgretmenMusaitlikController::importAdvanced
+* @see app/Http/Controllers/OgretmenMusaitlikController.php:264
+* @route '/ogretmen-musaitlik/import-advanced'
+*/
+importAdvancedForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: importAdvanced.url(options),
+    method: 'post',
+})
+
+importAdvanced.form = importAdvancedForm
 
 /**
 * @see \App\Http\Controllers\OgretmenMusaitlikController::create
@@ -720,6 +857,6 @@ destroyForm.delete = (args: { ogretmen: string | number } | [ogretmen: string | 
 
 destroy.form = destroyForm
 
-const OgretmenMusaitlikController = { index, downloadTemplate, importMethod, create, store, show, edit, update, destroy, import: importMethod }
+const OgretmenMusaitlikController = { index, downloadTemplate, downloadAdvancedTemplate, importMethod, importAdvanced, create, store, show, edit, update, destroy, import: importMethod }
 
 export default OgretmenMusaitlikController

@@ -215,6 +215,17 @@ class OgretmenMusaitlikController extends Controller
     }
 
     /**
+     * Gelişmiş Excel şablonunu indir (Her öğretmen için ayrı tab)
+     */
+    public function downloadAdvancedTemplate()
+    {
+        return Excel::download(
+            new \App\Exports\OgretmenMusaitlikAdvancedTemplateExport(),
+            'ogretmen-musaitlik-detayli-sablon-' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
      * Excel'den import et
      */
     public function import(Request $request)
@@ -244,6 +255,39 @@ class OgretmenMusaitlikController extends Controller
             return redirect()
                 ->route('ogretmen-musaitlik.index')
                 ->with('error', 'Excel içe aktarılırken hata oluştu: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Gelişmiş Excel'den import et (Her öğretmen için ayrı tab)
+     */
+    public function importAdvanced(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:10240', // Max 10MB
+        ]);
+
+        try {
+            $import = new \App\Imports\OgretmenMusaitlikAdvancedImport();
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+            $errors = $import->getErrors();
+
+            if (count($errors) > 0) {
+                return redirect()
+                    ->route('ogretmen-musaitlik.index')
+                    ->with('warning', "Gelişmiş import tamamlandı ancak bazı hatalar oluştu. Başarılı: {$stats['success']}, Hata: {$stats['errors']}")
+                    ->with('import_errors', $errors);
+            }
+
+            return redirect()
+                ->route('ogretmen-musaitlik.index')
+                ->with('success', "Gelişmiş Excel başarıyla içe aktarıldı! {$stats['success']} öğretmenin müsaitliği güncellendi.");
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('ogretmen-musaitlik.index')
+                ->with('error', 'Gelişmiş Excel içe aktarılırken hata oluştu: ' . $e->getMessage());
         }
     }
 
