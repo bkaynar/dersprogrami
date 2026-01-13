@@ -360,7 +360,7 @@ store.form = storeForm
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-export const show = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -375,7 +375,7 @@ show.definition = {
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-show.url = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+show.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ders: args }
     }
@@ -408,7 +408,7 @@ show.url = (args: { ders: string | number | { id: string | number } } | [ders: s
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-show.get = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -418,7 +418,7 @@ show.get = (args: { ders: string | number | { id: string | number } } | [ders: s
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-show.head = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -428,7 +428,7 @@ show.head = (args: { ders: string | number | { id: string | number } } | [ders: 
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-const showForm = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -438,7 +438,7 @@ const showForm = (args: { ders: string | number | { id: string | number } } | [d
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-showForm.get = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -448,7 +448,7 @@ showForm.get = (args: { ders: string | number | { id: string | number } } | [der
 * @see app/Http/Controllers/DersController.php:57
 * @route '/dersler/{ders}'
 */
-showForm.head = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -465,7 +465,7 @@ show.form = showForm
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-export const edit = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -480,7 +480,7 @@ edit.definition = {
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-edit.url = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ders: args }
     }
@@ -513,7 +513,7 @@ edit.url = (args: { ders: string | number | { id: string | number } } | [ders: s
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-edit.get = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -523,7 +523,7 @@ edit.get = (args: { ders: string | number | { id: string | number } } | [ders: s
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-edit.head = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -533,7 +533,7 @@ edit.head = (args: { ders: string | number | { id: string | number } } | [ders: 
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-const editForm = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -543,7 +543,7 @@ const editForm = (args: { ders: string | number | { id: string | number } } | [d
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-editForm.get = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -553,7 +553,7 @@ editForm.get = (args: { ders: string | number | { id: string | number } } | [der
 * @see app/Http/Controllers/DersController.php:65
 * @route '/dersler/{ders}/edit'
 */
-editForm.head = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -570,7 +570,7 @@ edit.form = editForm
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-export const update = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -585,7 +585,7 @@ update.definition = {
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-update.url = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ders: args }
     }
@@ -618,7 +618,7 @@ update.url = (args: { ders: string | number | { id: string | number } } | [ders:
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-update.put = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -628,7 +628,7 @@ update.put = (args: { ders: string | number | { id: string | number } } | [ders:
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-update.patch = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -638,7 +638,7 @@ update.patch = (args: { ders: string | number | { id: string | number } } | [der
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-const updateForm = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -653,7 +653,7 @@ const updateForm = (args: { ders: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-updateForm.put = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -668,7 +668,7 @@ updateForm.put = (args: { ders: string | number | { id: string | number } } | [d
 * @see app/Http/Controllers/DersController.php:72
 * @route '/dersler/{ders}'
 */
-updateForm.patch = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -685,7 +685,7 @@ update.form = updateForm
 * @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
-export const destroy = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -700,7 +700,7 @@ destroy.definition = {
 * @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
-destroy.url = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ders: args }
     }
@@ -733,7 +733,7 @@ destroy.url = (args: { ders: string | number | { id: string | number } } | [ders
 * @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
-destroy.delete = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -743,7 +743,7 @@ destroy.delete = (args: { ders: string | number | { id: string | number } } | [d
 * @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
-const destroyForm = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -758,7 +758,7 @@ const destroyForm = (args: { ders: string | number | { id: string | number } } |
 * @see app/Http/Controllers/DersController.php:85
 * @route '/dersler/{ders}'
 */
-destroyForm.delete = (args: { ders: string | number | { id: string | number } } | [ders: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { ders: number | { id: number } } | [ders: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

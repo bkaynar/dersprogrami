@@ -552,7 +552,7 @@ store.form = storeForm
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-export const show = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -567,7 +567,7 @@ show.definition = {
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-show.url = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+show.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { mekan: args }
     }
@@ -600,7 +600,7 @@ show.url = (args: { mekan: string | number | { id: string | number } } | [mekan:
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-show.get = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -610,7 +610,7 @@ show.get = (args: { mekan: string | number | { id: string | number } } | [mekan:
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-show.head = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -620,7 +620,7 @@ show.head = (args: { mekan: string | number | { id: string | number } } | [mekan
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-const showForm = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -630,7 +630,7 @@ const showForm = (args: { mekan: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-showForm.get = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -640,7 +640,7 @@ showForm.get = (args: { mekan: string | number | { id: string | number } } | [me
 * @see app/Http/Controllers/MekanController.php:43
 * @route '/mekanlar/{mekan}'
 */
-showForm.head = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -657,7 +657,7 @@ show.form = showForm
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-export const edit = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -672,7 +672,7 @@ edit.definition = {
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-edit.url = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { mekan: args }
     }
@@ -705,7 +705,7 @@ edit.url = (args: { mekan: string | number | { id: string | number } } | [mekan:
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-edit.get = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -715,7 +715,7 @@ edit.get = (args: { mekan: string | number | { id: string | number } } | [mekan:
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-edit.head = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -725,7 +725,7 @@ edit.head = (args: { mekan: string | number | { id: string | number } } | [mekan
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-const editForm = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -735,7 +735,7 @@ const editForm = (args: { mekan: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-editForm.get = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -745,7 +745,7 @@ editForm.get = (args: { mekan: string | number | { id: string | number } } | [me
 * @see app/Http/Controllers/MekanController.php:50
 * @route '/mekanlar/{mekan}/edit'
 */
-editForm.head = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -762,7 +762,7 @@ edit.form = editForm
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-export const update = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -777,7 +777,7 @@ update.definition = {
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-update.url = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { mekan: args }
     }
@@ -810,7 +810,7 @@ update.url = (args: { mekan: string | number | { id: string | number } } | [meka
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-update.put = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -820,7 +820,7 @@ update.put = (args: { mekan: string | number | { id: string | number } } | [meka
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-update.patch = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -830,7 +830,7 @@ update.patch = (args: { mekan: string | number | { id: string | number } } | [me
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-const updateForm = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -845,7 +845,7 @@ const updateForm = (args: { mekan: string | number | { id: string | number } } |
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-updateForm.put = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -860,7 +860,7 @@ updateForm.put = (args: { mekan: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/MekanController.php:57
 * @route '/mekanlar/{mekan}'
 */
-updateForm.patch = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -877,7 +877,7 @@ update.form = updateForm
 * @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
-export const destroy = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -892,7 +892,7 @@ destroy.definition = {
 * @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
-destroy.url = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { mekan: args }
     }
@@ -925,7 +925,7 @@ destroy.url = (args: { mekan: string | number | { id: string | number } } | [mek
 * @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
-destroy.delete = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -935,7 +935,7 @@ destroy.delete = (args: { mekan: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
-const destroyForm = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -950,7 +950,7 @@ const destroyForm = (args: { mekan: string | number | { id: string | number } } 
 * @see app/Http/Controllers/MekanController.php:70
 * @route '/mekanlar/{mekan}'
 */
-destroyForm.delete = (args: { mekan: string | number | { id: string | number } } | [mekan: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { mekan: number | { id: number } } | [mekan: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
