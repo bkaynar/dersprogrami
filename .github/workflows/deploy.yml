@@ -60,11 +60,14 @@ jobs:
               cp "$LIVE_DIR/.env" /tmp/deploy-protection/
             fi
 
-            # 2. Eski projeyi sil, yenisini koy
+            # 2. Container'ları durdur ve eski projeyi sil
             echo "🔄 Yeni kodlar canlıya alınıyor..."
-            # Docker root olarak dosya oluşturduğu için docker ile siliyoruz
             if [ -d "$LIVE_DIR" ]; then
-              docker run --rm -v "$LIVE_DIR:/delete" alpine rm -rf /delete
+              cd "$LIVE_DIR"
+              docker compose down 2>/dev/null || true
+              cd "$BASE_DIR"
+              # Docker root olarak dosya oluşturduğu için docker ile siliyoruz
+              docker run --rm -v "$BASE_DIR:/workspace" alpine rm -rf /workspace/ders-programi
             fi
             mv "$NEW_CODE_DIR" "$LIVE_DIR"
 
