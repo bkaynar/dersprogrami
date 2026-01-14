@@ -1,48 +1,161 @@
-name: Deploy to Server
+name: Deploy (Auto Backup & Build)
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
-
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Kodları Github'dan Çek
         uses: actions/checkout@v4
 
-      - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.6
+      # 1. Dosyaları Geçici Bir Klasöre Yükle (SCP)
+      - name: Dosyaları Sunucuya Gönder
+        uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 25416
+          # Kodları önce "upload-temp" adında geçici bir yere atıyoruz
+          target: "/home/${{ secrets.SERVER_USER }}/upload-temp"
           source: "."
-          target: "${{ secrets.DEPLOY_PATH }}"
-          rm: true
-          overwrite: true
+          rm: true # Önceki temp kirliliğini temizle
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.0
+      # 2. Sunucuda Yedekle, Taşı ve Başlat
+      - name: Sunucuda İşlemleri Yap
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 25416
           script: |
-            set -e
-            cd "${{ secrets.DEPLOY_PATH }}"
-            if [ ! -f .env ]; then
-              echo "ERROR: .env missing at $PWD"
-              exit 1
+            set -e # Hata olursa işlemi durdur
+
+            # --- DEĞİŞKENLER ---
+            # Ana kullanıcı dizini (Örn: /home/deploy)
+            BASE_DIR="/home/${{ secrets.SERVER_USER }}"
+            # Canlı projenin çalışacağı yer
+            LIVE_DIR="$BASE_DIR/my-project"
+            # Az önce yüklediğimiz yeni kodlar
+            NEW_CODE_DIR="$BASE_DIR/upload-temp"
+            # Yedeklerin tutulacağı klasör
+            BACKUPS_ROOT="$BASE_DIR/dersprogrami-backup"
+
+            echo "� Deployment Başlıyor..."
+            echo "📂 Ana Dizin: $BASE_DIR"
+
+            # 1. Yedekleme Klasörünü Oluştur (Yoksa)
+            mkdir -p "$BACKUPS_ROOT"
+
+            # 2. Storage ve Firebase Dosyalarını Koru (Yedekle)
+            echo "💾 Mevcut veriler korunuyor..."
+            mkdir -p /tmp/deploy-protection
+
+            if [ -d "$LIVE_DIR/storage/app/public" ]; then
+              cp -r "$LIVE_DIR/storage/app/public" /tmp/deploy-protection/
             fi
-            docker compose down || true
-            docker compose up -d --build
-            sleep 10
-            docker compose exec -T app php artisan migrate --force
+
+            if [ -f "$LIVE_DIR/storage/app/firebase/firebase-credentials.json" ]; then
+              mkdir -p /tmp/deploy-protection/firebase
+              cp "$LIVE_DIR/storage/app/firebase/firebase-credentials.json" /tmp/deploy-protection/firebase/
+            fi
+
+            # 3. Mevcut Projeyi Arşivle (Backup)
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            BACKUP_PATH="$BACKUPS_ROOT/backup_$TIMESTAMP"
+
+            if [ -d "$LIVE_DIR" ]; then
+              echo "📦 Eski proje yedekleniyor: $BACKUP_PATH"
+              # Eski projeyi silmek yerine backup klasörüne taşıyoruz
+              mv "$LIVE_DIR" "$BACKUP_PATH"
+            fi
+
+            # 4. Yeni Kodları Yerine Koy
+            echo "🔄 Yeni kodlar canlıya alınıyor..."
+            mv "$NEW_CODE_DIR" "$LIVE_DIR"
+
+            # 5. Korunan Verileri Geri Yükle (Restore)
+            echo "♻️ Veriler geri yükleniyor..."
+            mkdir -p "$LIVE_DIR/storage/app"
+
+            if [ -d "/tmp/deploy-protection/public" ]; then
+              cp -r /tmp/deploy-protection/public "$LIVE_DIR/storage/app/"
+            fi
+
+            if [ -f "/tmp/deploy-protection/firebase/firebase-credentials.json" ]; then
+              mkdir -p "$LIVE_DIR/storage/app/firebase"
+              cp /tmp/deploy-protection/firebase/firebase-credentials.json "$LIVE_DIR/storage/app/firebase/"
+            fi
+
+            # Geçici dosyaları temizle
+            rm -rf /tmp/deploy-protection
+
+            # 6. .ENV Dosyası ve Docker Hazırlığı
+            cd "$LIVE_DIR"
+
+            # Eğer eski backup'ta .env varsa onu kullan (En güvenlisi)
+            if [ -f "$BACKUP_PATH/.env" ]; then
+              echo "📄 Eski .env dosyası kopyalanıyor..."
+              cp "$BACKUP_PATH/.env" .env
+            elif [ -f .env.example ]; then
+              echo "⚠️ Eski .env bulunamadı, .env.example'dan oluşturuluyor..."
+              cp .env.example .env
+              # Production ayarları
+              sed -i 's/APP_ENV=local/APP_ENV=production/' .env
+              sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
+              sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env
+              sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mysql/' .env
+              sed -i 's/# DB_PORT=3306/DB_PORT=3306/' .env
+              sed -i 's/# DB_DATABASE=laravel/DB_DATABASE=ders_programi/' .env
+              sed -i 's/# DB_USERNAME=root/DB_USERNAME=root/' .env
+              sed -i 's/# DB_PASSWORD=/DB_PASSWORD=Aygulen12./' .env
+              sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=redis/' .env
+            else
+              touch .env
+            fi
+
+            # 7. İzinler ve Docker Build
+            echo "� Docker Build Başlıyor..."
+
+            # İzinleri ayarla
+            chmod -R 777 storage bootstrap/cache 2>/dev/null || true
+
+            # Docker'ı ayağa kaldır
+            docker compose up -d --build --remove-orphans
+
+            # Container'ların başlamasını bekle
+            echo "⏳ Container'lar başlatılıyor..."
+            sleep 15
+
+            # Laravel komutları
+            echo "🔧 Laravel ayarları yapılıyor..."
+
+            # Composer install (production)
+            docker compose exec -T app composer install --no-dev --optimize-autoloader 2>/dev/null || true
+
+            # APP_KEY yoksa oluştur
+            if ! grep -q "APP_KEY=base64:" .env; then
+              echo "🔑 APP_KEY oluşturuluyor..."
+              docker compose exec -T app php artisan key:generate --force
+            fi
+
+            docker compose exec -T app php artisan storage:link 2>/dev/null || true
+            docker compose exec -T app php artisan migrate --force 2>/dev/null || true
+            docker compose exec -T app php artisan optimize:clear
+            docker compose exec -T app php artisan config:cache
+            docker compose exec -T app php artisan route:cache
+            docker compose exec -T app php artisan view:cache
+
+            # 8. Temizlik (Eski Backup'ları Sil - 5 taneden fazlasını tutma)
+            echo "🧹 Eski yedekler temizleniyor (Son 5 yedek tutulur)..."
+            cd "$BACKUPS_ROOT"
+            ls -dt backup_* | tail -n +6 | xargs -I {} rm -rf {} 2>/dev/null || true
+
+            echo "✅ İŞLEM BAŞARIYLA TAMAMLANDI!"
+            echo "🌍 Proje dizini: $LIVE_DIR"
+            echo "📦 Son yedek: $BACKUP_PATH"
