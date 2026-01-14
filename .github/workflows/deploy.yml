@@ -16,8 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy files to server (SSH key)
-        if: ${{ secrets.SSH_KEY != '' }}
+      - name: Copy files to server
         uses: appleboy/scp-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -28,25 +27,8 @@ jobs:
           target: "${{ secrets.DEPLOY_PATH }}"
           rm: true
           overwrite: true
-          # Exclude files not needed on server; .env must exist on server
-          exclude: ".git,.github,node_modules,vendor,storage/logs/*,.DS_Store"
 
-      - name: Copy files to server (password)
-        if: ${{ secrets.SSH_KEY == '' && secrets.SSH_PASSWORD != '' }}
-        uses: appleboy/scp-action@v0.1.6
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "."
-          target: "${{ secrets.DEPLOY_PATH }}"
-          rm: true
-          overwrite: true
-          exclude: ".git,.github,node_modules,vendor,storage/logs/*,.DS_Store"
-
-      - name: Deploy via SSH (key)
-        if: ${{ secrets.SSH_KEY != '' }}
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -64,38 +46,3 @@ jobs:
             docker compose up -d --build
             sleep 10
             docker compose exec -T app php artisan migrate --force
-
-      - name: Deploy via SSH (password)
-        if: ${{ secrets.SSH_KEY == '' && secrets.SSH_PASSWORD != '' }}
-                  - name: Copy files to server (SSH key)
-                    uses: appleboy/scp-action@v0.1.6
-                    with:
-                      host: ${{ secrets.SSH_HOST }}
-                      username: ${{ secrets.SSH_USER }}
-                      key: ${{ secrets.SSH_KEY }}
-                      port: ${{ secrets.SSH_PORT }}
-                      source: "."
-                      target: "${{ secrets.DEPLOY_PATH }}"
-                      rm: true
-                      overwrite: true
-                      # Exclude files not needed on server; .env must exist on server
-                      exclude: ".git,.github,node_modules,vendor,storage/logs/*,.DS_Store"
-
-                  - name: Deploy via SSH
-                    uses: appleboy/ssh-action@v1.0.0
-                    with:
-                      host: ${{ secrets.SSH_HOST }}
-                      username: ${{ secrets.SSH_USER }}
-                      key: ${{ secrets.SSH_KEY }}
-                      port: ${{ secrets.SSH_PORT }}
-                      script: |
-                        set -e
-                        cd "${{ secrets.DEPLOY_PATH }}"
-                        if [ ! -f .env ]; then
-                          echo "ERROR: .env missing at $PWD"
-                          exit 1
-                        fi
-                        docker compose down || true
-                        docker compose up -d --build
-                        sleep 10
-                        docker compose exec -T app php artisan migrate --force
