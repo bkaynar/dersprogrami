@@ -62,7 +62,7 @@ jobs:
 
             # 2. Eski projeyi sil, yenisini koy
             echo "🔄 Yeni kodlar canlıya alınıyor..."
-            rm -rf "$LIVE_DIR"
+            sudo rm -rf "$LIVE_DIR"
             mv "$NEW_CODE_DIR" "$LIVE_DIR"
 
             # 3. Korunan dosyaları geri yükle
