@@ -98,26 +98,28 @@ jobs:
             # 6. .ENV Dosyası ve Docker Hazırlığı
             cd "$LIVE_DIR"
 
-            # Eğer eski backup'ta .env varsa onu kullan (En güvenlisi)
+            # Eğer eski backup'ta .env varsa onu kullan
             if [ -f "$BACKUP_PATH/.env" ]; then
               echo "📄 Eski .env dosyası kopyalanıyor..."
               cp "$BACKUP_PATH/.env" .env
             elif [ -f .env.example ]; then
               echo "⚠️ Eski .env bulunamadı, .env.example'dan oluşturuluyor..."
               cp .env.example .env
-              # Production ayarları
-              sed -i 's/APP_ENV=local/APP_ENV=production/' .env
-              sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
-              sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env
-              sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mysql/' .env
-              sed -i 's/# DB_PORT=3306/DB_PORT=3306/' .env
-              sed -i 's/# DB_DATABASE=laravel/DB_DATABASE=ders_programi/' .env
-              sed -i 's/# DB_USERNAME=root/DB_USERNAME=root/' .env
-              sed -i 's/# DB_PASSWORD=/DB_PASSWORD=Aygulen12./' .env
-              sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=redis/' .env
             else
               touch .env
             fi
+
+            # Docker MySQL ayarlarını zorla uygula (eski env'de farklı olabilir)
+            echo "🔧 Docker MySQL ayarları uygulanıyor..."
+            sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+            sed -i 's/^DB_HOST=.*/DB_HOST=mysql/' .env
+            sed -i 's/^DB_PORT=.*/DB_PORT=3306/' .env
+            sed -i 's/^DB_DATABASE=.*/DB_DATABASE=ders_programi/' .env
+            sed -i 's/^DB_USERNAME=.*/DB_USERNAME=root/' .env
+            sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=Aygulen12./' .env
+            sed -i 's/^REDIS_HOST=.*/REDIS_HOST=redis/' .env
+            sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
+            sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
 
             # 7. İzinler ve Docker Build
             echo "� Docker Build Başlıyor..."
