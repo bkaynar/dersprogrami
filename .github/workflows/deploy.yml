@@ -1,4 +1,4 @@
-name: Deploy (Auto Backup & Build)
+name: Deploy (Auto Build)
 
 on:
   push:
@@ -20,12 +20,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 25416
-          # Kodları önce "upload-temp" adında geçici bir yere atıyoruz
           target: "/home/${{ secrets.SERVER_USER }}/upload-temp"
           source: "."
-          rm: true # Önceki temp kirliliğini temizle
+          rm: true
 
-      # 2. Sunucuda Yedekle, Taşı ve Başlat
+      # 2. Sunucuda Taşı ve Başlat
       - name: Sunucuda İşlemleri Yap
         uses: appleboy/ssh-action@master
         with:
@@ -34,25 +33,16 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 25416
           script: |
-            set -e # Hata olursa işlemi durdur
+            set -e
 
             # --- DEĞİŞKENLER ---
-            # Ana kullanıcı dizini (Örn: /home/deploy)
             BASE_DIR="/home/${{ secrets.SERVER_USER }}"
-            # Canlı projenin çalışacağı yer
-            LIVE_DIR="$BASE_DIR/my-project"
-            # Az önce yüklediğimiz yeni kodlar
+            LIVE_DIR="$BASE_DIR/ders-programi"
             NEW_CODE_DIR="$BASE_DIR/upload-temp"
-            # Yedeklerin tutulacağı klasör
-            BACKUPS_ROOT="$BASE_DIR/dersprogrami-backup"
 
-            echo "� Deployment Başlıyor..."
-            echo "📂 Ana Dizin: $BASE_DIR"
+            echo "🚀 Deployment Başlıyor..."
 
-            # 1. Yedekleme Klasörünü Oluştur (Yoksa)
-            mkdir -p "$BACKUPS_ROOT"
-
-            # 2. Storage ve Firebase Dosyalarını Koru (Yedekle)
+            # 1. Storage dosyalarını koru
             echo "💾 Mevcut veriler korunuyor..."
             mkdir -p /tmp/deploy-protection
 
@@ -65,21 +55,17 @@ jobs:
               cp "$LIVE_DIR/storage/app/firebase/firebase-credentials.json" /tmp/deploy-protection/firebase/
             fi
 
-            # 3. Mevcut Projeyi Arşivle (Backup)
-            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-            BACKUP_PATH="$BACKUPS_ROOT/backup_$TIMESTAMP"
-
-            if [ -d "$LIVE_DIR" ]; then
-              echo "📦 Eski proje yedekleniyor: $BACKUP_PATH"
-              # Eski projeyi silmek yerine backup klasörüne taşıyoruz
-              mv "$LIVE_DIR" "$BACKUP_PATH"
+            # Eski .env'i koru
+            if [ -f "$LIVE_DIR/.env" ]; then
+              cp "$LIVE_DIR/.env" /tmp/deploy-protection/
             fi
 
-            # 4. Yeni Kodları Yerine Koy
+            # 2. Eski projeyi sil, yenisini koy
             echo "🔄 Yeni kodlar canlıya alınıyor..."
+            rm -rf "$LIVE_DIR"
             mv "$NEW_CODE_DIR" "$LIVE_DIR"
 
-            # 5. Korunan Verileri Geri Yükle (Restore)
+            # 3. Korunan dosyaları geri yükle
             echo "♻️ Veriler geri yükleniyor..."
             mkdir -p "$LIVE_DIR/storage/app"
 
@@ -92,24 +78,18 @@ jobs:
               cp /tmp/deploy-protection/firebase/firebase-credentials.json "$LIVE_DIR/storage/app/firebase/"
             fi
 
-            # Geçici dosyaları temizle
-            rm -rf /tmp/deploy-protection
-
-            # 6. .ENV Dosyası ve Docker Hazırlığı
-            cd "$LIVE_DIR"
-
-            # Eğer eski backup'ta .env varsa onu kullan
-            if [ -f "$BACKUP_PATH/.env" ]; then
-              echo "📄 Eski .env dosyası kopyalanıyor..."
-              cp "$BACKUP_PATH/.env" .env
-            elif [ -f .env.example ]; then
-              echo "⚠️ Eski .env bulunamadı, .env.example'dan oluşturuluyor..."
-              cp .env.example .env
-            else
-              touch .env
+            # .env'i geri yükle veya oluştur
+            if [ -f "/tmp/deploy-protection/.env" ]; then
+              cp /tmp/deploy-protection/.env "$LIVE_DIR/.env"
+            elif [ -f "$LIVE_DIR/.env.example" ]; then
+              cp "$LIVE_DIR/.env.example" "$LIVE_DIR/.env"
             fi
 
-            # Docker MySQL ayarlarını zorla uygula (eski env'de farklı olabilir)
+            rm -rf /tmp/deploy-protection
+
+            # 4. .ENV ayarları
+            cd "$LIVE_DIR"
+
             echo "🔧 Docker MySQL ayarları uygulanıyor..."
             sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
             sed -i 's/^DB_HOST=.*/DB_HOST=mysql/' .env
@@ -121,26 +101,19 @@ jobs:
             sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
             sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
 
-            # 7. İzinler ve Docker Build
+            # 5. İzinler ve Docker Build
             echo "� Docker Build Başlıyor..."
-
-            # İzinleri ayarla
             chmod -R 777 storage bootstrap/cache 2>/dev/null || true
 
-            # Docker'ı ayağa kaldır
             docker compose up -d --build --remove-orphans
 
-            # Container'ların başlamasını bekle
             echo "⏳ Container'lar başlatılıyor..."
             sleep 15
 
-            # Laravel komutları
+            # 6. Laravel komutları
             echo "🔧 Laravel ayarları yapılıyor..."
-
-            # Composer install (production)
             docker compose exec -T app composer install --no-dev --optimize-autoloader 2>/dev/null || true
 
-            # APP_KEY yoksa oluştur
             if ! grep -q "APP_KEY=base64:" .env; then
               echo "🔑 APP_KEY oluşturuluyor..."
               docker compose exec -T app php artisan key:generate --force
@@ -153,11 +126,5 @@ jobs:
             docker compose exec -T app php artisan route:cache
             docker compose exec -T app php artisan view:cache
 
-            # 8. Temizlik (Eski Backup'ları Sil - 5 taneden fazlasını tutma)
-            echo "🧹 Eski yedekler temizleniyor (Son 5 yedek tutulur)..."
-            cd "$BACKUPS_ROOT"
-            ls -dt backup_* | tail -n +6 | xargs -I {} rm -rf {} 2>/dev/null || true
-
-            echo "✅ İŞLEM BAŞARIYLA TAMAMLANDI!"
-            echo "🌍 Proje dizini: $LIVE_DIR"
-            echo "📦 Son yedek: $BACKUP_PATH"
+            echo "✅ DEPLOYMENT TAMAMLANDI!"
+            echo "🌍 Proje: $LIVE_DIR"
