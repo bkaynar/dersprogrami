@@ -129,6 +129,10 @@ jobs:
 
             # 6. Laravel komutları
             echo "🔧 Laravel ayarları yapılıyor..."
+
+            # Önce config cache'i temizle
+            docker compose exec -T app php artisan config:clear 2>/dev/null || true
+
             docker compose exec -T app composer install --no-dev --optimize-autoloader 2>/dev/null || true
 
             if ! grep -q "APP_KEY=base64:" .env; then
@@ -136,8 +140,12 @@ jobs:
               docker compose exec -T app php artisan key:generate --force
             fi
 
+            # App container'ı restart et (yeni .env'i alsın)
+            docker compose restart app
+            sleep 5
+
             docker compose exec -T app php artisan storage:link 2>/dev/null || true
-            docker compose exec -T app php artisan migrate --force 2>/dev/null || true
+            docker compose exec -T app php artisan migrate --force
             docker compose exec -T app php artisan optimize:clear
             docker compose exec -T app php artisan config:cache
             docker compose exec -T app php artisan route:cache
