@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 export const download = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ download.definition = {
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 download.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ download.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 const downloadForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const downloadForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 downloadForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ downloadForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\DersController::download
-* @see app/Http/Controllers/DersController.php:95
+* @see app/Http/Controllers/DersController.php:96
 * @route '/dersler/template/download'
 */
 downloadForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

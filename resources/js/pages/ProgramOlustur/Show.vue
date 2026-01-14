@@ -374,17 +374,8 @@ onUnmounted(() => {
 
                         <div v-show="showExportDropdown" class="absolute right-0 z-10 mt-2 w-64 rounded-lg border border-border bg-background shadow-lg">
                             <div class="p-2">
-                                <div class="mb-2 px-2 py-1 text-xs font-semibold text-muted-foreground">Standart Format</div>
-                                <a href="/program-olustur/export/excel" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted">Excel (Standart)</a>
-                                <a href="/program-olustur/export/pdf" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted">PDF (Standart)</a>
-
-                                <div class="mb-2 mt-4 px-2 py-1 text-xs font-semibold text-muted-foreground">Üniversite Şablonu</div>
-                                <a href="/program-olustur/export/universite/excel/a" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted">Excel (A Şubesi)</a>
-                                <a href="/program-olustur/export/universite/excel/b" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted">Excel (B Şubesi)</a>
-
-                                <div class="mb-2 mt-4 px-2 py-1 text-xs font-semibold text-orange-600">🎯 Orijinal Şablon</div>
-                                <a href="/program-olustur/export/template/a" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted bg-orange-50 dark:bg-orange-950/20">Template (A Şubesi)</a>
-                                <a href="/program-olustur/export/template/b" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted bg-orange-50 dark:bg-orange-950/20">Template (B Şubesi)</a>
+                                <a href="/program-olustur/export/template/a" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted bg-orange-50 dark:bg-orange-950/20">(A Şubesi)</a>
+                                <a href="/program-olustur/export/template/b" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted bg-orange-50 dark:bg-orange-950/20">(B Şubesi)</a>
                             </div>
                         </div>
                     </div>

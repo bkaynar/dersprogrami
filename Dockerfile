@@ -29,7 +29,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # NPM bağımlılıkları ve build
-RUN npm ci && npm run build
+RUN npm ci && npm run build:ssr
 
 # İzinler
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \

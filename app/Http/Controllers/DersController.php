@@ -34,6 +34,7 @@ class DersController extends Controller
                 'search' => $search,
             ],
         ]);
+        
     }
 
     public function create()
