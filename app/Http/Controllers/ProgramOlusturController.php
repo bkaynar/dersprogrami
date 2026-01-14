@@ -7,6 +7,7 @@ use App\Services\TimetableGeneticAlgorithm;
 use App\Models\OlusturulanProgram;
 use App\Models\ZamanDilim;
 use App\Models\OgrenciGrubu;
+use App\Models\OgretmenMusaitlik;
 use App\Exports\TimetableExport;
 use App\Exports\UniversiteOfficialTimetableExport;
 use App\Exports\UniversiteOfficialTimetablePdfExport;
@@ -205,6 +206,132 @@ class ProgramOlusturController extends Controller
             'program_tablosu' => $programTablosu,
             'zaman_dilimleri' => $zamanDilimleri,
             'gruplar' => $gruplar,
+        ]);
+    }
+
+    /**
+     * Ders slotunu güncelle (drag & drop için)
+     */
+    public function updateSlot(Request $request)
+    {
+        $request->validate([
+            'program_id' => 'required|integer|exists:olusturulan_program,id',
+            'new_zaman_dilimi_id' => 'required|integer|exists:zaman_dilimleri,id',
+        ]);
+
+        $program = OlusturulanProgram::with(['ogretmen', 'mekan', 'ders'])->findOrFail($request->program_id);
+        $newZamanDilimiId = $request->new_zaman_dilimi_id;
+        $grupId = $program->ogrenci_grup_id;
+        $oldZamanDilimiId = $program->zaman_dilimi_id;
+
+        // Aynı slot'a taşınıyorsa işlem yapma
+        if ($oldZamanDilimiId == $newZamanDilimiId) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Aynı slot, değişiklik yok',
+                'swapped' => false,
+            ]);
+        }
+
+        // Hedef slotta aynı grup için başka bir ders var mı kontrol et
+        $existingProgram = OlusturulanProgram::with(['ogretmen', 'mekan', 'ders'])
+            ->where('ogrenci_grup_id', $grupId)
+            ->where('zaman_dilimi_id', $newZamanDilimiId)
+            ->first();
+
+        // ÇAKIŞMA KONTROLLERI
+
+        // 0. Öğretmen müsaitlik kontrolü - Öğretmen bu zaman diliminde müsait mi?
+        $ogretmenMusaitlik = OgretmenMusaitlik::where('ogretmen_id', $program->ogretmen_id)
+            ->where('zaman_dilimi_id', $newZamanDilimiId)
+            ->first();
+
+        if (!$ogretmenMusaitlik || $ogretmenMusaitlik->musaitlik_tipi !== 'musait') {
+            return response()->json([
+                'success' => false,
+                'message' => "Müsaitlik: {$program->ogretmen->isim} bu saatte müsait değil!",
+            ], 422);
+        }
+
+        // 1. Öğretmen çakışması kontrolü - Aynı öğretmen aynı zaman diliminde başka bir gruba ders veriyor mu?
+        $ogretmenCakisma = OlusturulanProgram::where('ogretmen_id', $program->ogretmen_id)
+            ->where('zaman_dilimi_id', $newZamanDilimiId)
+            ->where('ogrenci_grup_id', '!=', $grupId) // Farklı grup
+            ->first();
+
+        if ($ogretmenCakisma) {
+            return response()->json([
+                'success' => false,
+                'message' => "Çakışma: {$program->ogretmen->isim} bu saatte başka bir gruba ders veriyor!",
+            ], 422);
+        }
+
+        // 2. Mekan çakışması kontrolü - Aynı mekan aynı zaman diliminde başka bir grup tarafından kullanılıyor mu?
+        $mekanCakisma = OlusturulanProgram::where('mekan_id', $program->mekan_id)
+            ->where('zaman_dilimi_id', $newZamanDilimiId)
+            ->where('ogrenci_grup_id', '!=', $grupId) // Farklı grup
+            ->first();
+
+        if ($mekanCakisma) {
+            return response()->json([
+                'success' => false,
+                'message' => "Çakışma: {$program->mekan->isim} bu saatte başka bir grup tarafından kullanılıyor!",
+            ], 422);
+        }
+
+        // Eğer swap yapılacaksa, swap edilecek dersin de çakışma kontrolünü yap
+        if ($existingProgram) {
+            // Swap edilecek dersin öğretmeni eski slotta müsait mi?
+            $swapOgretmenMusaitlik = OgretmenMusaitlik::where('ogretmen_id', $existingProgram->ogretmen_id)
+                ->where('zaman_dilimi_id', $oldZamanDilimiId)
+                ->first();
+
+            if (!$swapOgretmenMusaitlik || $swapOgretmenMusaitlik->musaitlik_tipi !== 'musait') {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Müsaitlik: Yer değiştirilecek dersin öğretmeni ({$existingProgram->ogretmen->isim}) eski slotta müsait değil!",
+                ], 422);
+            }
+
+            // Swap edilecek dersin öğretmeni eski slotta çakışıyor mu?
+            $swapOgretmenCakisma = OlusturulanProgram::where('ogretmen_id', $existingProgram->ogretmen_id)
+                ->where('zaman_dilimi_id', $oldZamanDilimiId)
+                ->where('ogrenci_grup_id', '!=', $grupId)
+                ->first();
+
+            if ($swapOgretmenCakisma) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Çakışma: Yer değiştirilecek dersin öğretmeni ({$existingProgram->ogretmen->isim}) eski slotta başka bir gruba ders veriyor!",
+                ], 422);
+            }
+
+            // Swap edilecek dersin mekanı eski slotta çakışıyor mu?
+            $swapMekanCakisma = OlusturulanProgram::where('mekan_id', $existingProgram->mekan_id)
+                ->where('zaman_dilimi_id', $oldZamanDilimiId)
+                ->where('ogrenci_grup_id', '!=', $grupId)
+                ->first();
+
+            if ($swapMekanCakisma) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Çakışma: Yer değiştirilecek dersin mekanı ({$existingProgram->mekan->isim}) eski slotta başka bir grup tarafından kullanılıyor!",
+                ], 422);
+            }
+
+            // Swap yap - mevcut dersi eski slota taşı
+            $existingProgram->zaman_dilimi_id = $oldZamanDilimiId;
+            $existingProgram->save();
+        }
+
+        // Dersi yeni slota taşı
+        $program->zaman_dilimi_id = $newZamanDilimiId;
+        $program->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => $existingProgram ? 'Dersler yer değiştirdi' : 'Ders başarıyla taşındı',
+            'swapped' => $existingProgram ? true : false,
         ]);
     }
 

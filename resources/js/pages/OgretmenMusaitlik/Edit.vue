@@ -321,6 +321,7 @@ const stats = computed(() => {
                         </div>
                     </div>
                 </div>
+                </div>
 
                 <!-- Grid View -->
                 <div v-if="viewMode === 'grid'" class="rounded-lg border bg-card overflow-hidden">

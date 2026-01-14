@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 export const a = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ a.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 a.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ a.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 a.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ a.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 a.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ a.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 const aForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const aForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 aForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ aForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::a
-* @see app/Http/Controllers/ProgramOlusturController.php:304
+* @see app/Http/Controllers/ProgramOlusturController.php:431
 * @route '/program-olustur/export/universite/pdf/a'
 */
 aForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ a.form = aForm
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 export const b = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ b.definition = {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 b.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ b.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 b.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -116,7 +116,7 @@ b.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 b.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -126,7 +126,7 @@ b.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 const bForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -136,7 +136,7 @@ const bForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 bForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -146,7 +146,7 @@ bForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ProgramOlusturController::b
-* @see app/Http/Controllers/ProgramOlusturController.php:315
+* @see app/Http/Controllers/ProgramOlusturController.php:442
 * @route '/program-olustur/export/universite/pdf/b'
 */
 bForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
