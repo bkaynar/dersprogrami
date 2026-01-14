@@ -108,7 +108,18 @@ jobs:
             docker compose up -d --build --remove-orphans
 
             echo "⏳ Container'lar başlatılıyor..."
-            sleep 15
+            sleep 10
+
+            # MySQL'in hazır olmasını bekle
+            echo "⏳ MySQL bekleniyor..."
+            for i in {1..30}; do
+              if docker compose exec -T mysql mysqladmin ping -h localhost -u root -pAygulen12. --silent 2>/dev/null; then
+                echo "✅ MySQL hazır!"
+                break
+              fi
+              echo "MySQL bekleniyor... ($i/30)"
+              sleep 2
+            done
 
             # 6. Laravel komutları
             echo "🔧 Laravel ayarları yapılıyor..."
