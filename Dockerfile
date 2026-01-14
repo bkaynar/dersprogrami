@@ -1,7 +1,4 @@
-FROM php:8.4-fpm
-
-# xz sandbox hatasını önlemek için environment variable
-ENV XZ_OPT="--no-sandbox"
+FROM php:8.3-fpm-bookworm
 
 # Sistem bağımlılıkları
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Node.js (NodeSource'dan daha stabil versiyon)
+# Node.js 20
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
